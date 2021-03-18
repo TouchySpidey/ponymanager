@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once './secrets.php';
+require_once './application/config/secrets.php';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
