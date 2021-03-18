@@ -1,0 +1,33 @@
+@media screen and (max-width: 995px) {
+
+	#mainMenu {
+		position: fixed;
+		top: 100px;
+		right: 0;
+		transition: transform .25s ease;
+	}
+	body:not(.menu-open) #mainMenu {
+		transform: translateX(240px);
+	}
+	#menuToggler {
+		font-size: 48px;
+		color: white;
+		cursor: pointer;
+		padding: 0 26px;
+	}
+	body.menu-open #mainMenuBackdrop {
+		position:fixed;
+		top: 100px;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		cursor: pointer;
+	}
+	#mainMenu [desktop] {
+		display: none;
+	}
+	#mainMenu [main-menu-link] {
+		margin-left: auto;
+	}
+
+}

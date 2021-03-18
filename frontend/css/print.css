@@ -1,0 +1,6 @@
+body > :not(#printable) {
+	display: none !important;
+}
+#printable {
+	font-size: 20px;
+}

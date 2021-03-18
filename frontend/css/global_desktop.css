@@ -1,0 +1,24 @@
+@media screen and (min-width: 996px) {
+
+	#mainMenu {
+		float: left;
+	}
+	#menuToggler {
+		display: none!important;
+	}
+	#pageContainer {
+		margin-left: 240px;
+	}
+	#resultsFound {
+		overflow-y: auto;
+		max-height: calc(100vh - 200px);
+	}
+	#riepilogoOrdine {
+		width: 240px;
+		min-width: 240px;
+	}
+	#mainMenu [mobile] {
+		display: none;
+	}
+
+}

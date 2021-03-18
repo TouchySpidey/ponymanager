@@ -1,0 +1,174 @@
+#finder {
+	font-size: 24px;
+}
+#boxOrdini {
+	min-width: 300px;
+}
+#customersBox, #boxOrdini {
+	margin: 12px 12px 0 12px;
+}
+#toPrepping:hover {
+	background-color: #ffcc80!important;
+}
+#toPrepping.orange-700:hover {
+	background-color: #f57c00!important;
+}
+#toPrepping {
+	border-top-left-radius: 10px;
+}
+.js-deliverable {
+	height: 24px;
+	width: 24px;
+}
+#toDelivering:hover {
+	background-color: #b3e5fc!important;
+}
+#toDelivering.light-blue-200:hover {
+	background-color: #81d4fa!important;
+}
+#toDelivering {
+	border-top-right-radius: 10px;
+}
+#toPrepping, #toDelivering {
+	width: 50%;
+	color: black;
+}
+#pendingOrders .info-cliente {
+	border-bottom: 2px solid #f57c00;
+}
+.info-cliente {
+	border-bottom: 2px solid #03a9f4;
+	cursor: pointer;
+}
+.info-cliente .info-container {
+	margin: 10px 0;
+	padding: 12px;
+}
+#boxOrdini .info-cliente .info-container {
+	margin: 6px 0;
+	padding: 8px;
+}
+.info-cliente .nome-cliente {
+	font-size: 18px;
+}
+.info-cliente .pizze-ordinate {
+	font-size: 16px;
+	font-weight: bold;
+	color: #003c77;
+}
+.info-cliente .indirizzo-cliente, .info-cliente .telefono-cliente {
+	color: #70757A;
+	font-size: 14px;
+}
+#totaleOrdine {
+	background-color: #a2ffa4;
+	font-size: 40px;
+	border: 1px solid green;
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+	padding: 0px 16px;
+}
+.context-function {
+	width: 120px;
+	font-size: 16px;
+	padding: 4px 8px;
+	cursor: pointer;
+	border: 1px solid black;
+}
+.tabs-container {
+	font-size: 24px;
+	margin-top: 12px;
+}
+.tabs-container .tab.selected {
+	border-top: 2px solid orange;
+	border-left: 2px solid orange;
+	border-right: 2px solid orange;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	border-bottom: 2px solid transparent;
+}
+.tabs-container .tab:not(.selected) {
+	border-bottom: 2px solid orange;
+	border-left: 2px solid transparent;
+	border-top: 2px solid transparent;
+	border-right: 2px solid transparent;
+}
+.tabs-container .tab:not(:last-child) {
+	margin-right: -1px;
+}
+.tabs-container .tab {
+	padding: 6px 12px 2px;
+	cursor: pointer;
+}
+.order-modal {
+	padding-top: 12px;
+}
+#categorieContainer, #elencoPiatti {
+	margin-top: 12px;
+}
+#categorieContainer .categoria {
+	font-size: 20px;
+	border: 1px solid red;
+	background-color: yellow;
+	width: 160px;
+	padding: 6px 12px;
+	cursor: pointer;
+}
+#elencoPiatti .piatto {
+	font-size: 16px;
+	width: 120px;
+	border: 1px solid green;
+	background-color: lime;
+	padding: 4px 8px;
+	cursor: pointer;
+}
+#contexts {
+	margin-top: auto;
+}
+#elencoPiatti .piatto, #categorieContainer .categoria, .context-function {
+	margin-right: -1px;
+	margin-bottom: -1px;
+	display: -webkit-flex;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	justify-content: center;
+}
+.item [ingrediente], .item [aggiunta], .item [impasto], .item [tag], .item [dimensione], .item [quantity], .item [main] {
+	cursor: pointer;
+	font-size: 18px;
+}
+.item [main], .item [quantity] {
+	font-size: 22px;
+	font-weight: bold;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+.item [quantity] {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+.item [ingrediente], .item [aggiunta], .item [impasto], .item [tag], .item [dimensione] {
+	padding-left: 30px;
+}
+#listaPizze {
+	max-height: calc(100vh - 240px);
+	overflow-y: auto;
+}
+#totaleOrdine {
+	text-align: right;
+}
+#addOrderModal .order-modal-content {
+	width: calc(100vw - 72px);
+	height: calc(100vh - 72px);
+	padding: 0;
+}
+.open-customer-container {
+	width: 30px;
+	height: 100%;
+	background-color: #cbefff;
+}
+.open-customer {
+	color: #008bca;
+	font-size: 30px;
+}
