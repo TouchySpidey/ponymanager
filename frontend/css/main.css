@@ -146,11 +146,18 @@ a {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
-	height: 56px;
-	padding: 8px 16px;
+	border-radius: 28px;
 }
 .fab-extended {
-	border-radius: 28px;
+	font-size: 21px;
+	padding: 0px 16px;
+	height: 40px;
+}
+.fab {
+	height: 48px;
+	line-height: 36px;
+	font-size: 30px;
+	width: 48px;
 }
 .small-round-button {
 	border-radius: 16px;
