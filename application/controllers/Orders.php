@@ -9,7 +9,7 @@ class Orders extends CI_Controller {
 	}
 
 	public function ordini() {
-		$this->load->view('orders_manager');
+		$this->load->view('orders_manager', $this->pizzeria->menu_components());
 	}
 
 }

@@ -216,4 +216,13 @@ class Pizzeria_model extends CI_Model {
 		}
 	}
 
+	public function menu_components() {
+		return [
+			'ingredients' => $this->get_ingredients(),
+			'ingredients_categories' => $this->get_ingredients_categories(),
+			'pizzas' => $this->get_pizzas(),
+			'pizzas_categories' => $this->get_pizzas_categories(),
+		];
+	}
+
 }

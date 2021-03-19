@@ -16,19 +16,19 @@ class Menu extends CI_Controller {
 		$ingredients_categories = $this->pizzeria->get_ingredients_categories();
 		$pizzas = $this->pizzeria->get_pizzas();
 		$pizzas_categories = $this->pizzeria->get_pizzas_categories();
-		$this->load->view('menu_manager', compact('ingredients', 'ingredients_categories', 'pizzas', 'pizzas_categories'));
+		$this->load->view('menu_manager', $this->pizzeria->menu_components());
 	}
 
 	public function delete_ingredient() {
 		$id_ingredient = $this->input->post('id_ingredient');
 		$success = $this->pizzeria->disable_ingredient($id_ingredient);
-		echo JSON_encode(array_merge(['success' => $success], $this->menu_components()));
+		echo JSON_encode(array_merge(['success' => $success], $this->pizzeria->menu_components()));
 	}
 
 	public function delete_pizza() {
 		$id_pizza = $this->input->post('id_pizza');
 		$success = $this->pizzeria->disable_pizza($id_pizza);
-		echo JSON_encode(array_merge(['success' => $success], $this->menu_components()));
+		echo JSON_encode(array_merge(['success' => $success], $this->pizzeria->menu_components()));
 	}
 
 	public function add_or_edit_ingredient() {
@@ -37,7 +37,7 @@ class Menu extends CI_Controller {
 			$ingredient_data['category'] = $this->input->post('new_category');
 		}
 		$success = $this->pizzeria->save_ingredient($ingredient_data);
-		echo JSON_encode(array_merge(['success' => $success], $this->menu_components()));
+		echo JSON_encode(array_merge(['success' => $success], $this->pizzeria->menu_components()));
 	}
 
 	public function add_or_edit_pizza() {
@@ -46,16 +46,7 @@ class Menu extends CI_Controller {
 			$pizza_data['category'] = $this->input->post('new_category');
 		}
 		$success = $this->pizzeria->save_pizza($pizza_data);
-		echo JSON_encode(array_merge(['success' => $success], $this->menu_components()));
-	}
-
-	protected function menu_components() {
-		return [
-			'ingredients' => $this->pizzeria->get_ingredients(),
-			'ingredients_categories' => $this->pizzeria->get_ingredients_categories(),
-			'pizzas' => $this->pizzeria->get_pizzas(),
-			'pizzas_categories' => $this->pizzeria->get_pizzas_categories(),
-		];
+		echo JSON_encode(array_merge(['success' => $success], $this->pizzeria->menu_components()));
 	}
 
 }
