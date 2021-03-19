@@ -49,7 +49,7 @@
 	padding: 8px;
 }
 .info-cliente .nome-cliente {
-	font-size: 18px;
+	font-size: 16px;
 }
 .info-cliente .pizze-ordinate {
 	font-size: 16px;
@@ -58,7 +58,7 @@
 }
 .info-cliente .indirizzo-cliente, .info-cliente .telefono-cliente {
 	color: #70757A;
-	font-size: 14px;
+	font-size: 13px;
 }
 #totaleOrdine {
 	background-color: #a2ffa4;
