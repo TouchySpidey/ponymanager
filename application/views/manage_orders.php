@@ -345,7 +345,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div>e dimmi se funziona...</div>
 		<div>Se funziona mandami una foto magari</div>
 	</div>
-	<?= import_js('customer_finder') ?>
+	<?= import_js('manage_orders') ?>
 	<script>
 	$('#finder').val('paolo');
 	$('#finder').trigger('input');

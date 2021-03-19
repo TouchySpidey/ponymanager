@@ -9,7 +9,7 @@ class Main extends CI_Controller {
 	}
 
 	public function ordini() {
-		$this->load->view('customer_finder');
+		$this->load->view('manage_orders');
 	}
 
 	public function aiuda() {
