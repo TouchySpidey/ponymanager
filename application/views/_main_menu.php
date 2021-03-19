@@ -1,6 +1,6 @@
 <div id="mainMenuBackdrop">
 	<div id="mainMenu">
-		<a href="<?= site_url() ?>main/ordini" class="parent-to-be-hovered main-link">
+		<a href="<?= site_url() ?>orders" class="parent-to-be-hovered main-link">
 			<div class="d-flex link-block">
 				<div><i class="mdi mdi-format-list-bulleted-square"></i> Ordini</div>
 				<div class="ml-auto show-on-parent-hover" desktop><i class="mdi mdi-chevron-right"></i></div>

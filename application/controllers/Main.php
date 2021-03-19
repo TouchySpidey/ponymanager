@@ -5,17 +5,7 @@ class Main extends CI_Controller {
 
 	public function index()
 	{
-		$this->ordini();
-	}
-
-	public function ordini() {
-		$this->load->view('manage_orders');
-	}
-
-	public function aiuda() {
-		debug(FCPATH);
-		debug(site_url());
-		debug($_SERVER['SERVER_NAME']);
+		echo 'login | homepage';
 	}
 
 }
