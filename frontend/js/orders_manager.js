@@ -129,7 +129,7 @@ function order_init(tab = false) {
 	}
 
 	if (!tab) {
-		tab = $('.tab[data-tab="menu"]');
+		tab = $('.tab[data-tab="consegna"]');
 	}
 	$(tab).addClass('selected');
 	let tab_function = $(tab).data('tab');
@@ -142,7 +142,7 @@ function order_reset() {
 	$('[name="telephone"]').val('');
 	order = {
 		rows: [],
-		last_pizza_category: 'basic',
+		last_pizza_category: $('#elencoPiatti .piatto').first().data('elenco'),
 	};
 
 	order_init();
@@ -151,8 +151,8 @@ function order_reset() {
 function select_category(category = false) {
 	if (category) {
 		order.last_pizza_category = category;
-		$('#elencoPiatti .elenco-piatti').addClass('hidden');
-		$('#elencoPiatti .elenco-piatti[data-elenco="' + category + '"]').removeClass('hidden');
+		$('#elencoPiatti .piatto').addClass('hidden');
+		$('#elencoPiatti .piatto[data-elenco="' + category + '"]').removeClass('hidden');
 	}
 }
 

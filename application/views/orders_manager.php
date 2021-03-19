@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Finder', ['finder_page']) ?>
+<?php html_head('Ordini', ['orders_manager']) ?>
 <body>
 	<?php topbar() ?>
 	<?php main_menu() ?>
@@ -94,31 +94,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div class="btn indigo-600 ml-auto mr-auto" onclick="window.print()">Stampa!</div>
 				</div>
 			</div>
-			<div id="customersBox" class="ml-auto">
-				<div>
-					<div><input class="md-input" type="text" id="finder" placeholder="Cerca cliente" /></div>
-					<div id="resultsFound" class="ml-auto">
-						<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this)">
-							<div class="d-flex">
-								<div class="show-on-parent-hover">
-									<div class="open-customer-container d-flex">
-										<div class="open-customer mt-auto mb-auto">
-											<i class="mdi mdi-chevron-left"></i>
-										</div>
-									</div>
-								</div>
-								<div class="info-container ml-auto text-right">
-									<div class="nome-cliente"></div>
-									<div class="indirizzo-cliente"></div>
-									<div class="telefono-cliente"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
-		<button onclick="openNewCustomerModal()" class="fab-extended blue"><i class="mdi mdi-plus"></i> AGGIUNGI CLIENTE</button>
+		<button onclick="openNewOrderModal()" class="fab blue"><i class="mdi mdi-plus"></i></button>
 	</div>
 
 
@@ -151,7 +128,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div id="addOrderModal" class="w3-modal modal-container order-modal">
 		<div class="w3-modal modal-backdrop"></div>
 		<div class="w3-modal-content order-modal-content">
-			<div class="w3-container">
+			<div class="w3-container" style="padding: 8px;">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
 				<form autocomplete="off" method="POST" action="<?= site_url() ?>orders/add_order" id="addOrder">
 					<input autocomplete="off" name="id_customer" type="hidden" style="display:none;">
@@ -163,60 +140,54 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						<div class="v-flex flex-1">
 							<div>
 								<div id="menuComponent" order-component>
-									<div class="input-block">
-										<div><label>Nome sul campanello</label></div>
-										<div><input class="md-input" type="text" name="name" placeholder="nome e cognome"></div>
-									</div>
-									<div class="input-block">
-										<div><label>Indirizzo</label></div>
-										<div><input class="md-input" type="text" name="address" placeholder="indirizzo"></div>
-									</div>
-									<div class="input-block">
-										<div><label>Telefono</label></div>
-										<div><input class="md-input" type="text" name="telephone" placeholder="telefono"></div>
+									<div class="d-flex">
+										<div>
+											<div class="input-block">
+												<div><label>Nome sul campanello</label></div>
+												<div><input class="md-input" id="finder" type="text" name="name" placeholder="nome e cognome"></div>
+											</div>
+											<div class="input-block">
+												<div><label>Indirizzo</label></div>
+												<div><input class="md-input" type="text" name="address" placeholder="indirizzo"></div>
+											</div>
+											<div class="input-block">
+												<div><label>Telefono</label></div>
+												<div><input class="md-input" type="text" name="telephone" placeholder="telefono"></div>
+											</div>
+										</div>
+										<div id="customersBox" class="mr-auto ml-auto">
+											<div id="resultsFound">
+												<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this)">
+													<div class="d-flex">
+														<div class="show-on-parent-hover">
+															<div class="open-customer-container d-flex">
+																<div class="open-customer mt-auto mb-auto">
+																	<i class="mdi mdi-chevron-left"></i>
+																</div>
+															</div>
+														</div>
+														<div class="info-container ml-auto text-right">
+															<div class="nome-cliente"></div>
+															<div class="indirizzo-cliente"></div>
+															<div class="telefono-cliente"></div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div id="pizzeComponent" order-component>
 									<div id="categorieContainer" class="flex-wrap">
-										<div class="categoria" data-category="basic">Pizze basic</div>
-										<div class="categoria" data-category="speciali">Pizze speciali</div>
-										<div class="categoria" data-category="calzoni">Calzoni</div>
-										<div class="categoria" data-category="altro">Altro</div>
+										<?php foreach ($pizzas_categories as $category) { ?>
+											<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
+										<?php } ?>
 									</div>
 									<div id="elencoPiatti">
-										<div class="elenco-piatti" data-elenco="basic">
-											<div class="flex-wrap">
-												<div class="piatto">Margherita</div>
-												<div class="piatto">Diavola</div>
-												<div class="piatto">Capricciosa</div>
-												<div class="piatto">Prosciutto e funghi</div>
-												<div class="piatto">Bresaola rucola e grana</div>
-												<div class="piatto">Patatosa</div>
-												<div class="piatto">Viennese</div>
-											</div>
-										</div>
-										<div class="elenco-piatti" data-elenco="speciali">
-											<div class="flex-wrap">
-												<div class="piatto">Bomba</div>
-												<div class="piatto">Berlino</div>
-												<div class="piatto">Casalinga</div>
-												<div class="piatto">Campestre</div>
-												<div class="piatto">Diavolo Acquasanta</div>
-												<div class="piatto">Estiva</div>
-												<div class="piatto">Rustica</div>
-											</div>
-										</div>
-										<div class="elenco-piatti" data-elenco="calzoni">
-											<div class="flex-wrap">
-												<div class="piatto">Classico</div>
-												<div class="piatto">Positano</div>
-											</div>
-										</div>
-										<div class="elenco-piatti" data-elenco="altro">
-											<div class="flex-wrap">
-												<div class="piatto">Pizza nutella</div>
-												<div class="piatto">Baklava</div>
-											</div>
+										<div class="flex-wrap">
+											<?php foreach ($pizzas as $pizza) { ?>
+												<div class="piatto" data-elenco="<?= $pizza['category'] ?>"><?= $pizza['name'] ?></div>
+											<?php } ?>
 										</div>
 									</div>
 								</div>
@@ -233,6 +204,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 							</div>
 							<div class="d-flex">
+								<div class="context-function green-200"><i class="mdi mdi-gift"></i> Sconto</div>
 								<div class="ml-auto mr-auto context-function"><i class="mdi mdi-close"></i></div>
 							</div>
 						</div>
@@ -329,8 +301,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 							</div>
 							<div class="d-flex">
-								<button class="btn indigo"><i class="mdi mdi-printer"></i> Stampa</button>
-								<button class="ml-auto btn blue"><i class="mdi mdi-check"></i> Salva</button>
+								<!-- <button class="btn indigo"><i class="mdi mdi-printer"></i> Stampa</button> -->
+								<button class="ml-auto btn blue"><i class="mdi mdi-check"></i> Invia</button>
 							</div>
 						</div>
 					</div>
