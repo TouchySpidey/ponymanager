@@ -60,6 +60,9 @@ class Customers extends CI_Controller {
 					$dummy[$key] = $val;
 				}
 				$utf8ized[] = $dummy;
+				if (count($utf8ized) > 4) {
+					break;
+				}
 			}
 		}
 
