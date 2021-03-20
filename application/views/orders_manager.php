@@ -318,9 +318,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div>Se funziona mandami una foto magari</div>
 	</div>
 	<?= import_js('orders_manager') ?>
-	<script>
-	$('#finder').val('paolo');
-	$('#finder').trigger('input');
-</script>
 </body>
 </html>
