@@ -6,6 +6,7 @@ class Pizzeria_model extends CI_Model {
 		$db_ingredients_categories = $this->db
 		->select('category')
 		->where('active', 1)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->group_by('category')
 		->get('ingredients')
 		->result_array();
@@ -20,6 +21,7 @@ class Pizzeria_model extends CI_Model {
 		$db_pizzas_categories = $this->db
 		->select('category')
 		->where('active', 1)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->group_by('category')
 		->get('pizzas')
 		->result_array();
@@ -33,6 +35,7 @@ class Pizzeria_model extends CI_Model {
 
 		$db_ingredients = $this->db
 		->where('active', 1)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->get('ingredients')->result_array();
 		return $db_ingredients;
 
@@ -42,6 +45,7 @@ class Pizzeria_model extends CI_Model {
 
 		$db_pizzas = $this->db
 		->where('active', 1)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->join('pizzas_ingredients', 'pizzas.id_pizza = pizzas_ingredients.cod_pizza', 'left')
 		->get('pizzas')->result_array();
 		$pizzas = [];
@@ -109,6 +113,7 @@ class Pizzeria_model extends CI_Model {
 			$db_ingredient = $this->db
 			->where('id_ingredient', $ingredient['id_ingredient'])
 			->where('active', 1)
+			->where('cod_company', _GLOBAL_COMPANY['id_company'])
 			->get('ingredients')->result_array();
 			if (empty($db_ingredient)) {
 				$id_ingredient = null;
@@ -158,6 +163,7 @@ class Pizzeria_model extends CI_Model {
 			$db_pizza = $this->db
 			->where('id_pizza', $pizza['id_pizza'])
 			->where('active', 1)
+			->where('cod_company', _GLOBAL_COMPANY['id_company'])
 			->get('pizzas')->result_array();
 			if (empty($db_pizza)) {
 				$id_pizza = null;
@@ -189,6 +195,7 @@ class Pizzeria_model extends CI_Model {
 	public function disable_ingredient($id = false) {
 		$db_ingredient = $this->db
 		->where('id_ingredient', $id)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->where('active', 1)
 		->get('ingredients')->result_array();
 		if (empty($db_ingredient)) {
@@ -205,6 +212,7 @@ class Pizzeria_model extends CI_Model {
 		$db_pizza = $this->db
 		->where('id_pizza', $id)
 		->where('active', 1)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->get('pizzas')->result_array();
 		if (empty($db_pizza)) {
 			return false;
