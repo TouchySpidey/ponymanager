@@ -1,10 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Orders extends CI_Controller {
+class Orders extends CB_Controller {
 
-	public function index()
-	{
+	public function __construct() {
+
+		parent::__construct();
+
+	}
+
+	public function index() {
 		$this->ordini();
 	}
 
