@@ -21,6 +21,10 @@ function utf8ize($d) {
 	return $d;
 }
 
+function generate_guid() {
+	return sprintf("%08x-%08x-%08x-%08x", mt_rand(0, 0xFFFFFFFF), mt_rand(0, 0xFFFFFFFF), mt_rand(0, 0xFFFFFFFF), mt_rand(0, 0xFFFFFFFF));
+}
+
 function string_similarity($str1, $str2) {
 	$str1 = strtoupper($str1);
 	$str2 = strtoupper($str2);
