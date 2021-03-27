@@ -130,7 +130,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="w3-modal-content order-modal-content">
 			<div class="w3-container" style="padding: 8px;">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
-				<form autocomplete="off" method="POST" action="<?= site_url() ?>orders/add_order" id="addOrder">
+				<div id="addOrder">
 					<input autocomplete="off" name="id_customer" type="hidden" style="display:none;">
 					<div id="orderTabs" class="d-flex tabs-container">
 						<div class="tab" data-tab="menu">Pizze</div>
@@ -141,21 +141,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div>
 								<div id="menuComponent" order-component>
 									<div class="d-flex">
-										<div>
-											<div class="input-block">
-												<div><label>Nome sul campanello</label></div>
-												<div><input class="md-input" id="finder" type="text" name="name" placeholder="nome e cognome"></div>
+										<form id="deliveryToForm">
+											<div id="deliveryTo">
+												<input type="hidden" name="id_customer" />
+												<div class="input-block">
+													<div><label>Nome</label></div>
+													<div><input autocomplete="off" class="md-input" id="finder" type="text" name="name" placeholder="nome e cognome"></div>
+												</div>
+												<div class="input-block">
+													<div><label>Campanello</label></div>
+													<div><input class="md-input" type="text" name="doorbell" placeholder="indirizzo"></div>
+												</div>
+												<div class="input-block">
+													<div><label>Indirizzo</label></div>
+													<div><input class="md-input" type="text" name="address" placeholder="indirizzo"></div>
+												</div>
+												<div class="input-block">
+													<div><label>Telefono</label></div>
+													<div><input class="md-input" type="text" name="telephone" placeholder="telefono"></div>
+												</div>
+												<div class="d-flex">
+													<div id="overwriteCustomer" class="btn orange"><i class="mdi mdi-pencil"></i> Aggiorna</div>
+													<div id="saveNewCustomer" class="btn ml-auto green"><i class="mdi mdi-plus"></i> Nuovo</div>
+												</div>
 											</div>
-											<div class="input-block">
-												<div><label>Indirizzo</label></div>
-												<div><input class="md-input" type="text" name="address" placeholder="indirizzo"></div>
+										</form>
+										<div id="customersBox" class="mr-auto" style="display: none;">
+											<div class="d-flex">
+												<div class="ml-auto btn grey-200" id="hideCustomers"><i class="mdi mdi-close"></i></div>
 											</div>
-											<div class="input-block">
-												<div><label>Telefono</label></div>
-												<div><input class="md-input" type="text" name="telephone" placeholder="telefono"></div>
-											</div>
-										</div>
-										<div id="customersBox" class="mr-auto ml-auto">
 											<div id="resultsFound">
 												<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this)">
 													<div class="d-flex">
@@ -175,6 +189,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</div>
 											</div>
 										</div>
+										<div id="timetable" class="ml-auto">
+											<div class="d-flex">
+												<div>Domicilio</div>
+												<div>Take Away</div>
+												<div>Orario</div>
+											</div>
+											<div class="d-flex">
+												<div>0</div>
+												<div>0</div>
+												<div>0</div>
+												<div>0</div>
+												<div>10:30</div>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div id="pizzeComponent" order-component>
@@ -186,7 +214,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div id="elencoPiatti">
 										<div class="flex-wrap">
 											<?php foreach ($pizzas as $pizza) { ?>
-												<div class="piatto" data-elenco="<?= $pizza['category'] ?>"><?= $pizza['name'] ?></div>
+												<div class="piatto" data-elenco="<?= $pizza['category'] ?>" data-id_pizza="<?= $pizza['id_pizza'] ?>"><?= $pizza['name'] ?></div>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+								<div id="ingredientiComponent" order-component>
+									<div id="categorieIngredientiContainer" class="flex-wrap">
+										<?php foreach ($ingredients_categories as $category) { ?>
+											<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
+										<?php } ?>
+									</div>
+									<div id="elencoIngredienti">
+										<div class="flex-wrap">
+											<?php foreach ($ingredients as $ingredient) { ?>
+												<div class="ingrediente" data-elenco="<?= $ingredient['category'] ?>" data-id_ingredient="<?= $ingredient['id_ingredient'] ?>">
+													<div class="d-flex">
+														<div selecting-mark class="mr-auto mt-auto mb-auto"><i class="mdi mdi-check-bold"></i></div><div ingredient-full-name><?= $ingredient['name'] ?></div>
+													</div>
+												</div>
 											<?php } ?>
 										</div>
 									</div>
@@ -200,104 +246,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div class="context-function red" data-function="rossa">ROSSA</div>
 										<div class="context-function orange" data-function="meno">—</div>
 										<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
+										<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
+										<div class="context-function red-800 ml-auto" data-function="elimina"><i class="mdi mdi-close"></i></div>
 									</div>
 								</div>
 							</div>
 							<div class="d-flex">
 								<div class="context-function green-200"><i class="mdi mdi-gift"></i> Sconto</div>
-								<div class="ml-auto mr-auto context-function"><i class="mdi mdi-close"></i></div>
 							</div>
 						</div>
 						<div class="ml-auto" id="riepilogoOrdine">
 							<div id="totaleOrdine">€30</div>
 							<div id="listaPizze">
-								<div class="item">
+								<div class="item" id="ghostOrderItem" onclick="select_pizza(this)">
 									<div class="d-flex">
 										<div quantity>1</div>
 										<div main>Capricciosa</div>
+										<div price class="ml-auto"></div>
 									</div>
-									<div ingrediente>prosciutto</div>
-									<div ingrediente>funghi</div>
-									<div ingrediente>carciofini</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-									<div tag>Bianca</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Bomba</div>
+									<div metapizza>
+										<div pizza-omaggio class="hidden">
+											<div class="green">Omaggio</div>
+										</div>
+										<div pizza-rossa class="hidden">
+											<div class="red">Rossa</div>
+										</div>
+										<div pizza-bianca class="hidden">
+											<div class="white">Bianca</div>
+										</div>
 									</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Capricciosa</div>
+									<div modifiche>
+										<div ingrediente id="ghostPizzaIngredient">prosciutto</div>
+										<div aggiunta id="ghostPizzaAddition">Salsiccia</div>
+										<div modifica id="ghostPizzaModification">Bianca</div>
 									</div>
-									<div ingrediente>prosciutto</div>
-									<div ingrediente>funghi</div>
-									<div ingrediente>carciofini</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-									<div tag>Bianca</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Bomba</div>
-									</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Capricciosa</div>
-									</div>
-									<div ingrediente>prosciutto</div>
-									<div ingrediente>funghi</div>
-									<div ingrediente>carciofini</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-									<div tag>Bianca</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Bomba</div>
-									</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Capricciosa</div>
-									</div>
-									<div ingrediente>prosciutto</div>
-									<div ingrediente>funghi</div>
-									<div ingrediente>carciofini</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
-									<div tag>Bianca</div>
-								</div>
-								<div class="item">
-									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Bomba</div>
-									</div>
-									<div aggiunta>Salsiccia</div>
-									<div impasto>Kamut</div>
-									<div dimensione>Maxi</div>
 								</div>
 							</div>
 							<div class="d-flex">
@@ -306,7 +288,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -317,6 +299,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div>e dimmi se funziona...</div>
 		<div>Se funziona mandami una foto magari</div>
 	</div>
+
+	<script>
+	let ingredients = JSON.parse(`<?= JSON_encode($ingredients) ?>`);
+	let ingredients_categories = JSON.parse(`<?= JSON_encode($ingredients_categories) ?>`);
+	let pizzas = JSON.parse(`<?= JSON_encode($pizzas) ?>`);
+	let pizzas_categories = JSON.parse(`<?= JSON_encode($pizzas_categories) ?>`);
+	</script>
 	<?= import_js('orders_manager') ?>
 </body>
 </html>

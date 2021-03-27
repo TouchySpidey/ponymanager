@@ -1,12 +1,19 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Customers extends CI_Controller {
+class Customers extends CB_Controller {
 
-	public function add_customer()
-	{
+	public function __construct() {
+
+		parent::__construct();
+
+	}
+
+	public function add_or_edit_customer() {
+		$id_customer = $this->input->post('id_customer') ?: false;
 		$name = $this->input->post('name');
 		$telephone = $this->input->post('telephone');
+		$doorbell = $this->input->post('doorbell');
 		$address = $this->input->post('address');
 		$north = $this->input->post('north');
 		$east = $this->input->post('east');
@@ -18,17 +25,48 @@ class Customers extends CI_Controller {
 				$north = 0;
 				$east = 0;
 			}
-			$new_customer = [
-				'name' => strtoupper($name),
-				'metaphone' => metaphone($name),
-				'telephone' => $telephone,
-				'address' => $address,
-				'north' => $north,
-				'east' => $east,
-				'created' => date('Y-m-d H:i:s'),
-			];
-			$this->db->insert('customers', $new_customer);
+			if ($id_customer) {
+				$old_customer = $this->db
+				->where('id_customer', $id_customer)
+				->where('cod_company', _GLOBAL_COMPANY['id_company'])
+				->get('customers')->result_array();
+				$id_customer = null;
+				if (!empty($old_customer)) {
+					$old_customer = $old_customer[0];
+					$id_customer = $old_customer['id_customer'];
+				}
+			}
+			if ($id_customer) {
+				$new_customer = [
+					'id_customer' => $id_customer,
+					'cod_company' => _GLOBAL_COMPANY['id_company'],
+					'name' => trim(strtoupper($name)),
+					'metaphone' => metaphone($name),
+					'doorbell' => $doorbell,
+					'telephone' => $telephone,
+					'address' => $address,
+					'north' => $north,
+					'east' => $east,
+					'created' => $old_customer['created'],
+				];
+			} else {
+				$new_customer = [
+					'id_customer' => null,
+					'cod_company' => _GLOBAL_COMPANY['id_company'],
+					'name' => trim(strtoupper($name)),
+					'metaphone' => metaphone($name),
+					'doorbell' => $doorbell,
+					'telephone' => $telephone,
+					'address' => $address,
+					'north' => $north,
+					'east' => $east,
+					'created' => date('Y-m-d H:i:s'),
+				];
+			}
+			$this->db->replace('customers', $new_customer);
 			echo JSON_encode(['created' => true]);
+		} else {
+			echo JSON_encode(['errors' => ['Non è stato possibile creare il cliente']]);
 		}
 	}
 
@@ -64,34 +102,6 @@ class Customers extends CI_Controller {
 					break;
 				}
 			}
-		}
-
-		echo JSON_encode([
-			'results' => $utf8ized,
-			'uid' => $uid
-		]);
-
-	}
-
-	public function old_find() {
-		$string = $this->input->post('string');
-		$uid = intval($this->input->post('uid'));
-		$mp = metaphone($string);
-		$results = $this->db
-		->select('*')
-		->like('metaphone', $mp)
-		->get('customers')
-		->result_array();
-		$utf8ized = [];
-		foreach ($results as $result) {
-			$dummy = [];
-			foreach ($result as $key => $val) {
-				if (!JSON_encode($val)) {
-					$val = utf8ize($val);
-				}
-				$dummy[$key] = $val;
-			}
-			$utf8ized[] = $dummy;
 		}
 
 		echo JSON_encode([

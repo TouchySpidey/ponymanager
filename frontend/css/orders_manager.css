@@ -1,5 +1,5 @@
 #finder {
-	font-size: 24px;
+	font-size: 20px;
 }
 #boxOrdini {
 	min-width: 300px;
@@ -101,31 +101,60 @@
 	cursor: pointer;
 }
 .order-modal {
-	padding-top: 12px;
+	padding-top: 0;
 }
-#categorieContainer, #elencoPiatti {
+#categorieContainer, #elencoPiatti, #categorieIngredientiContainer, #elencoIngredienti {
 	margin-top: 12px;
 }
-#categorieContainer .categoria {
+.categoria {
 	font-size: 20px;
 	border: 1px solid red;
-	background-color: yellow;
 	width: 160px;
 	padding: 6px 12px;
 	cursor: pointer;
 }
+#categorieIngredientiContainer .categoria {
+	background-color: #bfffbf;
+}
+#categorieContainer .categoria {
+	background-color: #ffff9c;
+}
+#categorieIngredientiContainer .categoria.selected {
+	background-color: lime;
+}
+#categorieContainer .categoria.selected {
+	background-color: yellow;
+}
 #elencoPiatti .piatto {
+	background-color: orange;
+}
+#elencoIngredienti .ingrediente {
+	background-color: #d5ff99;
+	/* color: white; */
+}
+#elencoIngredienti .ingrediente.selected {
+	background-color: #89e800;
+}
+#elencoIngredienti .ingrediente [selecting-mark] {
+	padding-right: 8px;
+}
+#elencoIngredienti .ingrediente:not(.selected) [selecting-mark] {
+	display: none;
+}
+#elencoPiatti .piatto, #elencoIngredienti .ingrediente {
 	font-size: 16px;
 	width: 120px;
 	border: 1px solid green;
-	background-color: lime;
 	padding: 4px 8px;
 	cursor: pointer;
+}
+#listaPizze .item.selected {
+	background-color: #e8ffb7;
 }
 #contexts {
 	margin-top: auto;
 }
-#elencoPiatti .piatto, #categorieContainer .categoria, .context-function {
+#elencoPiatti .piatto, #elencoIngredienti .ingrediente, .categoria, .context-function {
 	margin-right: -1px;
 	margin-bottom: -1px;
 	display: -webkit-flex;
@@ -134,7 +163,11 @@
 	text-align: center;
 	justify-content: center;
 }
-.item [ingrediente], .item [aggiunta], .item [impasto], .item [tag], .item [dimensione], .item [quantity], .item [main] {
+.item [metapizza] {
+	padding: 2px;
+	text-align: center;
+}
+.item [ingrediente], .item [aggiunta], .item [impasto], .item [tag], .item [dimensione], .item [quantity], .item [main], .item [metapizza] {
 	cursor: pointer;
 	font-size: 18px;
 }
@@ -145,11 +178,18 @@
 	padding-bottom: 6px;
 }
 .item [quantity] {
-	padding-left: 12px;
-	padding-right: 12px;
+	padding-left: 16px;
+	padding-right: 16px;
 }
 .item [ingrediente], .item [aggiunta], .item [impasto], .item [tag], .item [dimensione] {
 	padding-left: 30px;
+}
+.item [aggiunta], .item [ingrediente].without-ingredient, .item [metapizza] {
+	font-weight: bold;
+}
+.item [ingrediente].without-ingredient {
+	text-decoration: line-through;
+	color: #c30000;
 }
 #listaPizze {
 	max-height: calc(100vh - 240px);
@@ -158,9 +198,15 @@
 #totaleOrdine {
 	text-align: right;
 }
+#deliveryTo {
+	border: 1px solid black;
+	border-radius: 16px;
+	margin: 16px;
+	padding: 16px;
+}
 #addOrderModal .order-modal-content {
-	width: calc(100vw - 72px);
-	height: calc(100vh - 72px);
+	width: 100vw;
+	height: 100vh;
 	padding: 0;
 }
 .open-customer-container {

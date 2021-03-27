@@ -145,20 +145,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div>
 								<div class="d-flex input-block">
 									<div>
-										Categoria:
+										Categoria
 										<select class="md-input" name="category" id="selectPizzaCategory">
 											<option disabled default-option>───────────</option>
 											<option value='' default-option>Crea nuova</option>
 										</select>
 									</div>
 									<div>
-										Nome Categoria
+										Categoria
 										<input type="text" class="md-input" name="new_category" />
 									</div>
 								</div>
 								<div class="d-flex input-block">
 									<div>
-										Nome Pizza
+										Nome
 										<input class="md-input" type="text" name="name" />
 									</div>
 									<div>

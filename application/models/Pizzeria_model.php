@@ -37,7 +37,11 @@ class Pizzeria_model extends CI_Model {
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->get('ingredients')->result_array();
-		return $db_ingredients;
+		$ingredients = [];
+		foreach ($db_ingredients as $ingredient) {
+			$ingredients[$ingredient['id_ingredient']] = $ingredient;
+		}
+		return $ingredients;
 
 	}
 
@@ -124,7 +128,8 @@ class Pizzeria_model extends CI_Model {
 			# insert
 			$id_ingredient = null;
 		}
-		$this->db->replace('ingredients', compact('id_ingredient', 'price', 'name', 'category'));
+		$cod_company = _GLOBAL_COMPANY['id_company'];
+		$this->db->replace('ingredients', compact('id_ingredient', 'cod_company', 'price', 'name', 'category'));
 
 		return true;
 
@@ -174,7 +179,8 @@ class Pizzeria_model extends CI_Model {
 			# insert
 			$id_pizza = null;
 		}
-		$this->db->replace('pizzas', compact('id_pizza', 'price', 'name', 'category'));
+		$cod_company = _GLOBAL_COMPANY['id_company'];
+		$this->db->replace('pizzas', compact('id_pizza', 'cod_company', 'price', 'name', 'category'));
 
 		$id_pizza = $this->db->insert_id();
 		$this->db->where('cod_pizza', $id_pizza)->delete('pizzas_ingredients');
