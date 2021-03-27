@@ -247,3 +247,7 @@
 	padding: 0 8px;
 	border-right: 1px solid #888;
 }
+.timetable-row.selected {
+	background-color: #b8f3ff;
+	font-weight: bold;
+}

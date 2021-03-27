@@ -121,16 +121,6 @@ $('#toDelivering').click(function() {
 
 let order, last_row = 0;
 
-let orderTabs = {
-	menu: function() {
-		$('#pizzeComponent').show();
-	},
-	consegna: function() {
-		$('#menuContext').show();
-		$('#menuComponent').show();
-	}
-}
-
 function order_init(tab = false) {
 	$('[order-component]').hide();
 	$('[order-context]').hide();
@@ -145,7 +135,7 @@ function order_init(tab = false) {
 	}
 	$(tab).addClass('selected');
 	let tab_function = $(tab).data('tab');
-	orderTabs[tab_function]();
+	$('[order-component][tab="' + tab_function + '"]').show();
 }
 
 function order_reset() {
@@ -212,6 +202,7 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 			n: 1,
 			bianca: false,
 			rossa: false,
+			bencotta: false,
 			omaggio: false,
 		};
 	}
@@ -321,6 +312,13 @@ function select_pizza(element) {
 	}
 }
 
+$('#pizzeContext [data-function="bencotta"]').click(function() {
+	let $selected_pizza = $('#listaPizze .item.selected');
+	let order_row = $selected_pizza.data('orderRow');
+	order_row.bencotta = ! order_row.bencotta;
+	$selected_pizza.find('[pizza-bencotta]').toggleClass('hidden');
+});
+
 $('#pizzeContext [data-function="omaggio"]').click(function() {
 	let $selected_pizza = $('#listaPizze .item.selected');
 	let order_row = $selected_pizza.data('orderRow');
@@ -417,6 +415,7 @@ function saveCustomer(brandNew = false) {
 		doorbell: $('#deliveryTo [name="doorbell"]').val(),
 		telephone: $('#deliveryTo [name="telephone"]').val(),
 		address: $('#deliveryTo [name="address"]').val(),
+		city: $('#deliveryTo [name="city"]').val(),
 	};
 	$.post(site_url + 'customers/add_or_edit_customer', customer).always(function(data) {
 		try {
@@ -459,11 +458,17 @@ $('#deliveryTo input').on('input', function() {
 	}
 });
 
+$('#timetable .timetable-row').click(function() {
+	$('#timetable .timetable-row').removeClass('selected');
+	$(this).addClass('selected');
+})
+
 $('#sendOrder').click(function() {
 	console.log('sending...');
 	let formData = {
 		rows: order.rows,
 		sconto: order.sconto,
+		delivery_time: $('#timetable .timetable-row.selected .time').text(),
 	};
 	$('#deliveryTo input').each(function(i, v) {
 		let name = $(v).attr('name');

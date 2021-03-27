@@ -28,7 +28,7 @@ class Orders extends CB_Controller {
 			$price = 0;
 			if ($row['omaggio'] == 'false') {
 				$price += floatval($pizzas[$row['id_piatto']]['price']);
-				if (is_array($row['ingredients'])) {
+				if (isset($row['ingredients']) && is_array($row['ingredients'])) {
 					foreach ($row['ingredients'] as $id_ingredient) {
 						if (!in_array($id_ingredient, $pizzas[$row['id_piatto']]['ingredients'])) {
 							if (isset($ingredients[$id_ingredient])) {
@@ -42,6 +42,8 @@ class Orders extends CB_Controller {
 			$sub_total += $price;
 		}
 		$total = $sub_total; # meno sconto
+		$time = $this->input->post('delivery_time');
+		$day = date('Y-m-d');
 		$order = [
 			'id_delivery' => $this->input->post('id_order') ?: null,
 			'guid' => generate_guid(),
@@ -55,10 +57,11 @@ class Orders extends CB_Controller {
 			'address' => $this->input->post('address'),
 			'north' => null,
 			'east' => null,
-			'delivery_time' => $this->input->post('delivery_time'),
+			'delivery_time' => $day.' '.$time.':00',
 			'total_price' => $total,
 			'order_data' => JSON_encode($this->input->post()),
 		];
+		$this->db->insert('deliveries', $order);
 	}
 
 }

@@ -125,6 +125,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</div>
 
 
+	<div id="editPizzaComposition" class="w3-modal modal-container">
+		<div class="w3-modal modal-backdrop"></div>
+		<div class="w3-modal-content">
+			<div class="w3-container">
+				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
+				<div class="input-block">
+					<div><label>Nome Cognome</label></div>
+				</div>
+				<div class="input-block">
+					<div><label>Indirizzo</label></div>
+				</div>
+				<div class="input-block">
+					<div><label>Telefono</label></div>
+				</div>
+				<div id="pizzeContext" order-context>
+					<div class="flex-wrap">
+						<div class="context-function green" data-function="omaggio">OMAGGIO</div>
+						<div class="context-function" data-function="bianca">BIANCA</div>
+						<div class="context-function red" data-function="rossa">ROSSA</div>
+						<div class="context-function amber" data-function="bencotta">Ben Cotta</div>
+					</div>
+					<div class="flex-wrap">
+						<div class="context-function orange" data-function="meno">—</div>
+						<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
+						<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
+						<div class="context-function red-800 ml-auto" data-function="elimina"><i class="mdi mdi-close"></i></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 	<div id="addOrderModal" class="w3-modal modal-container order-modal">
 		<div class="w3-modal modal-backdrop"></div>
 		<div class="w3-modal-content order-modal-content">
@@ -133,12 +166,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div id="addOrder">
 					<div id="orderTabs" class="d-flex tabs-container">
 						<div class="tab" data-tab="menu">Pizze</div>
+						<div class="tab" data-tab="cliente">Cliente</div>
 						<div class="tab" data-tab="consegna">Consegna</div>
 					</div>
 					<div class="d-flex">
-						<div class="v-flex flex-1">
+						<div>
 							<div>
-								<div id="menuComponent" order-component>
+								<div tab="cliente" order-component>
 									<div class="d-flex">
 										<form id="deliveryToForm">
 											<div id="deliveryTo">
@@ -195,31 +229,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</div>
 											</div>
 										</div>
-										<div id="timetable" class="ml-auto">
-											<div class="timetable-heading">Orario</div>
-											<?php
-											$ora_apertura = 10;
-											$minuto_apertura = 00;
-											$ora_chiusura = 15;
-											$minuto_chiusura = 00;
-											?>
-											<div id="scrollTimeTable">
-												<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
-													<?php foreach (range(0, 50, 10) as $minuto) { ?>
-														<div class="timetable-row d-flex">
-															<div class="order-n delivery n-pizze">0</div>
-															<div class="order-n delivery n-consegne">0</div>
-															<div class="order-n takeaway n-pizze">0</div>
-															<div class="order-n takeaway n-consegne">0</div>
-															<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
-														</div>
-													<?php } ?>
+									</div>
+								</div>
+								<div tab="consegna" order-component>
+									<div id="timetable" class="ml-auto">
+										<div class="timetable-heading">Orario</div>
+										<?php
+										$ora_apertura = 10;
+										$minuto_apertura = 00;
+										$ora_chiusura = 15;
+										$minuto_chiusura = 00;
+										?>
+										<div id="scrollTimeTable">
+											<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
+												<?php foreach (range(0, 50, 10) as $minuto) { ?>
+													<div class="timetable-row d-flex">
+														<div class="order-n delivery n-pizze">0</div>
+														<div class="order-n delivery n-consegne">0</div>
+														<div class="order-n takeaway n-pizze">0</div>
+														<div class="order-n takeaway n-consegne">0</div>
+														<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+													</div>
 												<?php } ?>
-											</div>
+											<?php } ?>
 										</div>
 									</div>
 								</div>
-								<div id="pizzeComponent" order-component>
+								<div tab="menu" order-component>
 									<div id="categorieContainer" class="flex-wrap">
 										<?php foreach ($pizzas_categories as $category) { ?>
 											<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
@@ -252,24 +288,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									</div>
 								</div>
 							</div>
-							<div id="contexts">
-								<div id="pizzeContext" order-context>
-									<div class="flex-wrap">
-										<div class="context-function green" data-function="omaggio">OMAGGIO</div>
-										<div class="context-function" data-function="bianca">BIANCA</div>
-										<div class="context-function red" data-function="rossa">ROSSA</div>
-									</div>
-									<div class="flex-wrap">
-										<div class="context-function orange" data-function="meno">—</div>
-										<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
-										<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
-										<div class="context-function red-800 ml-auto" data-function="elimina"><i class="mdi mdi-close"></i></div>
-									</div>
-								</div>
-							</div>
-							<div class="d-flex">
+							<!-- <div class="d-flex">
 								<div class="context-function green-200"><i class="mdi mdi-gift"></i> Sconto</div>
-							</div>
+							</div> -->
 						</div>
 						<div class="ml-auto" id="riepilogoOrdine">
 							<div id="totaleOrdine">€30</div>
@@ -283,6 +304,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div metapizza>
 										<div pizza-omaggio class="hidden">
 											<div class="green">Omaggio</div>
+										</div>
+										<div pizza-bencotta class="hidden">
+											<div class="amber">Bencotta</div>
 										</div>
 										<div pizza-rossa class="hidden">
 											<div class="red">Rossa</div>
@@ -310,10 +334,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</div>
 
 	<div id="printable">
-		<div>Ciao Jahir</div>
-		<div>Prova a stampare</div>
-		<div>e dimmi se funziona...</div>
-		<div>Se funziona mandami una foto magari</div>
+		<div>Stampa prova prova ciao</div>
 	</div>
 
 	<script>
