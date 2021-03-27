@@ -244,6 +244,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div class="context-function green" data-function="omaggio">OMAGGIO</div>
 										<div class="context-function" data-function="bianca">BIANCA</div>
 										<div class="context-function red" data-function="rossa">ROSSA</div>
+									</div>
+									<div class="flex-wrap">
 										<div class="context-function orange" data-function="meno">—</div>
 										<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
 										<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>

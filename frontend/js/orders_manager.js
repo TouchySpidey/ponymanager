@@ -257,21 +257,12 @@ $('#elencoPiatti .piatto').click(function() {
 	addPizzaToOrder(id_pizza);
 });
 $('#elencoIngredienti .ingrediente').click(function() {
-	console.log('ho clickato un ingrediente');
 	let already_selected = $(this).hasClass('selected');
-	if (already_selected) {
-		console.log('che era già selezionato');
-	}
 	let id_ingredient = '' + $(this).data('id_ingredient'); // cast as string
-	console.log('id: ' + id_ingredient);
 	let ingredient = ingredients[id_ingredient];
-	console.log(ingredient);
 	let $selected_pizza = $('#listaPizze .item.selected');
-	console.log($selected_pizza.length, $selected_pizza);
 	let order_row = $selected_pizza.data('orderRow');
-	console.log(order_row);
 	let is_standard_ingredient = order_row.piatto.ingredients.indexOf(id_ingredient.toString()) !== -1;
-	console.log('standard:' + is_standard_ingredient);
 	if (is_standard_ingredient) {
 		if (already_selected) {
 			// è un "senza"
