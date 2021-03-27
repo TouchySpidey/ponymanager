@@ -207,7 +207,7 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 		order_row = order_data;
 	} else {
 		order_row = {
-			piatto: pizza,
+			id_piatto: id_pizza,
 			ingredients: [],
 			n: 1,
 			bianca: false,
@@ -262,7 +262,7 @@ $('#elencoIngredienti .ingrediente').click(function() {
 	let ingredient = ingredients[id_ingredient];
 	let $selected_pizza = $('#listaPizze .item.selected');
 	let order_row = $selected_pizza.data('orderRow');
-	let is_standard_ingredient = order_row.piatto.ingredients.indexOf(id_ingredient.toString()) !== -1;
+	let is_standard_ingredient = pizzas[order_row.id_piatto].ingredients.indexOf(id_ingredient.toString()) !== -1;
 	if (is_standard_ingredient) {
 		if (already_selected) {
 			// è un "senza"
@@ -371,7 +371,7 @@ $('#pizzeContext [data-function="duplica"]').click(function() {
 	let og_order_row = $selected_pizza.data('orderRow');
 	let new_order_row = $.extend(true, {}, og_order_row);
 	new_order_row.n = 1;
-	let $newPizza = addPizzaToOrder(og_order_row.piatto.id_pizza, new_order_row);
+	let $newPizza = addPizzaToOrder(og_order_row.id_piatto, new_order_row);
 	if (new_order_row.bianca) {
 		$newPizza.find('[pizza-bianca]').removeClass('hidden');
 	}
@@ -403,6 +403,7 @@ function select_customer(el) {
 	let customer = customers_cache[id_customer];
 	$('#addOrderModal [name="name"]').val(customer.name);
 	$('#addOrderModal [name="doorbell"]').val(customer.doorbell);
+	$('#addOrderModal [name="city"]').val(customer.city);
 	$('#addOrderModal [name="address"]').val(customer.address);
 	$('#addOrderModal [name="telephone"]').val(customer.telephone);
 	hideCustomers();
@@ -456,6 +457,23 @@ $('#deliveryTo input').on('input', function() {
 			}
 		}
 	}
+});
+
+$('#sendOrder').click(function() {
+	console.log('sending...');
+	let formData = {
+		rows: order.rows,
+		sconto: order.sconto,
+	};
+	$('#deliveryTo input').each(function(i, v) {
+		let name = $(v).attr('name');
+		let val = $(v).val();
+		formData[name] = val;
+	});
+	$.post(site_url + 'orders/add_or_edit_order', formData).always(function(data) {
+		console.log(data);
+	});
+	console.log(formData);
 });
 
 $('#categorieIngredientiContainer .categoria').first().click();

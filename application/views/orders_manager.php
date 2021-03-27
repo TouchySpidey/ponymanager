@@ -131,7 +131,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="w3-container" style="padding: 8px;">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
 				<div id="addOrder">
-					<input autocomplete="off" name="id_customer" type="hidden" style="display:none;">
 					<div id="orderTabs" class="d-flex tabs-container">
 						<div class="tab" data-tab="menu">Pizze</div>
 						<div class="tab" data-tab="consegna">Consegna</div>
@@ -143,22 +142,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div class="d-flex">
 										<form id="deliveryToForm">
 											<div id="deliveryTo">
+												<input type="hidden" name="id_delivery" />
 												<input type="hidden" name="id_customer" />
 												<div class="input-block">
-													<div><label>Nome</label></div>
-													<div><input autocomplete="off" class="md-input" id="finder" type="text" name="name" placeholder="nome e cognome"></div>
-												</div>
-												<div class="input-block">
-													<div><label>Campanello</label></div>
-													<div><input class="md-input" type="text" name="doorbell" placeholder="indirizzo"></div>
-												</div>
-												<div class="input-block">
-													<div><label>Indirizzo</label></div>
-													<div><input class="md-input" type="text" name="address" placeholder="indirizzo"></div>
+													<div><label>Nome e cognome</label></div>
+													<div><input autocomplete="off" class="md-input" id="finder" type="text" name="name" placeholder="Nome e cognome"></div>
 												</div>
 												<div class="input-block">
 													<div><label>Telefono</label></div>
-													<div><input class="md-input" type="text" name="telephone" placeholder="telefono"></div>
+													<div><input class="md-input" type="text" name="telephone" placeholder="Telefono"></div>
+												</div>
+												<div id="deliveryData">
+													<div class="input-block">
+														<div><label>Nome sul campanello</label></div>
+														<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
+													</div>
+													<div class="input-block">
+														<div><label>Città</label></div>
+														<div><input class="md-input" type="text" name="city" placeholder="Città"></div>
+													</div>
+													<div class="input-block">
+														<div><label>Indirizzo</label></div>
+														<div><input class="md-input" type="text" name="address" placeholder="iIndirizzo"></div>
+													</div>
 												</div>
 												<div class="d-flex">
 													<div id="overwriteCustomer" class="btn orange"><i class="mdi mdi-pencil"></i> Aggiorna</div>
@@ -190,17 +196,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											</div>
 										</div>
 										<div id="timetable" class="ml-auto">
-											<div class="d-flex">
-												<div>Domicilio</div>
-												<div>Take Away</div>
-												<div>Orario</div>
-											</div>
-											<div class="d-flex">
-												<div>0</div>
-												<div>0</div>
-												<div>0</div>
-												<div>0</div>
-												<div>10:30</div>
+											<div class="timetable-heading">Orario</div>
+											<?php
+											$ora_apertura = 10;
+											$minuto_apertura = 00;
+											$ora_chiusura = 15;
+											$minuto_chiusura = 00;
+											?>
+											<div id="scrollTimeTable">
+												<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
+													<?php foreach (range(0, 50, 10) as $minuto) { ?>
+														<div class="timetable-row d-flex">
+															<div class="order-n delivery n-pizze">0</div>
+															<div class="order-n delivery n-consegne">0</div>
+															<div class="order-n takeaway n-pizze">0</div>
+															<div class="order-n takeaway n-consegne">0</div>
+															<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+														</div>
+													<?php } ?>
+												<?php } ?>
 											</div>
 										</div>
 									</div>
@@ -286,7 +300,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							</div>
 							<div class="d-flex">
 								<!-- <button class="btn indigo"><i class="mdi mdi-printer"></i> Stampa</button> -->
-								<button class="ml-auto btn blue"><i class="mdi mdi-check"></i> Invia</button>
+								<button class="ml-auto btn blue" id="sendOrder"><i class="mdi mdi-check"></i> Invia</button>
 							</div>
 						</div>
 					</div>

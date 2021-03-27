@@ -167,6 +167,9 @@
 	padding: 2px;
 	text-align: center;
 }
+.item [price]:before {
+	content: '€';
+}
 .item [ingrediente], .item [aggiunta], .item [impasto], .item [tag], .item [dimensione], .item [quantity], .item [main], .item [metapizza] {
 	cursor: pointer;
 	font-size: 18px;
@@ -217,4 +220,30 @@
 .open-customer {
 	color: #008bca;
 	font-size: 30px;
+}
+#scrollTimeTable {
+	overflow-y: auto;
+	max-height: 400px;
+}
+.timetable-heading {
+	font-weight: bold;
+	font-size: 26px;
+	text-align: center;
+}
+.timetable-row {
+	border: 1px solid #888;
+	cursor: pointer;
+}
+.timetable-row {
+	margin-bottom: -1px;
+	height: 30px;
+	font-size: 20px;
+}
+.timetable-row .time {
+	margin-left: auto;
+	padding: 0 12px;
+}
+.timetable-row .order-n {
+	padding: 0 8px;
+	border-right: 1px solid #888;
 }
