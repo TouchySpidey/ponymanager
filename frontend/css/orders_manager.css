@@ -1,5 +1,5 @@
 #tabSwitcher {
-	margin: 16px;
+	padding: 16px;
 }
 [order-component] {
 	/* padding: 16px; */
@@ -148,34 +148,46 @@
 /* #categorieContainer, #elencoPiatti, #categorieIngredientiContainer, #elencoIngredienti {
 	margin-top: 12px;
 } */
+#elencoPiatti {
+	padding: 0 16px;
+}
 .categoria {
 	font-size: 20px;
-	border: 1px solid red;
 	width: 160px;
+	word-break: break-word;
 	padding: 6px 12px;
 	cursor: pointer;
 }
 #categorieIngredientiContainer .categoria {
-	background-color: #bfffbf;
+	/* background-color: #bfffbf; */
 }
 #categorieContainer .categoria {
-	background-color: #ffff9c;
+	/* background-color: #ffff9c; */
 }
 #categorieIngredientiContainer .categoria.selected {
-	background-color: lime;
+	background-color: #e8f5e9;
+	border-right: 4px solid #1b5e20;
+	color: #1b5e20;
+	font-weight: bold;
 }
 #categorieContainer .categoria.selected {
-	background-color: yellow;
+	background-color: #fbe9e7;
+	border-right: 4px solid #d84315;
+	color: #d84315;
+	font-weight: bold;
 }
-#elencoPiatti .piatto {
-	background-color: orange;
+#elencoPiatti .piatto:hover .-colorful {
+	background-color: #ff9800;
 }
-#elencoIngredienti .ingrediente {
-	background-color: #d5ff99;
-	/* color: white; */
+#elencoIngredienti .ingrediente:hover .-colorful, #elencoIngredienti .ingrediente.selected .-colorful {
+	background-color: #8bc34a;
 }
-#elencoIngredienti .ingrediente.selected {
-	background-color: #89e800;
+#elencoPiatti .piatto .-colorful, #elencoIngredienti .ingrediente .-colorful {
+	width: 100%;
+	padding: 38px 22px;
+	font-size: 22px;
+	line-height: 18px;
+	text-align: center;
 }
 #elencoIngredienti .ingrediente [selecting-mark] {
 	padding-right: 8px;
@@ -185,9 +197,9 @@
 }
 #elencoPiatti .piatto, #elencoIngredienti .ingrediente {
 	font-size: 16px;
-	width: 120px;
-	border: 1px solid green;
-	padding: 4px 8px;
+	min-width: 200px;
+	width: calc(100% / 5);
+	padding: 8px;
 	cursor: pointer;
 }
 .item.selected {
@@ -196,7 +208,7 @@
 #contexts {
 	margin-top: auto;
 }
-#elencoPiatti .piatto, #elencoIngredienti .ingrediente, .categoria, .context-function {
+/* #elencoPiatti .piatto, #elencoIngredienti .ingrediente, .context-function {
 	margin-right: -1px;
 	margin-bottom: -1px;
 	display: -webkit-flex;
@@ -204,7 +216,7 @@
 	align-items: center;
 	text-align: center;
 	justify-content: center;
-}
+} */
 .item [metapizza] {
 	padding: 2px;
 	text-align: center;

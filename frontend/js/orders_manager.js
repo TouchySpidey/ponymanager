@@ -156,6 +156,29 @@ function order_reset() {
 	order_init();
 }
 
+function show_assigned() {
+	$('#assigned').addClass('selected');
+	let $selected_pizza = $('#listaPizze .item.selected');
+	if (!$selected_pizza.length) {
+		return;
+	}
+	let order_row = $selected_pizza.data('orderRow');
+	let id_pizza = order_row.id_piatto;
+	if (!(id_pizza in pizzas)) {
+		return;
+	}
+	let pizza = pizzas[id_pizza];
+	let default_ingredients = pizza.ingredients;
+	let all_ingredients = order_row.ingredients;
+	$('#elencoIngredienti .ingrediente').hide();
+	for (let i in default_ingredients) {
+		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + default_ingredients[i] + '"]').show();
+	}
+	for (let i in all_ingredients) {
+		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + all_ingredients[i] + '"]').show();
+	}
+}
+
 function select_category(category = false) {
 	if (category) {
 		newOrder.last_pizza_category = category;
@@ -168,8 +191,6 @@ function select_category(category = false) {
 
 function select_ingredients_category(category = false) {
 	if (category) {
-		$('#categorieIngredientiContainer .categoria').removeClass('selected');
-		$('#categorieIngredientiContainer .categoria[data-category="' + category + '"]').addClass('selected');
 		$('#elencoIngredienti .ingrediente').hide();
 		$('#elencoIngredienti .ingrediente[data-elenco="' + category + '"]').show();
 	}
@@ -182,11 +203,6 @@ $('.tabs-container .tab').click(function() {
 $('#categorieContainer .categoria').click(function() {
 	let categoria = $(this).data('category');
 	select_category(categoria);
-});
-
-$('#categorieIngredientiContainer .categoria').click(function() {
-	let categoria = $(this).data('category');
-	select_ingredients_category(categoria);
 });
 
 function addPizzaToOrder(id_pizza, order_data = false) {
@@ -298,6 +314,7 @@ function select_pizza(element) {
 	for (let i in order_row.ingredients) {
 		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + order_row.ingredients[i] + '"]').addClass('selected');
 	}
+	show_assigned();
 	editPizzaModal();
 }
 $('#editPizzaComposition').on('modal-closed', function() {
@@ -668,8 +685,6 @@ function kitchenPrint(_order) {
 	$('#printable').append($kitchenPrint);
 	window.print();
 }
-
-$('#categorieIngredientiContainer .categoria').first().click();
 
 function select_order(el) {
 	// open modal to view/edit order

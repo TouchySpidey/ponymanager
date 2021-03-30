@@ -275,16 +275,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									</div>
 								</div>
 								<div tab="menu" order-component>
-									<div id="categorieContainer" class="flex-wrap">
-										<?php foreach ($pizzas_categories as $category) { ?>
-											<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
-										<?php } ?>
-									</div>
-									<div id="elencoPiatti">
-										<div class="flex-wrap">
-											<?php foreach ($pizzas as $pizza) { ?>
-												<div class="piatto" data-elenco="<?= $pizza['category'] ?>" data-id_pizza="<?= $pizza['id_pizza'] ?>"><?= $pizza['name'] ?></div>
+									<div class="d-flex">
+										<div id="categorieContainer">
+											<?php foreach ($pizzas_categories as $category) { ?>
+												<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
 											<?php } ?>
+										</div>
+										<div id="elencoPiatti" class="flex-1">
+											<div class="flex-wrap">
+												<?php foreach ($pizzas as $pizza) { ?>
+													<div class="piatto" data-elenco="<?= $pizza['category'] ?>" data-id_pizza="<?= $pizza['id_pizza'] ?>">
+														<div class="orange-200 -colorful"><?= $pizza['name'] ?></div>
+													</div>
+												<?php } ?>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -389,35 +393,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="w3-container">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
 				<div>
-					<div id="categorieIngredientiContainer" class="flex-wrap">
-						<?php foreach ($ingredients_categories as $category) { ?>
-							<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
-						<?php } ?>
-					</div>
-					<div id="elencoIngredienti">
-						<div class="flex-wrap">
-							<?php foreach ($ingredients as $ingredient) { ?>
-								<div class="ingrediente" data-elenco="<?= $ingredient['category'] ?>" data-id_ingredient="<?= $ingredient['id_ingredient'] ?>">
-									<div class="d-flex">
-										<div selecting-mark class="mr-auto mt-auto mb-auto"><i class="mdi mdi-check-bold"></i></div><div ingredient-full-name><?= $ingredient['name'] ?></div>
-									</div>
-								</div>
+					<div class="d-flex">
+						<div id="categorieIngredientiContainer" class="pick-one-of-these">
+							<div class="categoria pickable" id="assigned" onclick="show_assigned()">Assegnati</div>
+							<?php foreach ($ingredients_categories as $category) { ?>
+								<div class="categoria pickable" data-category="<?= $category ?>" onclick="select_ingredients_category('<?= $category ?>')"><?= $category ?></div>
 							<?php } ?>
 						</div>
+						<div id="elencoIngredienti" class="flex-1">
+							<div class="flex-wrap">
+								<?php foreach ($ingredients as $ingredient) { ?>
+									<div class="ingrediente" data-elenco="<?= $ingredient['category'] ?>" data-id_ingredient="<?= $ingredient['id_ingredient'] ?>">
+										<div class="d-flex light-green-200 -colorful">
+											<div selecting-mark class="mr-auto mt-auto mb-auto"><i class="mdi mdi-check-bold"></i></div><div ingredient-full-name><?= $ingredient['name'] ?></div>
+										</div>
+									</div>
+								<?php } ?>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div id="pizzeContext" order-context>
-					<div class="flex-wrap">
-						<div class="context-function green" data-function="omaggio">OMAGGIO</div>
-						<div class="context-function" data-function="bianca">BIANCA</div>
-						<div class="context-function red" data-function="rossa">ROSSA</div>
-						<div class="context-function amber" data-function="bencotta">Ben Cotta</div>
-					</div>
-					<div class="flex-wrap">
-						<div class="context-function orange" data-function="meno">—</div>
-						<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
-						<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
-						<div class="context-function red-800 ml-auto" data-function="elimina"><i class="mdi mdi-close"></i></div>
+					<div id="pizzeContext" order-context>
+						<div class="flex-wrap">
+							<div class="context-function green" data-function="omaggio">OMAGGIO</div>
+							<div class="context-function" data-function="bianca">BIANCA</div>
+							<div class="context-function red" data-function="rossa">ROSSA</div>
+							<div class="context-function amber" data-function="bencotta">Ben Cotta</div>
+						</div>
+						<div class="flex-wrap">
+							<div class="context-function orange" data-function="meno">—</div>
+							<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
+							<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
+							<div class="context-function red-800 ml-auto" data-function="elimina"><i class="mdi mdi-close"></i></div>
+						</div>
 					</div>
 				</div>
 			</div>
