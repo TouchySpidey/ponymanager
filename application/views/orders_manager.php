@@ -134,7 +134,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div id="orderTabs" class="d-flex tabs-container scroll-x">
 						<div class="tab" data-tab="consegna">Consegna</div>
 						<div class="tab" data-tab="cliente">Cliente</div>
-						<div class="tab" data-tab="menu">Pizze</div>
+						<div class="tab" data-tab="menu">Ordini</div>
 						<div class="tab" data-tab="pagamento">Pagamento</div>
 						<div class="tab" data-tab="stampa">Stampa</div>
 					</div>
