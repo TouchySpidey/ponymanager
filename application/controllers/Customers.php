@@ -13,6 +13,7 @@ class Customers extends CB_Controller {
 		$id_customer = $this->input->post('id_customer') ?: false;
 		$name = $this->input->post('name');
 		$telephone = $this->input->post('telephone');
+		$city = $this->input->post('city');
 		$doorbell = $this->input->post('doorbell');
 		$address = $this->input->post('address');
 		$north = $this->input->post('north');
@@ -44,6 +45,7 @@ class Customers extends CB_Controller {
 					'metaphone' => metaphone($name),
 					'doorbell' => $doorbell,
 					'telephone' => $telephone,
+					'city' => $city,
 					'address' => $address,
 					'north' => $north,
 					'east' => $east,
@@ -57,6 +59,7 @@ class Customers extends CB_Controller {
 					'metaphone' => metaphone($name),
 					'doorbell' => $doorbell,
 					'telephone' => $telephone,
+					'city' => $city,
 					'address' => $address,
 					'north' => $north,
 					'east' => $east,

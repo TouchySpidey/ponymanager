@@ -8,11 +8,8 @@ $(function() {
 			$(document.body).removeClass('menu-open');
 		}
 	});
-	$('.w3-modal.modal-container').each(function() {
-		let modal = this;
-		$(modal).find('.modal-backdrop').click(function() {
-			$(modal).css('display', 'none');
-		});
+	$('.modal-backdrop').click(function() {
+		closeModal(this);
 	});
 	$('[open-filters]').click(function(ev) {
 		let dropdownTrigger = this;
@@ -28,11 +25,28 @@ $(function() {
 			});
 		}
 	});
+	$('.pick-one-of-these .pickable').click(function() {
+		$(this).closest('.pick-one-of-these').find('.pickable').removeClass('selected');
+		$(this).addClass('selected');
+	})
 
 });
 
 function closeModal(el) {
-	$(el).closest('.modal-container').css('display', 'none');
+	$modal = $(el).closest('.modal-container');
+	$modal.css('display', 'none');
+	var closeEvent; // The custom event that will be created
+	if(document.createEvent){
+		closeEvent = document.createEvent("HTMLEvents");
+		closeEvent.initEvent("modal-closed", true, true);
+		closeEvent.eventName = "modal-closed";
+		$modal.get(0).dispatchEvent(closeEvent);
+	} else {
+		closeEvent = document.createEventObject();
+		closeEvent.eventName = "modal-closed";
+		closeEvent.eventType = "modal-closed";
+		$modal.get(0).fireEvent("on" + closeEvent.eventType, closeEvent);
+	}
 }
 
 

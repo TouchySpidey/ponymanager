@@ -29,5 +29,12 @@
 	#mainMenu [main-menu-link] {
 		margin-left: auto;
 	}
+	#riepilogoOrdine {
+		width: 200px;
+		min-width: 200px;
+	}
+	#editPizzaComposition .w3-modal-content {
+		width: calc(100vw - 208px);
+	}
 
 }

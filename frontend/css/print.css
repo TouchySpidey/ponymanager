@@ -2,5 +2,30 @@ body > :not(#printable) {
 	display: none !important;
 }
 #printable {
+	font-family: Roboto;
 	font-size: 20px;
+	padding: 0 16px 64px;
+	border-bottom: 1px solid #888;
+}
+#printable .label {
+	line-height: 12px;
+}
+#printable .value {
+	line-height: 30px;
+	font-size: 30px;
+	padding-bottom: 32px;
+}
+#printable .data {
+	text-align: right;
+}
+#printable .pizza-heading {
+	font-size: 30px;
+	padding-top: 32px;
+}
+#printable [pizza-quantity] {
+	padding-right: 16px;
+}
+#printable [pizza-aggiunta], #printable [without] {
+	font-weight: bold;
+	text-align: center;
 }
