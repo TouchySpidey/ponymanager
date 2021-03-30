@@ -217,16 +217,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													</div>
 													<div class="delivery-only">
 														<div class="input-block">
-															<div><label>Nome sul campanello</label></div>
-															<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
-														</div>
-														<div class="input-block">
 															<div><label>Città</label></div>
 															<div><input class="md-input" type="text" name="city" placeholder="Città"></div>
 														</div>
 														<div class="input-block">
 															<div><label>Indirizzo</label></div>
 															<div><input class="md-input" type="text" name="address" placeholder="iIndirizzo"></div>
+														</div>
+														<div class="input-block">
+															<div><label>Nome sul campanello</label></div>
+															<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
 														</div>
 													</div>
 													<div class="d-flex">
