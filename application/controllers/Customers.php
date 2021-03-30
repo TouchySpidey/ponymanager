@@ -51,9 +51,9 @@ class Customers extends CB_Controller {
 					'east' => $east,
 					'created' => $old_customer['created'],
 				];
+				$this->db->replace('customers', $new_customer);
 			} else {
 				$new_customer = [
-					'id_customer' => null,
 					'cod_company' => _GLOBAL_COMPANY['id_company'],
 					'name' => trim(strtoupper($name)),
 					'metaphone' => metaphone($name),
@@ -65,8 +65,8 @@ class Customers extends CB_Controller {
 					'east' => $east,
 					'created' => date('Y-m-d H:i:s'),
 				];
+				$this->db->insert('customers', $new_customer);
 			}
-			$this->db->replace('customers', $new_customer);
 			echo JSON_encode(['created' => true]);
 		} else {
 			echo JSON_encode(['errors' => ['Non è stato possibile creare il cliente']]);
