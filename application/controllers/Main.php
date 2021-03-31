@@ -112,9 +112,9 @@ class Main extends CI_Controller {
 				$this->email->initialize([
 					'mailtype' => 'html'
 				]);
-				$this->email->from('info@thewebmaker.it', 'Calima');
+				$this->email->from('no_reply@ponymanager.com', 'PonyManager');
 				$this->email->to($email);
-				$this->email->subject('Calima – Recupero Password');
+				$this->email->subject('Recupero Password');
 
 				$vars = [
 					'name' => $user['first_name'],

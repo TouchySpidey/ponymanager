@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = site_url() == 'https://www.thewebmaker.it/calima/' ? array(
 	'dsn'	=> '',
-	'hostname' => '89.46.111.218',
-	'username' => ARUBA_USERNAME,
-	'password' => ARUBA_PASSWORD,
-	'database' => ARUBA_USERNAME.'_2',
+	'hostname' => WM_DATABASE_HOST,
+	'username' => WM_DATABASE_USER,
+	'password' => WM_DATABASE_PSWD,
+	'database' => WM_DATABASE_USER.'_2',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -95,10 +95,10 @@ $db['default'] = site_url() == 'https://www.thewebmaker.it/calima/' ? array(
 	'save_queries' => TRUE
 ) : array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'calima',
+	'hostname' => PM_DATABASE_HOST,
+	'username' => PM_DATABASE_USER,
+	'password' => PM_DATABASE_PSWD,
+	'database' => PM_DATABASE_USER.'_1',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
