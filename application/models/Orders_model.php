@@ -33,10 +33,11 @@ class Orders_model extends CI_Model {
 		}
 
 		$sub_total = 1.5; # da tabella apposta
-		foreach ($rows as $row) {
-			$price = 0;
+		$orders_pizzas = [];
+		foreach ($rows as $i => $row) {
+			$pizza = $pizzas[$row['id_piatto']];
+			$price = floatval($pizza['price']);
 			if ($row['omaggio'] == 'false') {
-				$price += floatval($pizzas[$row['id_piatto']]['price']);
 				if (isset($row['ingredients']) && is_array($row['ingredients'])) {
 					foreach ($row['ingredients'] as $id_ingredient) {
 						if (!in_array($id_ingredient, $pizzas[$row['id_piatto']]['ingredients'])) {
@@ -46,9 +47,21 @@ class Orders_model extends CI_Model {
 						}
 					}
 				}
-				$price *= intval($row['n']);
+			} else {
+				$price = 0;
 			}
-			$sub_total += $price;
+			if (intval($row['n'])) {
+				for ($j = 0; $j < intval($row['n']); $j++) {
+					$orders_pizzas[] = [
+						'order_serial' => $i.'#'.$j,
+						'cod_pizza' => $row['id_piatto'],
+						'pizza_category' => $pizza['category'],
+						'pizza_name' => $pizza['name'],
+						'pizza_price' => $price
+					];
+				}
+			}
+			$sub_total += $price * intval($row['n']);
 		}
 		$total = $sub_total; # meno sconto
 		$order = [

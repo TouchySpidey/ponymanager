@@ -358,15 +358,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											<div pizza-omaggio class="hidden">
 												<div class="green">Omaggio</div>
 											</div>
-											<div pizza-bencotta class="hidden">
-												<div class="amber">Ben cotta</div>
-											</div>
-											<div pizza-rossa class="hidden">
-												<div class="red">Rossa</div>
-											</div>
-											<div pizza-bianca class="hidden">
-												<div class="white">Bianca</div>
-											</div>
 										</div>
 										<div modifiche>
 											<div ingrediente id="ghostPizzaIngredient">prosciutto</div>
@@ -415,11 +406,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div id="pizzeContext" order-context>
 						<div class="flex-wrap">
 							<div class="context-function green" data-function="omaggio">OMAGGIO</div>
-							<div class="context-function" data-function="bianca">BIANCA</div>
-							<div class="context-function red" data-function="rossa">ROSSA</div>
-							<div class="context-function amber" data-function="bencotta">Ben Cotta</div>
-						</div>
-						<div class="flex-wrap">
+						<!-- </div>
+						<div class="flex-wrap"> -->
 							<div class="context-function orange" data-function="meno">—</div>
 							<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
 							<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
@@ -447,9 +435,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div id="ghostPizza">
 				<div pizza-quantity></div>
 				<div pizza-name></div>
-				<div pizza-bianca>Bianca</div>
-				<div pizza-rossa>Rossa</div>
-				<div pizza-bencotta>Ben cotta</div>
 				<div pizza-ingredient id="kitchenIngredient"></div>
 				<div pizza-aggiunta id="kitchenAddition"></div>
 			</div>

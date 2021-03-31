@@ -157,7 +157,6 @@ function order_reset() {
 }
 
 function show_assigned() {
-	$('#assigned').addClass('selected');
 	let $selected_pizza = $('#listaPizze .item.selected');
 	if (!$selected_pizza.length) {
 		return;
@@ -215,9 +214,6 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 			id_piatto: id_pizza,
 			ingredients: [],
 			n: 1,
-			bianca: false,
-			rossa: false,
-			bencotta: false,
 			omaggio: false,
 		};
 	}
@@ -314,19 +310,11 @@ function select_pizza(element) {
 	for (let i in order_row.ingredients) {
 		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + order_row.ingredients[i] + '"]').addClass('selected');
 	}
-	show_assigned();
+	$('#assigned').click();
 	editPizzaModal();
 }
 $('#editPizzaComposition').on('modal-closed', function() {
 	$('#listaPizze .item').removeClass('selected');
-});
-
-$('#pizzeContext [data-function="bencotta"]').click(function() {
-	let $selected_pizza = $('#listaPizze .item.selected');
-	let order_row = $selected_pizza.data('orderRow');
-	order_row.bencotta = ! order_row.bencotta;
-	$selected_pizza.find('[pizza-bencotta]').toggleClass('hidden');
-	calculateOrderTotal();
 });
 
 $('#pizzeContext [data-function="omaggio"]').click(function() {
@@ -337,35 +325,13 @@ $('#pizzeContext [data-function="omaggio"]').click(function() {
 	calculateOrderTotal();
 });
 
-$('#pizzeContext [data-function="bianca"]').click(function() {
-	let $selected_pizza = $('#listaPizze .item.selected');
-	let order_row = $selected_pizza.data('orderRow');
-	order_row.bianca = ! order_row.bianca;
-	if (order_row.bianca) {
-		order_row.rossa = false;
-		$selected_pizza.find('[pizza-rossa]').addClass('hidden');
-	}
-	$selected_pizza.find('[pizza-bianca]').toggleClass('hidden');
-	calculateOrderTotal();
-});
-
-$('#pizzeContext [data-function="rossa"]').click(function() {
-	let $selected_pizza = $('#listaPizze .item.selected');
-	let order_row = $selected_pizza.data('orderRow');
-	order_row.rossa = ! order_row.rossa;
-	if (order_row.rossa) {
-		order_row.bianca = false;
-		$selected_pizza.find('[pizza-bianca]').addClass('hidden');
-	}
-	$selected_pizza.find('[pizza-rossa]').toggleClass('hidden');
-	calculateOrderTotal();
-});
-
 $('#pizzeContext [data-function="meno"]').click(function() {
 	let $selected_pizza = $('#listaPizze .item.selected');
 	let order_row = $selected_pizza.data('orderRow');
 	if (order_row.n > 1) {
 		order_row.n--;
+	} else {
+		order_row.n = .5;
 	}
 	$selected_pizza.find('[quantity]').text(order_row.n);
 	calculateOrderTotal();
@@ -374,7 +340,11 @@ $('#pizzeContext [data-function="meno"]').click(function() {
 $('#pizzeContext [data-function="più"]').click(function() {
 	let $selected_pizza = $('#listaPizze .item.selected');
 	let order_row = $selected_pizza.data('orderRow');
-	order_row.n++;
+	if (order_row.n < 1) {
+		order_row.n = 1;
+	} else {
+		order_row.n++;
+	}
 	$selected_pizza.find('[quantity]').text(order_row.n);
 	calculateOrderTotal();
 });
@@ -385,12 +355,6 @@ $('#pizzeContext [data-function="duplica"]').click(function() {
 	let new_order_row = $.extend(true, {}, og_order_row);
 	new_order_row.n = 1;
 	let $newPizza = addPizzaToOrder(og_order_row.id_piatto, new_order_row);
-	if (new_order_row.bianca) {
-		$newPizza.find('[pizza-bianca]').removeClass('hidden');
-	}
-	if (new_order_row.rossa) {
-		$newPizza.find('[pizza-rossa]').removeClass('hidden');
-	}
 	if (new_order_row.omaggio) {
 		$newPizza.find('[pizza-omaggio]').removeClass('hidden');
 	}
@@ -608,7 +572,7 @@ function calculateOrderTotal() {
 					}
 				}
 			}
-			price *= parseInt(row.n);
+			price *= parseFloat(row.n);
 		}
 		subtotal += price;
 	}
@@ -649,15 +613,6 @@ function kitchenPrint(_order) {
 				let $pizza = $ghostPizza.clone();
 				let pizza = pizzas[row.id_piatto];
 				$pizza.find('[pizza-name]').text(pizza.name);
-				if (row.bencotta == 'false') {
-					$pizza.find('[pizza-bencotta]').remove();
-				}
-				if (row.bianca == 'false') {
-					$pizza.find('[pizza-bianca]').remove();
-				}
-				if (row.rossa == 'false') {
-					$pizza.find('[pizza-rossa]').remove();
-				}
 				$pizza.find('[pizza-quantity]').text(row.n);
 				for (let j in pizza.ingredients) {
 					if (pizza.ingredients[j] in ingredients) {
