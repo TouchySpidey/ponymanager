@@ -26,50 +26,7 @@ class Orders_model extends CI_Model {
 	}
 
 	protected function parseOrderInput($rows) {
-		$CI = & get_instance();
-		$menu = $CI->pizzeria->menu_components();
-		foreach ($menu as $k => $v) {
-			$$k = $v;
-		}
 
-		$sub_total = 1.5; # da tabella apposta
-		$orders_pizzas = [];
-		foreach ($rows as $i => $row) {
-			$pizza = $pizzas[$row['id_piatto']];
-			$price = floatval($pizza['price']);
-			if ($row['omaggio'] == 'false') {
-				if (isset($row['ingredients']) && is_array($row['ingredients'])) {
-					foreach ($row['ingredients'] as $id_ingredient) {
-						if (!in_array($id_ingredient, $pizzas[$row['id_piatto']]['ingredients'])) {
-							if (isset($ingredients[$id_ingredient])) {
-								$price += $ingredients[$id_ingredient]['price'];
-							}
-						}
-					}
-				}
-			} else {
-				$price = 0;
-			}
-			if (intval($row['n'])) {
-				for ($j = 0; $j < intval($row['n']); $j++) {
-					$orders_pizzas[] = [
-						'order_serial' => $i.'#'.$j,
-						'cod_pizza' => $row['id_piatto'],
-						'pizza_category' => $pizza['category'],
-						'pizza_name' => $pizza['name'],
-						'pizza_price' => $price
-					];
-				}
-			}
-			$sub_total += $price * intval($row['n']);
-		}
-		$total = $sub_total; # meno sconto
-		$order = [
-			'guid' => generate_guid(),
-			'cod_company' => _GLOBAL_COMPANY['id_company'],
-			'order_time' => date('Y-m-d H:i:s'),
-			'total_price' => $total,
-		];
 		return $order;
 	}
 
@@ -79,14 +36,110 @@ class Orders_model extends CI_Model {
 		} else {
 			$rows = [];
 		}
-		$order = $this->parseOrderInput($rows);
+		$CI = & get_instance();
+		$menu = $CI->pizzeria->menu_components();
+		foreach ($menu as $k => $v) {
+			$$k = $v;
+		}
+		$sub_total = 1.5; # da tabella apposta
+		$order_pizzas = [];
+		$order_pizza_ingredients = [];
+		foreach ($rows as $i => $row) {
+			$pizza = $pizzas[$row['id_piatto']];
+			$price = floatval($pizza['price']);
+			if ($row['omaggio'] == 'false') {
+				if (isset($row['ingredients']) && is_array($row['ingredients'])) {
+					$j = 0;
+					foreach ($row['ingredients'] as $id_ingredient) {
+						if (isset($ingredients[$id_ingredient])) {
+							$ingredient = $ingredients[$id_ingredient];
+						} else {
+							$ingredient = [
+								'category' => '',
+								'name' => '',
+								'price' => 0,
+							];
+						}
+						if (!in_array($id_ingredient, $pizza['ingredients'])) {
+							# ingrediente extra aggiunto
+							$price += $ingredient['price'];
+							$order_pizza_ingredients[] = [
+								'order_serial' => $i,
+								'nth_ingredient' => $j++,
+								'is_extra' => 1,
+								'cod_ingredient' => $id_ingredient,
+								'ingredient_category' => $ingredient['category'],
+								'ingredient_name' => $ingredient['name'],
+								'ingredient_price' => $ingredient['price'],
+							];
+						} else {
+							# ingrediente di base
+							$order_pizza_ingredients[] = [
+								'order_serial' => $i,
+								'nth_ingredient' => $j++,
+								'is_extra' => 0,
+								'cod_ingredient' => $id_ingredient,
+								'ingredient_category' => $ingredient['category'],
+								'ingredient_name' => $ingredient['name'],
+								'ingredient_price' => $ingredient['price'],
+							];
+						}
+					}
+					foreach ($pizza['ingredients'] as $id_ingredient) {
+						if (isset($ingredients[$id_ingredient])) {
+							$ingredient = $ingredients[$id_ingredient];
+						} else {
+							$ingredient = [
+								'category' => '',
+								'name' => '',
+								'price' => 0,
+							];
+						}
+						if (!in_array($id_ingredient, $row['ingredients'])) {
+							# ingrediente base rimosso
+							$order_pizza_ingredients[] = [
+								'order_serial' => $i,
+								'nth_ingredient' => $j++,
+								'is_extra' => -1,
+								'cod_ingredient' => $id_ingredient,
+								'ingredient_category' => $ingredient['category'],
+								'ingredient_name' => $ingredient['name'],
+								'ingredient_price' => $ingredient['price'],
+							];
+						}
+					}
+				}
+			} else {
+				$price = 0;
+			}
+			$order_pizzas[] = [
+				'order_serial' => $i,
+				'cod_pizza' => $row['id_piatto'],
+				'pizza_category' => $pizza['category'],
+				'pizza_name' => $pizza['name'],
+				'pizza_price' => $price,
+				'pizza_quantity' => $row['n'],
+				'pizza_notes' => isset($row['notes']) ? $row['notes'] : '',
+			];
+			$sub_total += $price * doubleval($row['n']);
+		}
+		$total = $sub_total; # meno sconto
+		$order = [
+			'guid' => generate_guid(),
+			'cod_company' => _GLOBAL_COMPANY['id_company'],
+			'order_time' => date('Y-m-d H:i:s'),
+			'total_price' => $total,
+		];
 		$time = isset($post['delivery_time']) ? $post['delivery_time'] : '00:00';
 		$day = date('Y-m-d');
 
 		$order['id_delivery'] = isset($post['id_order']) ? $post['id_order'] : null;
 		$order['is_delivery'] = isset($post['is_delivery']) ? $post['is_delivery'] : 0;
 		$order['cod_customer'] = isset($post['id_customer']) ? $post['id_customer'] : null;
-		$order['name'] = $post['name'];
+		$order['cod_payment'] = isset($post['payment_method']) ? $post['payment_method'] : null;
+		$order['telephone'] = isset($post['telephone']) ? $post['telephone'] : null;
+		$order['name'] = isset($post['name']) ? $post['name'] : '';
+		$order['notes'] = isset($post['notes']) ? $post['notes'] : '';
 		if ($order['is_delivery']) {
 			$order['doorbell'] = $post['doorbell'];
 			$order['address'] = $post['address'];
@@ -97,11 +150,23 @@ class Orders_model extends CI_Model {
 		} else {
 			$order['doorbell'] = $order['address'] = $order['city'] = $order['north'] = $order['east'] = $order['delivery_time'] = null;
 		}
-		$order['telephone'] = $post['telephone'];
-		$order['cod_payment'] = isset($post['payment_method']) ? $post['payment_method'] : null;
-		$order['order_data'] = JSON_encode($post);
-
-		$this->db->replace('deliveries', $order);
+		if ($order['id_delivery']) {
+			$id_delivery = $order['id_delivery'];
+			$this->db->replace('deliveries', $order);
+		} else {
+			$this->db->insert('deliveries', $order);
+			$id_delivery = $this->db->insert_id();
+		}
+		foreach ($order_pizzas as & $op) {
+			$op['cod_delivery'] = $id_delivery;
+		}
+		foreach ($order_pizza_ingredients as & $op) {
+			$op['cod_delivery'] = $id_delivery;
+		}
+		$this->db->where('cod_delivery', $id_delivery)->delete('order_pizzas');
+		$this->db->where('cod_delivery', $id_delivery)->delete('order_pizza_ingredients');
+		$this->db->insert_batch('order_pizzas', $order_pizzas);
+		$this->db->insert_batch('order_pizza_ingredients', $order_pizza_ingredients);
 	}
 
 	public function saveTakeaway($post) {

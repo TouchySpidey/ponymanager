@@ -641,6 +641,15 @@ function kitchenPrint(_order) {
 	window.print();
 }
 
+let map;
+
+function initMap() {
+	map = new google.maps.Map(document.getElementById("Gmap"), {
+		center: { lat: -34.397, lng: 150.644 },
+		zoom: 8,
+	});
+}
+
 function select_order(el) {
 	// open modal to view/edit order
 

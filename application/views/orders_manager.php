@@ -94,6 +94,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div class="btn indigo-600 ml-auto mr-auto" onclick="window.print()">Stampa!</div>
 				</div>
 			</div>
+			<div class="flex-1">
+				<div id="Gmap"></div>
+			</div>
 		</div>
 		<button onclick="openNewOrderModal()" class="fab blue"><i class="mdi mdi-plus"></i></button>
 	</div>
@@ -405,11 +408,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					</div>
 					<div id="pizzeContext" order-context>
 						<div class="flex-wrap">
-							<div class="context-function green" data-function="omaggio">OMAGGIO</div>
+							<div class="context-function gblue" data-function="omaggio">OMAGGIO</div>
 						<!-- </div>
 						<div class="flex-wrap"> -->
 							<div class="context-function orange" data-function="meno">—</div>
-							<div class="context-function blue" data-function="più"><i class="mdi mdi-plus"></i></div>
+							<div class="context-function green" data-function="più"><i class="mdi mdi-plus"></i></div>
 							<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
 							<div class="context-function red-800 ml-auto" data-function="elimina"><i class="mdi mdi-close"></i></div>
 						</div>
@@ -443,7 +446,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div id="printable">
 		<div>Stampa prova prova ciao</div>
 	</div>
-
+	<style>
+	#Gmap {
+		height: 100%;
+	}
+	html, body {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	</style>
 	<script>
 	let ingredients = JSON.parse(`<?= JSON_encode($ingredients) ?>`);
 	let ingredients_categories = JSON.parse(`<?= JSON_encode($ingredients_categories) ?>`);
@@ -451,5 +463,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	let pizzas_categories = JSON.parse(`<?= JSON_encode($pizzas_categories) ?>`);
 	</script>
 	<?= import_js('orders_manager') ?>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_SECRET_API ?>&callback=initMap&libraries=&v=weekly" async></script>
 </body>
 </html>

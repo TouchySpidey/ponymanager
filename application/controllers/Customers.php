@@ -16,25 +16,44 @@ class Customers extends CB_Controller {
 		$city = $this->input->post('city');
 		$doorbell = $this->input->post('doorbell');
 		$address = $this->input->post('address');
-		$north = $this->input->post('north');
-		$east = $this->input->post('east');
-		$position_ok = $address || ($north && $east);
-		if ($name && $position_ok) {
-			if ($north && $east && !$address) {
-				$address = 0;
-			} elseif (!$north && !$east && $address) {
-				$north = 0;
-				$east = 0;
+		if ($id_customer) {
+			$old_customer = $this->db
+			->where('id_customer', $id_customer)
+			->where('cod_company', _GLOBAL_COMPANY['id_company'])
+			->get('customers')->result_array();
+			$id_customer = null;
+			if (!empty($old_customer)) {
+				$old_customer = $old_customer[0];
+				$id_customer = $old_customer['id_customer'];
+			} else {
+				$old_customer = false;
 			}
-			if ($id_customer) {
-				$old_customer = $this->db
-				->where('id_customer', $id_customer)
-				->where('cod_company', _GLOBAL_COMPANY['id_company'])
-				->get('customers')->result_array();
-				$id_customer = null;
-				if (!empty($old_customer)) {
-					$old_customer = $old_customer[0];
-					$id_customer = $old_customer['id_customer'];
+		} else {
+			$old_customer = false;
+		}
+		if ($name) {
+			$north = 0;
+			$east = 0;
+			if ($address) {
+				if (!$old_customer || !$old_customer['north'] && !$old_customer['east'] || $old_customer['address'] != $address) {
+					# motivi per fare il geocode:
+						# cliente nuovo
+						# cliente in update, era senza coordinate
+						# cliente in update, indirizzo cambiato
+					$response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address="
+					. urlencode($city.','.$address)
+					. "&key=".GOOGLE_SECRET_API);
+
+					if ($response) {
+						$json = JSON_decode($response, TRUE);
+						if (isset($json['results']) && !empty($json['results'])) {
+							$result = $json['results'][0];
+							if (isset($result['geometry']['location'])) {
+								$north = $result['geometry']['location']['lat'];
+								$east = $result['geometry']['location']['lng'];
+							}
+						}
+					}
 				}
 			}
 			if ($id_customer) {
