@@ -24,4 +24,7 @@
 		</div>
 	</div>
 </body>
+<script>
+$('#email').focus();
+</script>
 </html>
