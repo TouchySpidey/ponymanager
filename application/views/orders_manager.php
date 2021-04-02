@@ -98,7 +98,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div id="Gmap"></div>
 			</div>
 		</div>
-		<button onclick="openNewOrderModal()" class="fab blue"><i class="mdi mdi-plus"></i></button>
+		<button onclick="promptNewOrder()" class="fab blue"><i class="mdi mdi-plus"></i></button>
 	</div>
 
 
@@ -153,25 +153,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div class="d-flex">
 										<div class="flex-1">
 											<div>
-												<div class="general-heading">
-													Tipologia di ordine
-												</div>
-												<div class="pick-one-of-these">
-													<div id="deliveryOrder" class="md-checkbox-lg pickable">
-														<div>Delivery</div>
-														<div class="order-pricing">1,50€</div>
+												<div class="d-flex">
+													<div class="flex-1 bros-16-between">
+														<div class="general-heading">Tipologia di ordine</div>
+														<div class="pick-one-of-these">
+															<div id="deliveryOrder" class="md-checkbox-lg pickable">
+																<div>Delivery</div>
+																<div class="order-pricing">1,50€</div>
+															</div>
+															<div id="takeawayOrder" class="md-checkbox-lg pickable">
+																<div>Takeaway</div>
+																<div class="order-pricing">Gratis</div>
+															</div>
+														</div>
 													</div>
-													<div id="takeawayOrder" class="md-checkbox-lg pickable">
-														<div>Takeaway</div>
-														<div class="order-pricing">Gratis</div>
+													<div class="flex-1 bros-16-between">
+														<div class="general-heading">Note del cliente</div>
+														<div>
+															<textarea id="order-notes" style="height: 144px;" class="md-input w100p" placeholder="Appunti per il fattorino"></textarea>
+														</div>
 													</div>
 												</div>
 												<div class="delivery-only">
 													<div class="general-heading">Seleziona il pony</div>
 													<div id="pony" class="list-block-container pick-one-of-these">
-														<div class="list-block pickable" data-id_pony="">Non selezionato</div>
+														<div class="md-checkbox-lg pickable" data-id_pony="">Non selezionato</div>
 														<?php foreach ($ponies as $pony) { ?>
-															<div class="list-block pickable" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
+															<div class="md-checkbox-lg pickable" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
 														<?php } ?>
 													</div>
 												</div>
@@ -188,7 +196,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											<div id="scrollTimeTable" class="pick-one-of-these">
 												<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
 													<?php foreach (range(0, 50, 10) as $minuto) { ?>
-														<div class="timetable-row d-flex pickable">
+														<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
 															<div class="order-n delivery n-consegne delivery-only"></div>
 															<div class="order-n delivery n-pizze"></div>
 															<div class="order-n takeaway n-pizze"></div>
@@ -225,7 +233,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														</div>
 														<div class="input-block">
 															<div><label>Indirizzo</label></div>
-															<div><input class="md-input" type="text" name="address" placeholder="iIndirizzo"></div>
+															<div><input class="md-input" type="text" name="address" placeholder="Indirizzo"></div>
 														</div>
 														<div class="input-block">
 															<div><label>Nome sul campanello</label></div>

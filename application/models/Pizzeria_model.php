@@ -100,7 +100,7 @@ class Pizzeria_model extends CI_Model {
 			return false;
 		}
 
-		$price = number_format(str_replace(',', '.', $ingredient['price']), 2, '.', '');
+		$price = number_format(str_replace(',', '.', $ingredient['price']) ?: 0, 2, '.', '');
 		$name = $ingredient['name'];
 		$ingredients_categories = $this->get_ingredients_categories();
 

@@ -26,7 +26,7 @@ a {
 	background-color: #aaa;
 }
 #pageContainer {
-	margin-top: 100px;
+	padding-top: 100px;
 }
 #mainMenu, #topBar {
 	color: white;
@@ -217,4 +217,13 @@ label {
 .scroll-x {
 	/* width: 100vw; */
 	overflow-x: auto;
+}
+.bros-16-between:first-child {
+	padding-right: 8px;
+}
+.bros-16-between:last-child {
+	padding-left: 8px;
+}
+.w100p {
+	width: 100%;
 }

@@ -10,27 +10,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="sticky-toolbar" style="padding: 16px;">
 			<div class="d-flex">
 				<div class="d-flex"><div class="mt-auto mb-auto btn blue" onclick="openNewPizzaModal()"><i class="mdi mdi-plus"></i> Piatto</div></div>
-				<!-- <div>
-					<div class="dropdown">
-						<div class="btn" open-filters><i class="mdi mdi-filter"></i></div>
-						<div class="dropdown-menu categories-filter">
-							<div class="v-flex">
-								<div class="d-flex flex-1 category-option">
-									<div class="category-title">Basic <i></i></div>
-									<div class="ml-auto"><i class="mdi mdi-check"></i></div>
-								</div>
-								<div class="d-flex flex-1 category-option">
-									<div class="category-title">Special <i></i></div>
-									<div class="ml-auto"><i class="mdi mdi-check"></i></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div> -->
 
 				<div class="ml-auto mr-auto"><input class="md-input" type="text" id="finder" placeholder="Cerca" /></div>
 
-				<!-- <div class="btn"><i class="mdi mdi-filter"></i></div> -->
 				<div class="d-flex"><div class="mt-auto mb-auto btn blue" onclick="openNewIngredientModal()"><i class="mdi mdi-plus"></i> Ingrediente</div></div>
 			</div>
 		</div>

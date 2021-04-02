@@ -1,3 +1,9 @@
+
+$(function() {
+	order_reset();
+	ordersFromDb();
+});
+
 let $kitchenAddition = $('#kitchenAddition').remove().removeAttr('id');
 let $kitchenIngredient = $('#kitchenIngredient').remove().removeAttr('id');
 let $ghostPizza = $('#ghostPizza').remove().removeAttr('id');
@@ -58,12 +64,6 @@ $('#finder').on('input', function() {
 		sendRequest(str_search);
 	}, 40);
 });
-
-function openNewCustomerModal() {
-	$('#addCustomerModal').css('display', 'block');
-	$('#addCustomerModal input[name="name"]').val($('#finder').val());
-	$('#addCustomerModal input[name="name"]').focus();
-}
 
 function editPizzaModal() {
 	$('#editPizzaComposition').css('display', 'block');
@@ -131,6 +131,7 @@ function order_init(tab = false) {
 function order_reset() {
 	newOrder = {
 		rows: [],
+		notes: '',
 		last_pizza_category: $('#elencoPiatti .piatto').first().data('elenco'),
 		sconto: {
 			abs: true,
@@ -420,7 +421,7 @@ function select_customer(el = false) {
 		$('#deliveryTo input').on('input change', function() {
 			let n = $(this).attr('name');
 			newCustomer[n] = $(this).val();
-			let compiled = newCustomer.name.length > 0 && newCustomer.telephone.length > 0;
+			let compiled = newCustomer.name.length > 0;
 			if (compiled) {
 				$('#saveNewCustomer').show();
 			} else {
@@ -447,7 +448,9 @@ function saveCustomer(brandNew = false) {
 				if ('errors' in response) {
 					console.log(response.errors);
 				} else {
-					console.log('created.');
+					$('#deliveryToForm input').val('');
+					// todo
+					select_customer();
 				}
 			}
 		} catch(e) {
@@ -481,24 +484,69 @@ $('#deliveryTo input').on('input', function() {
 	}
 });
 
-$('#sendOrder').click(function() {
+function resetModalData(_draft) {
+	$('#deliveryToForm [inputname="id_delivery"]').val(_draft.id_order)
+	newOrder.sconto = _draft.sconto;
+	newOrder.notes = _draft.notes;
+	if (_draft.is_Delivery) {
+		$('#deliveryOrder').addClass('selected');
+		$('#takeawayOrder').removeClass('selected');
+	} else {
+		$('#takeawayOrder').addClass('selected');
+		$('#deliveryOrder').removeClass('selected');
+	}
+
+	$('#order-notes').val(_draft.notes);
+
+	$('#paymentMethods .list-block').removeClass('selected');
+	$('#paymentMethods .list-block[data-id_payment="' + _draft.payment_method + '"]').addClass('selected');
+
+	$('#pony .list-block').removeClass('selected');
+	$('#pony .list-block[data-id_pony="' + _draft.cod_pony + '"]').addClass('selected');
+
+	$('#timetable .timetable-row').removeClass('selected');
+	$('#timetable .timetable-row[data-time="' + _draft.delivery_time + '"]').addClass('selected');
+
+	for (let k in _draft) {
+		$('#deliveryTo input[name="' + k + '"]').val(_draft[k]);
+	}
+
+	$('#listaPizze').empty();
+	newOrder.rows = [];
+	for (let i in _draft.rows) {
+		let order_row = _draft.rows[i];
+		addPizzaToOrder(order_row.id_piatto, order_row);
+	}
+
+	calculateOrderTotal();
+}
+function patchOrder() {
+	let _draft = $.extend(true, {}, newOrder);
 	let formData = {
 		id_order: $('#deliveryToForm [inputname="id_delivery"]').val(),
-		rows: newOrder.rows,
-		sconto: newOrder.sconto,
+		rows: _draft.rows,
+		sconto: _draft.sconto,
+		notes: $('#order-notes').val(),
 		is_delivery: 0 + $('#deliveryOrder').hasClass('selected'),
 		payment_method: $('#paymentMethods .list-block.selected').data('id_payment'),
-		payment_method: $('#pony .list-block.selected').data('id_pony'),
-		delivery_time: $('#timetable .timetable-row.selected .time').text(),
+		cod_pony: $('#pony .list-block.selected').data('id_pony'),
+		delivery_time: $('#timetable .timetable-row.selected').data('time'),
 	};
 	$('#deliveryTo input').each(function(i, v) {
 		let name = $(v).attr('name');
 		let val = $(v).val();
 		formData[name] = val;
 	});
+	return formData;
+}
+
+$('#sendOrder').click(function() {
+	let formData = patchOrder();
 	$.post(site_url + 'orders/add_or_edit_order', formData).always(function(data) {
 		$('#deliveryToForm [name="id_delivery"]').val(data);
 		ordersFromDb();
+		// todo
+		select_order(data);
 	});
 });
 
@@ -554,7 +602,7 @@ function orderTotalUpdate(newV) {
 function calculateOrderTotal() {
 	let rows = newOrder.rows;
 	let total = 0, subtotal = 0;
-	if (newOrder.is_delivery) {
+	if (newOrder.is_delivery == 1) {
 		subtotal += 1.5;
 	}
 	for (let i in rows) {
@@ -595,7 +643,7 @@ function ordersFromDb() {
 function kitchenPrint(_order) {
 	$('#printable').empty();
 	let $kitchenPrint = $ghostKitchenPrint.clone();
-	if (_order.is_delivery) {
+	if (_order.is_delivery == 1) {
 		$kitchenPrint.find('[order-type][delivery]').show();
 		$kitchenPrint.find('[order-type][takeaway]').hide();
 	} else {
@@ -641,6 +689,31 @@ function kitchenPrint(_order) {
 	window.print();
 }
 
+function promptNewOrder() {
+	// is a draft available?
+	if (draft) {
+		// todo
+		resetModalData(draft);
+	}
+	// open modal
+	openNewOrderModal();
+}
+let draft = false;
+
+function select_order(id_order) {
+	// was creating an order? let's save the draft
+	if (!draft) {
+		draft = patchOrder();
+	}
+	// fill the order modal with the order data
+	if (id_order in deliveries) {
+		let order_data = deliveries[id_order];
+		resetModalData(order_data);
+	}
+	// open modal to view/edit order
+	openNewOrderModal();
+}
+
 let map;
 
 function initMap() {
@@ -649,13 +722,3 @@ function initMap() {
 		zoom: 8,
 	});
 }
-
-function select_order(el) {
-	// open modal to view/edit order
-
-}
-
-$(function() {
-	order_reset();
-	ordersFromDb();
-})
