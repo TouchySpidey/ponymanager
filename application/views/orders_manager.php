@@ -8,32 +8,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<?php main_menu() ?>
 	<div id="pageContainer">
 		<div id="ordersFilters">
-			<div class="d-flex">
-				<div class="ml-auto">Eliminati</div>
-				<div>TakeAway</div>
-				<div>Delivery</div>
-				<div>Mostra tutto</div>
+			<div class="d-flex filter-orders-by-type">
+				<div class="filter-tab ml-auto" type="dismissed">Dimesse</div>
+				<div class="filter-tab" type="takeaway">TakeAway</div>
+				<div class="filter-tab" type="delivery">Delivery</div>
+				<div class="filter-tab" type="all">Mostra tutto</div>
 			</div>
 		</div>
 		<div>
 			<div class="d-flex">
-				<div>
+				<div class="scroll-on-left" id="scrollTimeFilter">
+					<div>
 
-					<?php
-					$ora_apertura = 10;
-					$minuto_apertura = 00;
-					$ora_chiusura = 15;
-					$minuto_chiusura = 00;
-					?>
-					<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
-						<?php foreach (range(0, 50, 10) as $minuto) { ?>
-							<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
-								<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
-								<div class="order-n delivery n-consegne delivery-only"></div>
-								<div class="order-n delivery n-pizze"></div>
-							</div>
+						<?php
+						$ora_apertura = 10;
+						$minuto_apertura = 00;
+						$ora_chiusura = 15;
+						$minuto_chiusura = 00;
+						?>
+						<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
+							<?php foreach (range(0, 50, 10) as $minuto) { ?>
+								<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
+									<div class="order-n delivery n-consegne delivery-only"></div>
+									<div class="order-n delivery n-pizze"></div>
+									<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+								</div>
+							<?php } ?>
 						<?php } ?>
-					<?php } ?>
+					</div>
 				</div>
 				<div class="flex-1">
 					<div id="Gmap"></div>
@@ -102,13 +104,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div id="orderTabs" class="d-flex tabs-container scroll-x">
 						<div class="tab" data-tab="consegna">Consegna</div>
 						<div class="tab" data-tab="cliente">Cliente</div>
-						<div class="tab" data-tab="menu">Ordini</div>
+						<div class="tab" data-tab="menu">Ordine</div>
 						<div class="tab" data-tab="pagamento">Pagamento</div>
 						<div class="tab" data-tab="stampa">Stampa</div>
+						<div class="tab ml-auto" data-tab="elimina">Eliminazione</div>
 					</div>
 					<div class="d-flex scroll-x" id="tabSwitcher">
 						<div class="flex-1">
 							<div>
+								<div tab="elimina" order-component>
+									<div class="btn red-800" onclick="delete_order()"><i class="mdi mdi-close"></i> Elimina</div>
+								</div>
 								<div tab="stampa" order-component>
 									<div class="btn gblue" onclick="printOpenOrder()">cucina</div>
 									<div class="btn gblue">pony</div>

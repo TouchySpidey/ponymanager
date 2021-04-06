@@ -16,6 +16,18 @@
 #boxOrdini {
 	min-width: 300px;
 }
+#customersBox, #boxOrdini {
+	padding: 12px 12px 0 12px;
+}
+#toPrepping:hover {
+	background-color: #ffcc80!important;
+}
+#toPrepping.orange-700:hover {
+	background-color: #f57c00!important;
+}
+#toPrepping {
+	border-top-left-radius: 10px;
+}
 #editPizzaComposition .w3-modal-content {
 	height: 100vh;
 	margin-left: 0;
@@ -24,6 +36,22 @@
 .js-deliverable {
 	height: 24px;
 	width: 24px;
+}
+#toDelivering:hover {
+	background-color: #b3e5fc!important;
+}
+#toDelivering.light-blue-200:hover {
+	background-color: #81d4fa!important;
+}
+#toDelivering {
+	border-top-right-radius: 10px;
+}
+#toPrepping, #toDelivering {
+	width: 50%;
+	color: black;
+}
+#pendingOrders .info-cliente {
+	border-bottom: 2px solid #f57c00;
 }
 .info-cliente {
 	border-bottom: 2px solid #03a9f4;
@@ -195,6 +223,14 @@
 	display: flex;
 	flex-direction: column;
 }
+#boxOrdini {
+	max-height: calc(100vh - 200px);
+	overflow-y: auto;
+}
+#scrollTimeFilter {
+	max-height: calc(100vh - 200px);
+	overflow-y: auto;
+}
 .item.selected {
 	background-color: #e8ffb7;
 }
@@ -335,8 +371,8 @@
 #tastiera > div:last-child [tasto]:last-child {
 	border-bottom-right-radius: 20px;
 }
-.my-g-label {
+.filter-orders-by-type .filter-tab {
 	font-size: 26px;
-	padding: 14px;
-	font-weight: bold;
+	padding: 12px 24px;
+
 }

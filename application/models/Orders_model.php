@@ -13,12 +13,15 @@ class Orders_model extends CI_Model {
 	}
 
 	public function get_all_orders($from_date = false, $to_date = false) {
-		if ($from_date) {
-			$this->db->where('delivery_time >=', $from_date);
+		if ($from_date || $to_date) {
+			if ($from_date) {
+				$this->db->where('delivery_time >=', $from_date);
+			}
+			if ($to_date) {
+				$this->db->where('delivery_time <=', $to_date);
+			}
 		}
-		if ($to_date) {
-			$this->db->where('delivery_time <=', $to_date);
-		}
+		$this->db->or_where('delivery_time', null);
 		$db_deliveries = $this->db
 		->join('order_pizzas', 'order_pizzas.cod_delivery = deliveries.id_delivery', 'LEFT')
 		->join('order_pizza_ingredients', 'deliveries.id_delivery = order_pizza_ingredients.x_cod_delivery AND order_pizzas.order_serial = order_pizza_ingredients.x_order_serial', 'LEFT')

@@ -107,6 +107,12 @@ label {
 [hidden] {
 	display: none !important;
 }
+.scroll-on-left {
+	direction: rtl;
+}
+.scroll-on-left > * {
+	direction: ltr;
+}
 .parent-to-be-hovered:not(:hover) .show-on-parent-hover {
 	visibility: hidden;
 }

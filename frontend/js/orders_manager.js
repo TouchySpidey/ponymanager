@@ -12,6 +12,7 @@ let $ghostKitchenPrint = $('#ghostKitchenPrint').remove().removeAttr('id');
 let $ghostPizzaIngredient = $('#ghostPizzaIngredient').remove().removeAttr('id');
 let $ghostDelivery = $('#ghostDelivery').remove().removeAttr('id');
 let deliveries = false;
+let timedMarkers = [];
 // in questo ordine
 let $ghostOrderItem = $('#ghostOrderItem').remove().removeAttr('id');
 let req_sent = 0, last_accepted = 0;
@@ -528,9 +529,9 @@ $('#sendOrder').click(function() {
 	let formData = patchOrder();
 	$.post(site_url + 'orders/add_or_edit_order', formData).always(function(data) {
 		ordersFromDb();
-		// todo
 		order_reset();
-		select_order(data);
+		closeModal('#addOrderModal');
+		// select_order(data);
 	});
 });
 
@@ -613,6 +614,7 @@ function calculateOrderTotal() {
 	$('#totaleOrdine [tot-text]').text(total.toString());
 }
 
+
 function ordersFromDb() {
 	$.post(site_url + 'orders/get_todays_orders').always(function(data) {
 		try {
@@ -638,19 +640,29 @@ function ordersFromDb() {
 						fontWeight: 'bold',
 					},
 				});
-				$delivery.find('.panner').click(() => {
-					map.panTo(marker.getPosition());
-				});
-				marker.addListener('mouseover', () => {
-					$delivery.addClass('yellow');
-				});
-				marker.addListener('mouseout', () => {
-					$delivery.removeClass('yellow');
-				});
-				marker.addListener('click', () => {
-					let checked = $delivery.find('.js-deliverable').prop('checked');
-					$delivery.find('.js-deliverable').prop('checked', !checked);
-				});
+				if (deliveries[i].delivery_time) {
+					if (!(deliveries[i].delivery_time in timedMarkers)) {
+						timedMarkers[deliveries[i].delivery_time] = [];
+					}
+					timedMarkers[deliveries[i].delivery_time].push(marker);
+				}
+				if (deliveries[i].is_delivery) {
+					$delivery.find('.panner').click(() => {
+						map.panTo(marker.getPosition());
+					});
+					marker.addListener('mouseover', () => {
+						$delivery.addClass('yellow');
+					});
+					marker.addListener('mouseout', () => {
+						$delivery.removeClass('yellow');
+					});
+					marker.addListener('click', () => {
+						let checked = $delivery.find('.js-deliverable').prop('checked');
+						$delivery.find('.js-deliverable').prop('checked', !checked);
+					});
+				} else {
+					$delivery.find('.panner').remove();
+				}
 				$('#boxOrdini').append($delivery);
 			}
 		} catch(e) {
@@ -658,6 +670,54 @@ function ordersFromDb() {
 		}
 	});
 }
+
+function filterByTime(from, to) {
+	if (from > to) {
+		let dummy = to;
+		to = from;
+		from = dummy;
+	}
+
+	$('#scrollTimeFilter .timetable-row').each(function(i, v) {
+		if ($(v).data('time') >= from && $(v).data('time') <= to) {
+			$(v).addClass('gblue');
+		} else {
+			$(v).removeClass('gblue');
+		}
+	});
+
+	for (let t in timedMarkers) {
+		if (t >= from && t <= to) {
+			for (let i in timedMarkers[t]) {
+				timedMarkers[t][i].setMap(map);
+			}
+		} else {
+			for (let i in timedMarkers[t]) {
+				timedMarkers[t][i].setMap(null);
+			}
+		}
+	}
+}
+
+$('#scrollTimeFilter .timetable-row').click(function() {
+	let $another = $('#scrollTimeFilter').find('.timetable-row.filtering-range');
+	let from = $(this).data('time');
+	if ($another.length) {
+		if ($another.length > 1) {
+			// ce ne sono due!
+			$another.removeClass('filtering-range');
+			filterByTime(from, from);
+		} else {
+			// ce n'è un altro
+			let to = $another.data('time');
+			filterByTime(from, to);
+		}
+	} else {
+		// è il primo
+		filterByTime(from, from);
+	}
+	$(this).addClass('filtering-range');
+});
 
 function kitchenPrint(_order) {
 	$('#printable').empty();
@@ -731,6 +791,12 @@ function select_order(id_order) {
 	}
 	// open modal to view/edit order
 	openNewOrderModal();
+}
+
+function delete_order() {
+	console.log('delete!!!!');
+	let _draft = patchOrder();
+	console.log(_draft);
 }
 
 let map;
