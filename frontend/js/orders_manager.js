@@ -10,6 +10,7 @@ let $ghostPizza = $('#ghostPizza').remove().removeAttr('id');
 let $ghostPizzaAddition = $('#ghostPizzaAddition').remove().removeAttr('id');
 let $ghostKitchenPrint = $('#ghostKitchenPrint').remove().removeAttr('id');
 let $ghostPizzaIngredient = $('#ghostPizzaIngredient').remove().removeAttr('id');
+let $ghostDelivery = $('#ghostDelivery').remove().removeAttr('id');
 let deliveries = false;
 // in questo ordine
 let $ghostOrderItem = $('#ghostOrderItem').remove().removeAttr('id');
@@ -73,31 +74,6 @@ function openNewOrderModal() {
 	$('#addOrderModal').css('display', 'block');
 	$('#addOrderModal input[name="name"]').focus();
 }
-
-$('#toPrepping').click(function() {
-	$('#toPrepping').addClass('orange-700');
-	$('#toPrepping').removeClass('orange-50');
-
-	$('#pendingOrders').attr('hidden', null);
-	$('#sentOrders').attr('hidden', '');
-
-	$('#toDelivering').addClass('light-blue-50');
-	$('#toDelivering').removeClass('light-blue-200');
-});
-
-$('#toPrepping').trigger('click');
-
-
-$('#toDelivering').click(function() {
-	$('#toDelivering').removeClass('light-blue-50');
-	$('#toDelivering').addClass('light-blue-200');
-
-	$('#pendingOrders').attr('hidden', '');
-	$('#sentOrders').attr('hidden', null);
-
-	$('#toPrepping').addClass('orange-50');
-	$('#toPrepping').removeClass('orange-700');
-});
 
 let newOrder, last_row = 0, viewOrder;
 
@@ -170,7 +146,7 @@ function show_assigned() {
 	let pizza = pizzas[id_pizza];
 	let default_ingredients = pizza.ingredients;
 	let all_ingredients = order_row.ingredients;
-	$('#elencoIngredienti .ingrediente').hide();
+	$('#elencoIngredienti .ingrediente, #elencoIngredienti .notes-container').hide();
 	for (let i in default_ingredients) {
 		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + default_ingredients[i] + '"]').show();
 	}
@@ -189,9 +165,14 @@ function select_category(category = false) {
 	}
 }
 
+function show_notes() {
+	$('#elencoIngredienti .ingrediente').hide();
+	$('#elencoIngredienti .notes-container').show();
+}
+
 function select_ingredients_category(category = false) {
 	if (category) {
-		$('#elencoIngredienti .ingrediente').hide();
+		$('#elencoIngredienti .ingrediente, #elencoIngredienti .notes-container').hide();
 		$('#elencoIngredienti .ingrediente[data-elenco="' + category + '"]').show();
 	}
 }
@@ -312,6 +293,9 @@ function select_pizza(element) {
 		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + order_row.ingredients[i] + '"]').addClass('selected');
 	}
 	$('#assigned').click();
+	$('#pizza-notes').off('input').on('input', function() {
+		order_row.notes = this.value;
+	});
 	editPizzaModal();
 }
 $('#editPizzaComposition').on('modal-closed', function() {
@@ -485,10 +469,10 @@ $('#deliveryTo input').on('input', function() {
 });
 
 function resetModalData(_draft) {
-	$('#deliveryToForm [inputname="id_delivery"]').val(_draft.id_order)
+	$('#deliveryToForm [name="id_delivery"]').val(_draft.id_order)
 	newOrder.sconto = _draft.sconto;
 	newOrder.notes = _draft.notes;
-	if (_draft.is_Delivery) {
+	if (_draft.is_delivery) {
 		$('#deliveryOrder').addClass('selected');
 		$('#takeawayOrder').removeClass('selected');
 	} else {
@@ -523,7 +507,7 @@ function resetModalData(_draft) {
 function patchOrder() {
 	let _draft = $.extend(true, {}, newOrder);
 	let formData = {
-		id_order: $('#deliveryToForm [inputname="id_delivery"]').val(),
+		id_order: $('#deliveryToForm [name="id_delivery"]').val(),
 		rows: _draft.rows,
 		sconto: _draft.sconto,
 		notes: $('#order-notes').val(),
@@ -543,9 +527,9 @@ function patchOrder() {
 $('#sendOrder').click(function() {
 	let formData = patchOrder();
 	$.post(site_url + 'orders/add_or_edit_order', formData).always(function(data) {
-		$('#deliveryToForm [name="id_delivery"]').val(data);
 		ordersFromDb();
 		// todo
+		order_reset();
 		select_order(data);
 	});
 });
@@ -626,14 +610,49 @@ function calculateOrderTotal() {
 	}
 	total = subtotal;
 	orderTotalUpdate(total);
-	$('#totaleOrdine').text(total.toString());
+	$('#totaleOrdine [tot-text]').text(total.toString());
 }
 
 function ordersFromDb() {
-	$.post(site_url + 'orders/get_all_orders').always(function(data) {
+	$.post(site_url + 'orders/get_todays_orders').always(function(data) {
 		try {
 			let json = JSON.parse(data);
 			deliveries = json;
+			$('#boxOrdini').empty();
+			for (let i in deliveries) {
+				let $delivery = $ghostDelivery.clone();
+				$delivery.find('.opener').attr('id-order', deliveries[i].id_order);
+				$delivery.find('.nome-cliente').text(deliveries[i].name);
+				$delivery.find('.indirizzo-cliente').text(deliveries[i].city + ', ' + deliveries[i].address);
+				let markerGeo = new google.maps.LatLng(deliveries[i].north, deliveries[i].east);
+				let marker = new google.maps.Marker({
+					position: markerGeo,
+					map: map,
+					title: deliveries[i].name,
+					icon: '/frontend/images/icons/gmarker.png',
+					label: {
+						text: deliveries[i].delivery_time,
+						className: 'my-g-label',
+						fontSize: '22px',
+						padding: '4px',
+						fontWeight: 'bold',
+					},
+				});
+				$delivery.find('.panner').click(() => {
+					map.panTo(marker.getPosition());
+				});
+				marker.addListener('mouseover', () => {
+					$delivery.addClass('yellow');
+				});
+				marker.addListener('mouseout', () => {
+					$delivery.removeClass('yellow');
+				});
+				marker.addListener('click', () => {
+					let checked = $delivery.find('.js-deliverable').prop('checked');
+					$delivery.find('.js-deliverable').prop('checked', !checked);
+				});
+				$('#boxOrdini').append($delivery);
+			}
 		} catch(e) {
 			console.log(e);
 		}
@@ -664,13 +683,13 @@ function kitchenPrint(_order) {
 				$pizza.find('[pizza-quantity]').text(row.n);
 				for (let j in pizza.ingredients) {
 					if (pizza.ingredients[j] in ingredients) {
-						let $ingredient = $kitchenIngredient.clone();
-						let ingredient = ingredients[pizza.ingredients[j]];
-						$ingredient.text(ingredients[pizza.ingredients[j]].name);
 						if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
+							let $ingredient = $kitchenIngredient.clone();
+							let ingredient = ingredients[pizza.ingredients[j]];
+							$ingredient.text(ingredients[pizza.ingredients[j]].name);
 							$ingredient.addClass('without');
+							$pizza.append($ingredient);
 						}
-						$pizza.append($ingredient);
 					}
 				}
 				for (let j in row.ingredients) {
@@ -718,7 +737,7 @@ let map;
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById("Gmap"), {
-		center: { lat: -34.397, lng: 150.644 },
-		zoom: 8,
+		center: { lat: 45.56080421699978, lng: 12.237069202199795 },
+		zoom: 13,
 	});
 }

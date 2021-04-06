@@ -16,18 +16,6 @@
 #boxOrdini {
 	min-width: 300px;
 }
-#customersBox, #boxOrdini {
-	margin: 12px 12px 0 12px;
-}
-#toPrepping:hover {
-	background-color: #ffcc80!important;
-}
-#toPrepping.orange-700:hover {
-	background-color: #f57c00!important;
-}
-#toPrepping {
-	border-top-left-radius: 10px;
-}
 #editPizzaComposition .w3-modal-content {
 	height: 100vh;
 	margin-left: 0;
@@ -36,22 +24,6 @@
 .js-deliverable {
 	height: 24px;
 	width: 24px;
-}
-#toDelivering:hover {
-	background-color: #b3e5fc!important;
-}
-#toDelivering.light-blue-200:hover {
-	background-color: #81d4fa!important;
-}
-#toDelivering {
-	border-top-right-radius: 10px;
-}
-#toPrepping, #toDelivering {
-	width: 50%;
-	color: black;
-}
-#pendingOrders .info-cliente {
-	border-bottom: 2px solid #f57c00;
 }
 .info-cliente {
 	border-bottom: 2px solid #03a9f4;
@@ -98,23 +70,31 @@
 	border: 1px solid #bbb;
 	color: #bbb;
 }
-#totaleOrdine:before {
+#totaleOrdine [tot-text]:after {
 	content: '€';
 }
 #totaleOrdine {
-	background-color: #a2ffa4;
-	font-size: 40px;
-	border: 1px solid green;
-	border-top-left-radius: 12px;
-	border-top-right-radius: 12px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #1a73e8;
+	border-top: 2px solid rgba(0, 0, 0, 0.2);
+}
+#totaleOrdine .tot-label {
+
+}
+#totaleOrdine [tot-text] {
 	padding: 0px 16px;
+	text-align: right;
 }
 .context-function {
 	width: 120px;
-	font-size: 16px;
-	padding: 4px 8px;
+	font-size: 18px;
+	padding: 12px 0 10px;
+	text-align: center;
 	cursor: pointer;
-	border: 1px solid black;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	margin: 2px;
 }
 .tabs-container {
 	font-size: 24px;
@@ -158,6 +138,12 @@
 	padding: 6px 12px;
 	cursor: pointer;
 }
+.categoria.selected {
+	padding-right: 8px;
+}
+.notes-container {
+	padding: 16px;
+}
 #categorieIngredientiContainer .categoria {
 	/* background-color: #bfffbf; */
 }
@@ -184,10 +170,15 @@
 }
 #elencoPiatti .piatto .-colorful, #elencoIngredienti .ingrediente .-colorful {
 	width: 100%;
-	padding: 38px 22px;
-	font-size: 22px;
-	line-height: 18px;
+	padding: 22px;
+	font-size: 18px;
+	line-height: 14px;
 	text-align: center;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #elencoIngredienti .ingrediente [selecting-mark] {
 	padding-right: 8px;
@@ -197,10 +188,12 @@
 }
 #elencoPiatti .piatto, #elencoIngredienti .ingrediente {
 	font-size: 16px;
-	min-width: 200px;
+	min-width: 120px;
 	width: calc(100% / 5);
-	padding: 8px;
+	padding: 4px;
 	cursor: pointer;
+	display: flex;
+	flex-direction: column;
 }
 .item.selected {
 	background-color: #e8ffb7;
@@ -251,9 +244,6 @@
 #scrollOrdine {
 	max-height: calc(100vh - 220px);
 	overflow-y: auto;
-}
-#totaleOrdine {
-	text-align: right;
 }
 #deliveryTo {
 	border: 1px solid #888;
@@ -344,4 +334,9 @@
 }
 #tastiera > div:last-child [tasto]:last-child {
 	border-bottom-right-radius: 20px;
+}
+.my-g-label {
+	font-size: 26px;
+	padding: 14px;
+	font-weight: bold;
 }

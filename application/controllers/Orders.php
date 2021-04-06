@@ -13,6 +13,10 @@ class Orders extends CB_Controller {
 		$this->ordini();
 	}
 
+	public function test() {
+		debug(geocode('mogliano', 'via falcone borsellino'));
+	}
+
 	public function ordini() {
 		$_delivery = [
 			'payment_methods' => $this->orders_model->payment_methods(),
@@ -22,8 +26,8 @@ class Orders extends CB_Controller {
 		$this->load->view('orders_manager', array_merge($_delivery, $_menu));
 	}
 
-	public function get_all_orders() {
-		echo JSON_encode($this->orders_model->get_all_orders_after(date('Y-m-d H:i:s', strtotime('-1 day'))));
+	public function get_todays_orders() {
+		echo JSON_encode($this->orders_model->get_all_orders(date('Y-m-d H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s', strtotime('+1 day'))));
 	}
 
 	public function add_or_edit_order() {

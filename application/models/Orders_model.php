@@ -12,12 +12,17 @@ class Orders_model extends CI_Model {
 
 	}
 
-	public function get_all_orders_after($datetime) {
+	public function get_all_orders($from_date = false, $to_date = false) {
+		if ($from_date) {
+			$this->db->where('delivery_time >=', $from_date);
+		}
+		if ($to_date) {
+			$this->db->where('delivery_time <=', $to_date);
+		}
 		$db_deliveries = $this->db
 		->join('order_pizzas', 'order_pizzas.cod_delivery = deliveries.id_delivery', 'LEFT')
 		->join('order_pizza_ingredients', 'deliveries.id_delivery = order_pizza_ingredients.x_cod_delivery AND order_pizzas.order_serial = order_pizza_ingredients.x_order_serial', 'LEFT')
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
-		->where('delivery_time >=', $datetime)
 		->get('deliveries')->result_array();
 		$deliveries = [];
 		$orders_pizzas_ingredients = [];
@@ -34,6 +39,8 @@ class Orders_model extends CI_Model {
 					'is_delivery' => intval($info['is_delivery']),
 					'name' => $info['name'],
 					'notes' => $info['notes'],
+					'north' => $info['north'],
+					'east' => $info['east'],
 					'payment_method' => $info['cod_payment'],
 					'rows' => [],
 					'sconto' => null,
@@ -52,6 +59,7 @@ class Orders_model extends CI_Model {
 				$deliveries[$info['id_delivery']]['rows'][$info['order_serial']] = [
 					'id_piatto' => $info['cod_pizza'],
 					'n' => $info['pizza_quantity'],
+					'omaggio' => $info['uncharged'] ? true : false,
 					'ingredients' => isset($orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']]) ? $orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']] : [],
 				];
 			}
@@ -168,13 +176,55 @@ class Orders_model extends CI_Model {
 		$order['telephone'] = isset($post['telephone']) ? $post['telephone'] : null;
 		$order['name'] = isset($post['name']) ? $post['name'] : '';
 		$order['notes'] = isset($post['notes']) ? $post['notes'] : '';
+		$order['delivery_time'] = $day.' '.$time.':00';
 		if ($order['is_delivery']) {
+			$order['north'] = false;
+			$order['east'] = false;
 			$order['doorbell'] = $post['doorbell'];
 			$order['address'] = $post['address'];
 			$order['city'] = $post['city'];
-			$order['north'] = null;
-			$order['east'] = null;
-			$order['delivery_time'] = $day.' '.$time.':00';
+			if ($order['id_delivery']) {
+				$old_order = $this->db
+				->where('cod_company', _GLOBAL_COMPANY['id_company'])
+				->where('id_delivery', $order['id_delivery'])
+				->get('deliveries')->result_array();
+				if (!empty($old_order)) {
+					$old_order = $old_order[0];
+					if ($old_order['north'] || $old_order['east']) {
+						# geocode già fatto
+						if ($order['city'] == $old_order['city'] && $order['address'] == $old_order['address']) {
+							# indirizzo non cambiato
+							$order['north'] = $old_order['north'];
+							$order['east'] = $old_order['east'];
+						}
+					}
+				}
+			}
+			if (!$order['north'] && !$order['east']) {
+				# non era già stato calcolato o è cambiato
+				if ($order['cod_customer']) {
+					$customer = $this->db
+					->where('cod_company', _GLOBAL_COMPANY['id_company'])
+					->where('id_customer', $order['cod_customer'])
+					->get('customers')->result_array();
+					if (!empty($customer)) {
+						$customer = $customer[0];
+						if ($customer['city'] == $order['city'] && $customer['address'] == $order['address']) {
+							if ($customer['north'] || $customer['east']) {
+								$order['north'] = $customer['north'];
+								$order['east'] = $customer['east'];
+							}
+						}
+					}
+				}
+			}
+			if (!$order['north'] && !$order['east']) {
+				$geo = geocode($order['city'], $order['address']);
+				if ($geo) {
+					$order['north'] = $geo['north'];
+					$order['east'] = $geo['east'];
+				}
+			}
 		} else {
 			$order['doorbell'] = $order['address'] = $order['city'] = $order['north'] = $order['east'] = $order['delivery_time'] = null;
 		}

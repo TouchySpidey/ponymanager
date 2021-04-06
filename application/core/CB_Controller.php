@@ -7,6 +7,14 @@ class CB_Controller extends CI_Controller {
 
 		parent::__construct();
 
+		$this->db->insert('heavy_logger', [
+			'user_if_any' => $this->session->user ? $this->session->user['email'] : null,
+			'url' => current_url(),
+			'querystring' => $this->input->get() ? serialize($this->input->get()) : null,
+			'ipaddress' => $this->input->ip_address(),
+			'useragent' => $this->input->user_agent(),
+		]);
+
 		if (!$this->session->user) {
 			$this->session->redirect = $_SERVER['REDIRECT_QUERY_STRING'];
 			redirect('/');

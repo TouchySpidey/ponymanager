@@ -7,95 +7,60 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<?php topbar() ?>
 	<?php main_menu() ?>
 	<div id="pageContainer">
-		<div class="d-flex">
-			<div id="boxOrdini">
-				<div class="d-flex" id="switchOrdini">
-					<div id="toPrepping" class="btn orange-700">In preparazione</div>
-					<div id="toDelivering" class="btn light-blue">In transito</div>
-				</div>
-				<div id="pendingOrders">
-					<div class="info-cliente">
-						<div class="info-container">
-							<div class="d-flex">
-								<div>
-									<div class="nome-cliente">GLORIA LUNIAN</div>
-									<div class="pizze-ordinate">4 pizze</div>
-									<div class="indirizzo-cliente">VIA ISTRIA 32</div>
-									<div>1 birra</div>
-								</div>
-								<div class="d-flex ml-auto">
-									<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
-								</div>
-							</div>
-						</div><!-- info-container -->
-					</div>
-					<div class="info-cliente">
-						<div class="info-container">
-							<div class="d-flex">
-								<div>
-									<div class="nome-cliente">LEONARDO CESCA</div>
-									<div class="pizze-ordinate">8 pizze</div>
-									<div class="indirizzo-cliente">VIA LAZZARIS 34</div>
-								</div>
-								<div class="d-flex ml-auto">
-									<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
-								</div>
-							</div>
-						</div><!-- info-container -->
-					</div>
-					<div class="info-cliente">
-						<div class="info-container">
-							<div class="d-flex">
-								<div>
-									<div class="nome-cliente">MICOL PAGOTTO</div>
-									<div class="pizze-ordinate">3 pizze</div>
-									<div class="indirizzo-cliente">VIA GORIZIA 10</div>
-								</div>
-								<div class="d-flex ml-auto">
-									<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
-								</div>
-							</div>
-						</div><!-- info-container -->
-					</div>
-				</div>
-
-				<div id="sentOrders">
-					<div class="info-cliente">
-						<div class="info-container">
-							<div class="d-flex">
-								<div>
-									<div class="nome-cliente">JAHIR ISLAM</div>
-									<div class="pizze-ordinate">8 pizze</div>
-									<div class="indirizzo-cliente">VIA EMILIA 11</div>
-									<div>1 birra</div>
-								</div>
-								<div class="d-flex ml-auto">
-									<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
-								</div>
-							</div>
-						</div><!-- info-container -->
-					</div>
-					<div class="info-cliente">
-						<div class="info-container">
-							<div class="d-flex">
-								<div>
-									<div class="nome-cliente">LAURA ERCOLANO</div>
-									<div class="pizze-ordinate">2 pizze</div>
-									<div class="indirizzo-cliente">VIA EMILIA 11</div>
-								</div>
-								<div class="d-flex ml-auto">
-									<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
-								</div>
-							</div>
-						</div><!-- info-container -->
-					</div>
-				</div>
-				<div class="d-flex">
-					<div class="btn indigo-600 ml-auto mr-auto" onclick="window.print()">Stampa!</div>
-				</div>
+		<div id="ordersFilters">
+			<div class="d-flex">
+				<div class="ml-auto">Eliminati</div>
+				<div>TakeAway</div>
+				<div>Delivery</div>
+				<div>Mostra tutto</div>
 			</div>
-			<div class="flex-1">
-				<div id="Gmap"></div>
+		</div>
+		<div>
+			<div class="d-flex">
+				<div>
+
+					<?php
+					$ora_apertura = 10;
+					$minuto_apertura = 00;
+					$ora_chiusura = 15;
+					$minuto_chiusura = 00;
+					?>
+					<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
+						<?php foreach (range(0, 50, 10) as $minuto) { ?>
+							<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
+								<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+								<div class="order-n delivery n-consegne delivery-only"></div>
+								<div class="order-n delivery n-pizze"></div>
+							</div>
+						<?php } ?>
+					<?php } ?>
+				</div>
+				<div class="flex-1">
+					<div id="Gmap"></div>
+				</div>
+				<div id="boxOrdini">
+					<div class="info-cliente" id="ghostDelivery">
+						<div class="d-flex">
+							<div class="mt-auto mb-auto panner btn gred">
+								<i class="mdi mdi-map-marker"></i>
+							</div>
+							<div class="mt-auto mb-auto opener btn gblue" onclick="select_order(this.getAttribute('id-order'))">
+								<i class="mdi mdi-open-in-new"></i>
+							</div>
+							<div class="info-container">
+								<div class="d-flex">
+									<div>
+										<div class="nome-cliente">GLORIA LUNIAN</div>
+										<div class="indirizzo-cliente">VIA ISTRIA 32</div>
+									</div>
+								</div>
+							</div><!-- info-container -->
+							<div class="d-flex ml-auto">
+								<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<button onclick="promptNewOrder()" class="fab blue"><i class="mdi mdi-plus"></i></button>
@@ -170,7 +135,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 													<div class="flex-1 bros-16-between">
 														<div class="general-heading">Note del cliente</div>
 														<div>
-															<textarea id="order-notes" style="height: 144px;" class="md-input w100p" placeholder="Appunti per il fattorino"></textarea>
+															<textarea id="order-notes" style="height: 144px;" class="md-input w100p" placeholder="Appunti e informazioni aggiuntive"></textarea>
 														</div>
 													</div>
 												</div>
@@ -187,12 +152,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										</div>
 										<div id="timetable" class="ml-auto">
 											<div class="general-heading">Orario</div>
-											<?php
-											$ora_apertura = 10;
-											$minuto_apertura = 00;
-											$ora_chiusura = 15;
-											$minuto_chiusura = 00;
-											?>
 											<div id="scrollTimeTable" class="pick-one-of-these">
 												<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
 													<?php foreach (range(0, 50, 10) as $minuto) { ?>
@@ -349,13 +308,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<div class="context-function green-200"><i class="mdi mdi-gift"></i> Sconto</div>
 							</div> -->
 						</div>
-						<div class="ml-auto" id="riepilogoOrdine">
-							<div id="totaleOrdine">€30</div>
-							<div id="scrollOrdine">
+						<div class="ml-auto v-flex" id="riepilogoOrdine">
+							<div id="scrollOrdine" class="flex-1">
 								<div class="item delivery-only">
 									<div class="d-flex">
 										<div main>Delivery</div>
-										<div price class="ml-auto">1,50</div>
+										<div price class="ml-auto mt-auto mb-auto">1,50</div>
 									</div>
 								</div>
 								<div id="listaPizze">
@@ -363,7 +321,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div class="d-flex">
 											<div quantity>1</div>
 											<div main>Capricciosa</div>
-											<div price class="ml-auto"></div>
+											<div price class="ml-auto mt-auto mb-auto"></div>
 										</div>
 										<div metapizza>
 											<div pizza-omaggio class="hidden">
@@ -377,6 +335,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									</div>
 								</div>
 							</div>
+							<div id="totaleOrdine" class="d-flex"><div class="tot-label">Totale: </div><div tot-text class="ml-auto"></div></div>
 							<div class="d-flex">
 								<!-- <button class="btn indigo"><i class="mdi mdi-printer"></i> Stampa</button> -->
 								<button class="ml-auto btn blue" id="sendOrder"><i class="mdi mdi-check"></i> Invia</button>
@@ -391,19 +350,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	<div id="editPizzaComposition" class="w3-modal modal-container order-modal">
 		<div class="w3-modal modal-backdrop"></div>
-		<div class="w3-modal-content">
-			<div class="w3-container">
+		<div class="w3-modal-content v-flex">
+			<div class="w3-container v-flex flex-1">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
-				<div>
+				<div class="v-flex flex-1">
 					<div class="d-flex">
 						<div id="categorieIngredientiContainer" class="pick-one-of-these">
 							<div class="categoria pickable" id="assigned" onclick="show_assigned()">Assegnati</div>
+							<div class="categoria pickable" id="pizzanote" onclick="show_notes()">Note</div>
 							<?php foreach ($ingredients_categories as $category) { ?>
 								<div class="categoria pickable" data-category="<?= $category ?>" onclick="select_ingredients_category('<?= $category ?>')"><?= $category ?></div>
 							<?php } ?>
 						</div>
 						<div id="elencoIngredienti" class="flex-1">
 							<div class="flex-wrap">
+								<div class="notes-container">
+									<textarea id="pizza-notes" class="md-input" placeholder="Note"></textarea>
+								</div>
 								<?php foreach ($ingredients as $ingredient) { ?>
 									<div class="ingrediente" data-elenco="<?= $ingredient['category'] ?>" data-id_ingredient="<?= $ingredient['id_ingredient'] ?>">
 										<div class="d-flex light-green-200 -colorful">
@@ -414,11 +377,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							</div>
 						</div>
 					</div>
-					<div id="pizzeContext" order-context>
+					<div id="pizzeContext" order-context class="mt-auto">
 						<div class="flex-wrap">
 							<div class="context-function gblue" data-function="omaggio">OMAGGIO</div>
-						<!-- </div>
-						<div class="flex-wrap"> -->
 							<div class="context-function orange" data-function="meno">—</div>
 							<div class="context-function green" data-function="più"><i class="mdi mdi-plus"></i></div>
 							<div class="context-function blue" data-function="duplica"><i class="mdi mdi-content-copy"></i></div>
@@ -471,6 +432,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	let pizzas_categories = JSON.parse(`<?= JSON_encode($pizzas_categories) ?>`);
 	</script>
 	<?= import_js('orders_manager') ?>
-	<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_SECRET_API ?>&callback=initMap&libraries=&v=weekly" async></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_PUBLIC_API ?>&callback=initMap&libraries=&v=weekly" async></script>
 </body>
 </html>

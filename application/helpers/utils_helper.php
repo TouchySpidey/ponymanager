@@ -1,5 +1,23 @@
 <?php
 
+function geocode($city, $address) {
+	$response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address="
+	. urlencode($city.','.$address)
+	. "&key=".GOOGLE_SECRET_API);
+
+	if ($response) {
+		$json = JSON_decode($response, TRUE);
+		if (isset($json['results']) && !empty($json['results'])) {
+			$result = $json['results'][0];
+			if (isset($result['geometry']['location'])) {
+				$north = $result['geometry']['location']['lat'];
+				$east = $result['geometry']['location']['lng'];
+				return compact('north', 'east');
+			}
+		}
+	}
+	return false;
+}
 function debug(...$pieces) {
 	echo "<pre style='white-space: pre-wrap; word-break: break-word;'>";
 	foreach ((array) $pieces as $piece) {

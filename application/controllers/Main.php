@@ -10,7 +10,7 @@ class Main extends CI_Controller {
 			redirect('/orders');
 		}
 	}
-
+	
 	public function index() {
 		$this->login();
 	}
@@ -34,6 +34,13 @@ class Main extends CI_Controller {
 				} else {
 					$this->session->company = $company[0];
 				}
+				$this->db->insert('heavy_logger', [
+					'user_if_any' => $this->session->user ? $this->session->user['email'] : null,
+					'url' => current_url(),
+					'querystring' => $this->input->get() ? serialize($this->input->get()) : null,
+					'ipaddress' => $this->input->ip_address(),
+					'useragent' => $this->input->user_agent(),
+				]);
 				if ($redirect = $this->session->redirect) {
 					$this->session->unset_userdata('redirect');
 					redirect($redirect);
