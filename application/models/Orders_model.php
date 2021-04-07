@@ -13,6 +13,7 @@ class Orders_model extends CI_Model {
 	}
 
 	public function get_all_orders($from_date = false, $to_date = false) {
+		$this->db->group_start();
 		if ($from_date || $to_date) {
 			if ($from_date) {
 				$this->db->where('delivery_time >=', $from_date);
@@ -22,10 +23,12 @@ class Orders_model extends CI_Model {
 			}
 		}
 		$this->db->or_where('delivery_time', null);
+		$this->db->group_end();
 		$db_deliveries = $this->db
 		->join('order_pizzas', 'order_pizzas.cod_delivery = deliveries.id_delivery', 'LEFT')
 		->join('order_pizza_ingredients', 'deliveries.id_delivery = order_pizza_ingredients.x_cod_delivery AND order_pizzas.order_serial = order_pizza_ingredients.x_order_serial', 'LEFT')
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->where('active', 1)
 		->get('deliveries')->result_array();
 		$deliveries = [];
 		$orders_pizzas_ingredients = [];
@@ -63,6 +66,7 @@ class Orders_model extends CI_Model {
 					'id_piatto' => $info['cod_pizza'],
 					'n' => $info['pizza_quantity'],
 					'omaggio' => $info['uncharged'] ? true : false,
+					'notes' => $info['pizza_notes'],
 					'ingredients' => isset($orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']]) ? $orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']] : [],
 				];
 			}
@@ -249,6 +253,20 @@ class Orders_model extends CI_Model {
 		$this->db->insert_batch('order_pizzas', $order_pizzas);
 		$this->db->insert_batch('order_pizza_ingredients', $order_pizza_ingredients);
 		return $id_delivery;
+	}
+
+	public function disableDelivery($id) {
+		$delivery = $this->db
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->where('id_delivery', $id)
+		->where('active', 1)
+		->get('deliveries')->result_array();
+		if (!empty($delivery)) {
+			$delivery = $delivery[0];
+			$delivery['active'] = 0;
+			$delivery['date_of_deactivation'] = date('Y-m-d H:i:s');
+			$this->db->replace('deliveries', $delivery);
+		}
 	}
 
 }

@@ -126,33 +126,42 @@
 }
 .tabs-container {
 	font-size: 24px;
-	margin-top: 12px;
 	padding: 16px 16px 0;
 }
 .tabs-container .tab.selected {
+	/*
 	border-top: 2px solid orange;
 	border-left: 2px solid orange;
 	border-right: 2px solid orange;
+	border-bottom: 2px solid transparent;
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
-	border-bottom: 2px solid transparent;
+	 */
+	border-bottom: 2px solid #0564e0;
+	color: #0564e0;
 }
 .tabs-container .tab:not(.selected) {
+	border-bottom: 2px solid transparent;
+	/*
 	border-bottom: 2px solid orange;
 	border-left: 2px solid transparent;
 	border-top: 2px solid transparent;
 	border-right: 2px solid transparent;
-}
-.tabs-container .tab:not(:last-child) {
-	margin-right: -1px;
+	 */
 }
 .tabs-container .tab {
-	padding: 6px 12px 2px;
+	padding: 6px 26px 4px;
 	cursor: pointer;
+	text-align: center;
+	font-weight: 500;
+	line-height: 24px;
 }
-.order-modal {
+.tab > .tab-icon {
+	padding-right: 4px;
+}
+/* .order-modal {
 	padding-top: 0;
-}
+} */
 /* #categorieContainer, #elencoPiatti, #categorieIngredientiContainer, #elencoIngredienti {
 	margin-top: 12px;
 } */
@@ -290,6 +299,7 @@
 	width: 100vw;
 	height: 100vh;
 	padding: 0;
+	overflow: auto;
 }
 .open-customer-container {
 	width: 30px;
@@ -305,7 +315,7 @@
 }
 #scrollTimeTable {
 	overflow-y: auto;
-	max-height: calc(100vh - 200px);
+	max-height: calc(100vh - 316px);
 }
 .timetable-row {
 	border: 1px solid #888;

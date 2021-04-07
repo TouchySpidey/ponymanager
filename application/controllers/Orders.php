@@ -36,8 +36,12 @@ class Orders extends CB_Controller {
 		echo $replace_id;
 	}
 
+	public function delete_order() {
+		$this->orders_model->disableDelivery($this->input->post('id_order'));
+	}
+
 	public function print_demo() {
-		$orders = $this->orders_model->get_all_orders_after(date('Y-m-d H:i:s', strtotime('-1 day')));
+		$orders = $this->orders_model->get_all_orders(date('Y-m-d H:i:s', strtotime('-1 day')));
 		$this->load->view('print_demo', compact('orders'));
 	}
 

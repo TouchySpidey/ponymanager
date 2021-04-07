@@ -5,10 +5,12 @@ $(function() {
 });
 
 let $kitchenAddition = $('#kitchenAddition').remove().removeAttr('id');
+let $kitchenWithout = $('#kitchenWithout').remove().removeAttr('id');
 let $kitchenIngredient = $('#kitchenIngredient').remove().removeAttr('id');
 let $ghostPizza = $('#ghostPizza').remove().removeAttr('id');
 let $ghostPizzaAddition = $('#ghostPizzaAddition').remove().removeAttr('id');
 let $ghostKitchenPrint = $('#ghostKitchenPrint').remove().removeAttr('id');
+let $ghostPonyPrint = $('#ghostPonyPrint').remove().removeAttr('id');
 let $ghostPizzaIngredient = $('#ghostPizzaIngredient').remove().removeAttr('id');
 let $ghostDelivery = $('#ghostDelivery').remove().removeAttr('id');
 let deliveries = false;
@@ -120,6 +122,7 @@ function order_reset() {
 		string: '',
 		float: 0.,
 	});
+	$('#listaPizze').empty();
 	orderTotalUpdate(0.);
 	calculateOrderTotal();
 	$('#deliveryToForm input').val('');
@@ -294,6 +297,7 @@ function select_pizza(element) {
 		$('#elencoIngredienti .ingrediente[data-id_ingredient="' + order_row.ingredients[i] + '"]').addClass('selected');
 	}
 	$('#assigned').click();
+	$('#pizza-notes').val(order_row.notes);
 	$('#pizza-notes').off('input').on('input', function() {
 		order_row.notes = this.value;
 	});
@@ -531,7 +535,6 @@ $('#sendOrder').click(function() {
 		ordersFromDb();
 		order_reset();
 		closeModal('#addOrderModal');
-		// select_order(data);
 	});
 });
 
@@ -719,8 +722,58 @@ $('#scrollTimeFilter .timetable-row').click(function() {
 	$(this).addClass('filtering-range');
 });
 
-function kitchenPrint(_order) {
+function ponyPrint() {
 	$('#printable').empty();
+	let _order = patchOrder();
+	let $ponyPrint = $ghostPonyPrint.clone();
+	if (_order.is_delivery == 1) {
+		$ponyPrint.find('[order-type][delivery]').show();
+		$ponyPrint.find('[order-type][takeaway]').hide();
+	} else {
+		$ponyPrint.find('[order-type][takeaway]').show();
+		$ponyPrint.find('[order-type][delivery]').hide();
+	}
+	$ponyPrint.find('[time]').text(_order.delivery_time);
+	$ponyPrint.find('[customer]').text(_order.name);
+	if ('rows' in _order) {
+		if (_order.rows.length) {
+			let rows = _order.rows;
+			for (let i in rows) {
+				let row = rows[i];
+				let $pizza = $ghostPizza.clone();
+				let pizza = pizzas[row.id_piatto];
+				$pizza.find('[pizza-name]').text(pizza.name);
+				$pizza.find('[pizza-quantity]').text(row.n);
+				for (let j in pizza.ingredients) {
+					if (pizza.ingredients[j] in ingredients) {
+						if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
+							// without
+							let $ingredient = $kitchenWithout.clone();
+							let ingredient = ingredients[pizza.ingredients[j]];
+							$ingredient.find('[without-name]').text(ingredients[pizza.ingredients[j]].name);
+							$ingredient.addClass('without');
+							$pizza.append($ingredient);
+						}
+					}
+				}
+				for (let j in row.ingredients) {
+					if (pizza.ingredients.indexOf(row.ingredients[j]) === -1) {
+						$addition = $kitchenAddition.clone();
+						$addition.find('[addition-name]').text(ingredients[row.ingredients[j]].name);
+						$pizza.append($addition);
+					}
+				}
+				$ponyPrint.find('[pizze-container]').append($pizza);
+			}
+		}
+	}
+	$('#printable').append($ponyPrint);
+	window.print();
+}
+
+function kitchenPrint() {
+	$('#printable').empty();
+	let _order = patchOrder();
 	let $kitchenPrint = $ghostKitchenPrint.clone();
 	if (_order.is_delivery == 1) {
 		$kitchenPrint.find('[order-type][delivery]').show();
@@ -731,10 +784,9 @@ function kitchenPrint(_order) {
 	}
 	$kitchenPrint.find('[time]').text(_order.delivery_time);
 	$kitchenPrint.find('[customer]').text(_order.name);
-	let json_order = JSON.parse(_order.order_data);
-	if ('rows' in json_order) {
-		if (json_order.rows.length) {
-			let rows = json_order.rows;
+	if ('rows' in _order) {
+		if (_order.rows.length) {
+			let rows = _order.rows;
 			for (let i in rows) {
 				let row = rows[i];
 				let $pizza = $ghostPizza.clone();
@@ -744,9 +796,10 @@ function kitchenPrint(_order) {
 				for (let j in pizza.ingredients) {
 					if (pizza.ingredients[j] in ingredients) {
 						if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
-							let $ingredient = $kitchenIngredient.clone();
+							// without
+							let $ingredient = $kitchenWithout.clone();
 							let ingredient = ingredients[pizza.ingredients[j]];
-							$ingredient.text(ingredients[pizza.ingredients[j]].name);
+							$ingredient.find('[without-name]').text(ingredients[pizza.ingredients[j]].name);
 							$ingredient.addClass('without');
 							$pizza.append($ingredient);
 						}
@@ -755,7 +808,7 @@ function kitchenPrint(_order) {
 				for (let j in row.ingredients) {
 					if (pizza.ingredients.indexOf(row.ingredients[j]) === -1) {
 						$addition = $kitchenAddition.clone();
-						$addition.text(ingredients[row.ingredients[j]].name);
+						$addition.find('[addition-name]').text(ingredients[row.ingredients[j]].name);
 						$pizza.append($addition);
 					}
 				}
@@ -763,7 +816,6 @@ function kitchenPrint(_order) {
 			}
 		}
 	}
-	console.log(json_order);
 	$('#printable').append($kitchenPrint);
 	window.print();
 }
@@ -771,15 +823,15 @@ function kitchenPrint(_order) {
 function promptNewOrder() {
 	// is a draft available?
 	if (draft) {
-		// todo
 		resetModalData(draft);
+		draft = false;
 	}
 	// open modal
 	openNewOrderModal();
 }
 let draft = false;
 
-function select_order(id_order) {
+function selectOrder(id_order) {
 	// was creating an order? let's save the draft
 	if (!draft) {
 		draft = patchOrder();
@@ -796,6 +848,21 @@ function select_order(id_order) {
 function delete_order() {
 	console.log('delete!!!!');
 	let _draft = patchOrder();
+	if (_draft.id_order) {
+		if (confirm('ATTENZIONE! Eliminare questo ordine?')) {
+			$.post('/orders/delete_order', _draft).always(function(data) {
+				console.log(data);
+			});
+			closeModal('#addOrderModal');
+			order_reset();
+			ordersFromDb();
+		}
+	} else {
+		if (confirm('Annullare la bozza d\'ordine?')) {
+			closeModal('#addOrderModal');
+			order_reset();
+		}
+	}
 	console.log(_draft);
 }
 

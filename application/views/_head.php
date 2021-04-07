@@ -18,7 +18,7 @@
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/main.css?v=<?= VERSION ?>" />
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/global_mobile.css?v=<?= VERSION ?>" />
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/global_desktop.css?v=<?= VERSION ?>" />
-	<link rel="stylesheet" media="screen" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />
 	<script src="<?= site_url() ?>frontend/js/main.js?v=<?= VERSION ?>"></script>
 	<?php foreach ($extra_css as $css) { ?>
 		<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/<?= $css ?>.css?v=<?= VERSION ?>" />

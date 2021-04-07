@@ -45,7 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div class="mt-auto mb-auto panner btn gred">
 								<i class="mdi mdi-map-marker"></i>
 							</div>
-							<div class="mt-auto mb-auto opener btn gblue" onclick="select_order(this.getAttribute('id-order'))">
+							<div class="mt-auto mb-auto opener btn gblue" onclick="selectOrder(this.getAttribute('id-order'))">
 								<i class="mdi mdi-open-in-new"></i>
 							</div>
 							<div class="info-container">
@@ -70,255 +70,268 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	<div id="addOrderModal" class="w3-modal modal-container order-modal">
 		<div class="w3-modal modal-backdrop"></div>
-		<div class="w3-modal-content order-modal-content">
-			<div class="w3-container">
-				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
-				<div id="addOrder">
-					<div id="orderTabs" class="d-flex tabs-container scroll-x">
-						<div class="tab" data-tab="consegna">Consegna</div>
-						<div class="tab" data-tab="cliente">Cliente</div>
-						<div class="tab" data-tab="menu">Ordine</div>
-						<div class="tab" data-tab="pagamento">Pagamento</div>
-						<div class="tab" data-tab="stampa">Stampa</div>
-						<div class="tab ml-auto" data-tab="elimina">Eliminazione</div>
+		<div class="w3-modal-content order-modal-content v-flex">
+			<div class="modal-topbar">
+				<div class="d-flex">
+					<div onclick="closeModal(this)" class="action-container"><i class="mdi mdi-arrow-left"></i></div>
+					<div class="ml-auto action-container" onclick="delete_order()"><i class="mdi mdi-delete"></i></div>
+				</div>
+			</div>
+			<div id="addOrder" class="flex-1 v-flex">
+				<div id="orderTabs" class="d-flex tabs-container scroll-x">
+					<div class="tab" data-tab="consegna">
+						<span class="tab-icon"><i class="mdi mdi-mailbox"></i></span>
+						<span>Consegna</span>
 					</div>
-					<div class="d-flex scroll-x" id="tabSwitcher">
-						<div class="flex-1">
-							<div>
-								<div tab="elimina" order-component>
-									<div class="btn red-800" onclick="delete_order()"><i class="mdi mdi-close"></i> Elimina</div>
-								</div>
-								<div tab="stampa" order-component>
-									<div class="btn gblue" onclick="printOpenOrder()">cucina</div>
-									<div class="btn gblue">pony</div>
-									<div class="btn gblue">cliente</div>
-								</div>
-								<div tab="consegna" order-component>
-									<div class="d-flex">
-										<div class="flex-1">
-											<div>
-												<div class="d-flex">
-													<div class="flex-1 bros-16-between">
-														<div class="general-heading">Tipologia di ordine</div>
-														<div class="pick-one-of-these">
-															<div id="deliveryOrder" class="md-checkbox-lg pickable">
-																<div>Delivery</div>
-																<div class="order-pricing">1,50€</div>
-															</div>
-															<div id="takeawayOrder" class="md-checkbox-lg pickable">
-																<div>Takeaway</div>
-																<div class="order-pricing">Gratis</div>
-															</div>
+					<div class="tab" data-tab="cliente">
+						<span class="tab-icon"><i class="mdi mdi-account"></i></span>
+						<span>Cliente</span>
+					</div>
+					<div class="tab" data-tab="menu">
+						<span class="tab-icon"><i class="mdi mdi-format-list-checkbox"></i></span>
+						<span>Ordine</span>
+					</div>
+					<div class="tab" data-tab="pagamento">
+						<span class="tab-icon"><i class="mdi mdi-credit-card-outline"></i></span>
+						<span>Pagamento</span>
+					</div>
+					<div class="tab" data-tab="stampa">
+						<span class="tab-icon"><i class="mdi mdi-printer"></i></span>
+						<span>Stampa</span>
+					</div>
+				</div>
+				<div class="d-flex scroll-x flex-1" id="tabSwitcher">
+					<div class="flex-1">
+						<div>
+							<div tab="elimina" order-component>
+								<div class="btn red-800" onclick="delete_order()"><i class="mdi mdi-close"></i> Elimina</div>
+							</div>
+							<div tab="stampa" order-component>
+								<div class="btn gblue" onclick="kitchenPrint()">cucina</div>
+								<div class="btn gblue" onclick="ponyPrint()">pony</div>
+								<div class="btn gblue" onclick="customerPrint()">cliente</div>
+							</div>
+							<div tab="consegna" order-component>
+								<div class="d-flex">
+									<div class="flex-1">
+										<div>
+											<div class="d-flex">
+												<div class="flex-1 bros-16-between">
+													<div class="general-heading">Tipologia di ordine</div>
+													<div class="pick-one-of-these">
+														<div id="deliveryOrder" class="md-checkbox-lg pickable">
+															<div>Delivery</div>
+															<div class="order-pricing">1,50€</div>
+														</div>
+														<div id="takeawayOrder" class="md-checkbox-lg pickable">
+															<div>Takeaway</div>
+															<div class="order-pricing">Gratis</div>
 														</div>
 													</div>
-													<div class="flex-1 bros-16-between">
-														<div class="general-heading">Note del cliente</div>
-														<div>
-															<textarea id="order-notes" style="height: 144px;" class="md-input w100p" placeholder="Appunti e informazioni aggiuntive"></textarea>
-														</div>
+												</div>
+												<div class="flex-1 bros-16-between">
+													<div class="general-heading">Note del cliente</div>
+													<div>
+														<textarea id="order-notes" style="height: 144px;" class="md-input w100p" placeholder="Appunti e informazioni aggiuntive"></textarea>
 													</div>
+												</div>
+											</div>
+											<div class="delivery-only">
+												<div class="general-heading">Seleziona il pony</div>
+												<div id="pony" class="list-block-container pick-one-of-these">
+													<div class="md-checkbox-lg pickable js-pony" data-id_pony="">Non selezionato</div>
+													<?php foreach ($ponies as $pony) { ?>
+														<div class="md-checkbox-lg pickable js-pony" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
+													<?php } ?>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="timetable" class="ml-auto">
+										<div class="general-heading">Orario</div>
+										<div id="scrollTimeTable" class="pick-one-of-these">
+											<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
+												<?php foreach (range(0, 50, 10) as $minuto) { ?>
+													<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
+														<div class="order-n delivery n-consegne delivery-only"></div>
+														<div class="order-n delivery n-pizze"></div>
+														<div class="order-n takeaway n-pizze"></div>
+														<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+													</div>
+												<?php } ?>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div tab="cliente" order-component>
+								<div class="d-flex">
+									<div>
+										<div class="input-block" style="padding: 16px;">
+											<input autocomplete="off" class="md-input" id="finder" type="text" placeholder="Cerca">
+										</div>
+										<form id="deliveryToForm">
+											<input type="hidden" name="id_delivery" />
+											<div id="deliveryTo">
+												<input type="hidden" name="id_customer" />
+												<div class="input-block">
+													<div><label>Nome e cognome</label></div>
+													<input class="md-input" type="text" name="name" placeholder="Nome e cognome" />
+												</div>
+												<div class="input-block">
+													<div><label>Telefono</label></div>
+													<div><input class="md-input" type="text" name="telephone" placeholder="Telefono"></div>
 												</div>
 												<div class="delivery-only">
-													<div class="general-heading">Seleziona il pony</div>
-													<div id="pony" class="list-block-container pick-one-of-these">
-														<div class="md-checkbox-lg pickable js-pony" data-id_pony="">Non selezionato</div>
-														<?php foreach ($ponies as $pony) { ?>
-															<div class="md-checkbox-lg pickable js-pony" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
-														<?php } ?>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div id="timetable" class="ml-auto">
-											<div class="general-heading">Orario</div>
-											<div id="scrollTimeTable" class="pick-one-of-these">
-												<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
-													<?php foreach (range(0, 50, 10) as $minuto) { ?>
-														<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
-															<div class="order-n delivery n-consegne delivery-only"></div>
-															<div class="order-n delivery n-pizze"></div>
-															<div class="order-n takeaway n-pizze"></div>
-															<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
-														</div>
-													<?php } ?>
-												<?php } ?>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div tab="cliente" order-component>
-									<div class="d-flex">
-										<div>
-											<div class="input-block" style="padding: 16px;">
-												<input autocomplete="off" class="md-input" id="finder" type="text" placeholder="Cerca">
-											</div>
-											<form id="deliveryToForm">
-												<input type="hidden" name="id_delivery" />
-												<div id="deliveryTo">
-													<input type="hidden" name="id_customer" />
 													<div class="input-block">
-														<div><label>Nome e cognome</label></div>
-														<input class="md-input" type="text" name="name" placeholder="Nome e cognome" />
+														<div><label>Città</label></div>
+														<div><input class="md-input" type="text" name="city" placeholder="Città"></div>
 													</div>
 													<div class="input-block">
-														<div><label>Telefono</label></div>
-														<div><input class="md-input" type="text" name="telephone" placeholder="Telefono"></div>
+														<div><label>Indirizzo</label></div>
+														<div><input class="md-input" type="text" name="address" placeholder="Indirizzo"></div>
 													</div>
-													<div class="delivery-only">
-														<div class="input-block">
-															<div><label>Città</label></div>
-															<div><input class="md-input" type="text" name="city" placeholder="Città"></div>
-														</div>
-														<div class="input-block">
-															<div><label>Indirizzo</label></div>
-															<div><input class="md-input" type="text" name="address" placeholder="Indirizzo"></div>
-														</div>
-														<div class="input-block">
-															<div><label>Nome sul campanello</label></div>
-															<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
-														</div>
-													</div>
-													<div class="d-flex">
-														<div id="overwriteCustomer" class="btn ml-auto orange"><i class="mdi mdi-pencil"></i> Aggiorna</div>
-														<div id="saveNewCustomer" class="btn ml-auto green"><i class="mdi mdi-plus"></i> Nuovo</div>
+													<div class="input-block">
+														<div><label>Nome sul campanello</label></div>
+														<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
 													</div>
 												</div>
-											</form>
-										</div>
-										<div id="customersBox" class="mr-auto">
-											<div>
-												<div class="info-cliente parent-to-be-hovered" onclick="select_customer(false)">
-													<div class="d-flex">
-														<div class="show-on-parent-hover">
-															<div class="open-customer-container d-flex">
-																<div class="open-customer mt-auto mb-auto">
-																	<i class="mdi mdi-chevron-left"></i>
-																</div>
-															</div>
-														</div>
-														<div class="info-container ml-auto text-right">
-															<div class="nome-cliente">Nuovo Cliente</div>
-														</div>
-													</div>
+												<div class="d-flex">
+													<div id="overwriteCustomer" class="btn ml-auto orange"><i class="mdi mdi-pencil"></i> Aggiorna</div>
+													<div id="saveNewCustomer" class="btn ml-auto green"><i class="mdi mdi-plus"></i> Nuovo</div>
 												</div>
 											</div>
-											<div id="resultsFound">
-												<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this.getAttribute('data-id'))">
-													<div class="d-flex">
-														<div class="show-on-parent-hover">
-															<div class="open-customer-container d-flex">
-																<div class="open-customer mt-auto mb-auto">
-																	<i class="mdi mdi-chevron-left"></i>
-																</div>
-															</div>
-														</div>
-														<div class="info-container ml-auto text-right">
-															<div class="nome-cliente"></div>
-															<div class="indirizzo-cliente"></div>
-															<div class="telefono-cliente"></div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
+										</form>
 									</div>
-								</div>
-								<div tab="menu" order-component>
-									<div class="d-flex">
-										<div id="categorieContainer">
-											<?php foreach ($pizzas_categories as $category) { ?>
-												<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
-											<?php } ?>
-										</div>
-										<div id="elencoPiatti" class="flex-1">
-											<div class="flex-wrap">
-												<?php foreach ($pizzas as $pizza) { ?>
-													<div class="piatto" data-elenco="<?= $pizza['category'] ?>" data-id_pizza="<?= $pizza['id_pizza'] ?>">
-														<div class="orange-200 -colorful"><?= $pizza['name'] ?></div>
-													</div>
-												<?php } ?>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div tab="pagamento" order-component>
-									<div class="d-flex">
+									<div id="customersBox" class="mr-auto">
 										<div>
-											<div id="calcolatrice">
-												<div class="d-flex" id="importi">
-													<div id="totale"></div>
-													<div id="inputImporto">0</div>
-													<div id="restoCalcolato"></div>
-												</div>
-												<div id="tastiera">
-													<div class="d-flex">
-														<div tasto data-function="7">7</div>
-														<div tasto data-function="8">8</div>
-														<div tasto data-function="9">9</div>
+											<div class="info-cliente parent-to-be-hovered" onclick="select_customer(false)">
+												<div class="d-flex">
+													<div class="show-on-parent-hover">
+														<div class="open-customer-container d-flex">
+															<div class="open-customer mt-auto mb-auto">
+																<i class="mdi mdi-chevron-left"></i>
+															</div>
+														</div>
 													</div>
-													<div class="d-flex">
-														<div tasto data-function="4">4</div>
-														<div tasto data-function="5">5</div>
-														<div tasto data-function="6">6</div>
-													</div>
-													<div class="d-flex">
-														<div tasto data-function="1">1</div>
-														<div tasto data-function="2">2</div>
-														<div tasto data-function="3">3</div>
-													</div>
-													<div class="d-flex">
-														<div tasto data-function="<"><i class="mdi mdi-backspace-outline"></i></div>
-														<div tasto data-function="0">0</div>
-														<div tasto data-function="C">C</div>
+													<div class="info-container ml-auto text-right">
+														<div class="nome-cliente">Nuovo Cliente</div>
 													</div>
 												</div>
 											</div>
 										</div>
-										<div id="paymentMethods" class="ml-auto mr-auto mt-auto mb-auto list-block-container pick-one-of-these">
-											<div class="list-block pickable" data-id_payment="">Non pagato</div>
-											<?php foreach ($payment_methods as $payment_method) { ?>
-												<div class="list-block pickable" data-id_payment="<?= $payment_method['id_payment'] ?>"><?= $payment_method['description'] ?></div>
+										<div id="resultsFound">
+											<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this.getAttribute('data-id'))">
+												<div class="d-flex">
+													<div class="show-on-parent-hover">
+														<div class="open-customer-container d-flex">
+															<div class="open-customer mt-auto mb-auto">
+																<i class="mdi mdi-chevron-left"></i>
+															</div>
+														</div>
+													</div>
+													<div class="info-container ml-auto text-right">
+														<div class="nome-cliente"></div>
+														<div class="indirizzo-cliente"></div>
+														<div class="telefono-cliente"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div tab="menu" order-component>
+								<div class="d-flex">
+									<div id="categorieContainer">
+										<?php foreach ($pizzas_categories as $category) { ?>
+											<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
+										<?php } ?>
+									</div>
+									<div id="elencoPiatti" class="flex-1">
+										<div class="flex-wrap">
+											<?php foreach ($pizzas as $pizza) { ?>
+												<div class="piatto" data-elenco="<?= $pizza['category'] ?>" data-id_pizza="<?= $pizza['id_pizza'] ?>">
+													<div class="orange-200 -colorful"><?= $pizza['name'] ?></div>
+												</div>
 											<?php } ?>
 										</div>
 									</div>
 								</div>
 							</div>
-							<!-- <div class="d-flex">
-								<div class="context-function green-200"><i class="mdi mdi-gift"></i> Sconto</div>
-							</div> -->
+							<div tab="pagamento" order-component>
+								<div class="d-flex">
+									<div>
+										<div id="calcolatrice">
+											<div class="d-flex" id="importi">
+												<div id="totale"></div>
+												<div id="inputImporto">0</div>
+												<div id="restoCalcolato"></div>
+											</div>
+											<div id="tastiera">
+												<div class="d-flex">
+													<div tasto data-function="7">7</div>
+													<div tasto data-function="8">8</div>
+													<div tasto data-function="9">9</div>
+												</div>
+												<div class="d-flex">
+													<div tasto data-function="4">4</div>
+													<div tasto data-function="5">5</div>
+													<div tasto data-function="6">6</div>
+												</div>
+												<div class="d-flex">
+													<div tasto data-function="1">1</div>
+													<div tasto data-function="2">2</div>
+													<div tasto data-function="3">3</div>
+												</div>
+												<div class="d-flex">
+													<div tasto data-function="<"><i class="mdi mdi-backspace-outline"></i></div>
+													<div tasto data-function="0">0</div>
+													<div tasto data-function="C">C</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="paymentMethods" class="ml-auto mr-auto mt-auto mb-auto list-block-container pick-one-of-these">
+										<div class="list-block pickable" data-id_payment="">Non pagato</div>
+										<?php foreach ($payment_methods as $payment_method) { ?>
+											<div class="list-block pickable" data-id_payment="<?= $payment_method['id_payment'] ?>"><?= $payment_method['description'] ?></div>
+										<?php } ?>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div class="ml-auto v-flex" id="riepilogoOrdine">
-							<div id="scrollOrdine" class="flex-1">
-								<div class="item delivery-only">
+					</div>
+					<div class="ml-auto v-flex" id="riepilogoOrdine">
+						<div id="scrollOrdine" class="flex-1">
+							<div class="item delivery-only">
+								<div class="d-flex">
+									<div main>Delivery</div>
+									<div price class="ml-auto mt-auto mb-auto">1,50</div>
+								</div>
+							</div>
+							<div id="listaPizze">
+								<div class="item" id="ghostOrderItem" onclick="select_pizza(this)">
 									<div class="d-flex">
-										<div main>Delivery</div>
-										<div price class="ml-auto mt-auto mb-auto">1,50</div>
+										<div quantity>1</div>
+										<div main>Capricciosa</div>
+										<div price class="ml-auto mt-auto mb-auto"></div>
 									</div>
-								</div>
-								<div id="listaPizze">
-									<div class="item" id="ghostOrderItem" onclick="select_pizza(this)">
-										<div class="d-flex">
-											<div quantity>1</div>
-											<div main>Capricciosa</div>
-											<div price class="ml-auto mt-auto mb-auto"></div>
+									<div metapizza>
+										<div pizza-omaggio class="hidden">
+											<div class="green">Omaggio</div>
 										</div>
-										<div metapizza>
-											<div pizza-omaggio class="hidden">
-												<div class="green">Omaggio</div>
-											</div>
-										</div>
-										<div modifiche>
-											<div ingrediente id="ghostPizzaIngredient">prosciutto</div>
-											<div aggiunta id="ghostPizzaAddition">Salsiccia</div>
-										</div>
+									</div>
+									<div modifiche>
+										<div ingrediente id="ghostPizzaIngredient">prosciutto</div>
+										<div aggiunta id="ghostPizzaAddition">Salsiccia</div>
 									</div>
 								</div>
 							</div>
-							<div id="totaleOrdine" class="d-flex"><div class="tot-label">Totale: </div><div tot-text class="ml-auto"></div></div>
-							<div class="d-flex">
-								<!-- <button class="btn indigo"><i class="mdi mdi-printer"></i> Stampa</button> -->
-								<button class="ml-auto btn blue" id="sendOrder"><i class="mdi mdi-check"></i> Invia</button>
-							</div>
+						</div>
+						<div id="totaleOrdine" class="d-flex"><div class="tot-label">Totale: </div><div tot-text class="ml-auto"></div></div>
+						<div class="d-flex">
+							<button class="ml-auto btn blue" id="sendOrder"><i class="mdi mdi-check"></i> Salva</button>
 						</div>
 					</div>
 				</div>
@@ -372,22 +385,43 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	<div id="ghostCustomerPrint">
 	</div>
-	<div id="ghostRiderPrint">
+	<div id="ghostPonyPrint">
+		<div class="data">29/03/2021</div>
+		<div class="label">Orario</div>
+		<div class="value" time="">19:30</div>
+		<div class="label">Cliente</div>
+		<div class="value" customer="">GLORIA LUNIAN</div>
+		<div class="label">Indirizzo</div>
+		<div class="value" address="">GLORIA LUNIAN</div>
+		<div class="label">Campanello</div>
+		<div class="value" doorbell="">GLORIA LUNIAN</div>
+		<div pizze-container="">
+			<div id="ghostPizza">
+				<div class="pizza-heading"><span pizza-quantity="">1</span> <span pizza-name="">Vegetariana</span></div>
+				<div pizza-ingredient="" id="kitchenIngredient">Zucchine</div>
+				<div pizza-ingredient="" without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name>Peperoni</span></div>
+				<div pizza-aggiunta="" id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name>Champignon</span></div>
+			</div>
+		</div>
+		<div>
+			QR
+		</div>
 	</div>
 	<div id="ghostKitchenPrint">
+		<div class="data">29/03/2021</div>
 		<div class="label">Ordine</div>
-		<div order-type takeaway class="value">TakeAway</div>
-		<div order-type delivery class="value">Domicilio</div>
+		<div order-type="" takeaway="" class="value" style="display: none;">TakeAway</div>
+		<div order-type="" delivery="" class="value">Domicilio</div>
 		<div class="label">Orario</div>
-		<div class="value" time></div>
+		<div class="value" time="">19:30</div>
 		<div class="label">Cliente</div>
-		<div class="value" customer></div>
-		<div pizze-container>
+		<div class="value" customer="">GLORIA LUNIAN</div>
+		<div pizze-container="">
 			<div id="ghostPizza">
-				<div pizza-quantity></div>
-				<div pizza-name></div>
-				<div pizza-ingredient id="kitchenIngredient"></div>
-				<div pizza-aggiunta id="kitchenAddition"></div>
+				<div class="pizza-heading"><span pizza-quantity="">1</span> <span pizza-name="">Vegetariana</span></div>
+				<div pizza-ingredient="" id="kitchenIngredient">Zucchine</div>
+				<div pizza-ingredient="" without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name>Peperoni</span></div>
+				<div pizza-aggiunta="" id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name>Champignon</span></div>
 			</div>
 		</div>
 	</div>

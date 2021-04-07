@@ -66,6 +66,20 @@ a {
 	/* overflow-y: auto;
 	max-height: calc(100vh - 100px); */
 }
+.modal-topbar {
+	font-size: 30px;
+}
+.modal-topbar .action-container:hover {
+	background-color: rgba(95,99,104,0.157);
+	border-radius: 100%;
+}
+.modal-topbar .action-container {
+	padding: 16px;
+	width: 75px;
+	height: 75px;
+	text-align: center;
+	cursor: pointer;
+}
 label {
 	margin-bottom: 0px;
 }
