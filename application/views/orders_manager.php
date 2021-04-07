@@ -19,7 +19,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="d-flex">
 				<div class="scroll-on-left" id="scrollTimeFilter">
 					<div>
-
 						<?php
 						$ora_apertura = 10;
 						$minuto_apertura = 00;
@@ -66,32 +65,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</div>
 		</div>
 		<button onclick="promptNewOrder()" class="fab blue"><i class="mdi mdi-plus"></i></button>
-	</div>
-
-
-	<div id="addCustomerModal" class="w3-modal modal-container">
-		<div class="w3-modal modal-backdrop"></div>
-		<div class="w3-modal-content">
-			<div class="w3-container">
-				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
-				<form autocomplete="off" method="POST" action="<?= site_url() ?>customers/add_customer" id="addCustomer">
-					<input autocomplete="off" name="hidden" type="text" style="display:none;">
-					<div class="input-block">
-						<div><label>Nome Cognome</label></div>
-						<div><input class="md-input" type="text" name="name" placeholder="nome e cognome"></div>
-					</div>
-					<div class="input-block">
-						<div><label>Indirizzo</label></div>
-						<div><input class="md-input" type="text" name="address" placeholder="indirizzo"></div>
-					</div>
-					<div class="input-block">
-						<div><label>Telefono</label></div>
-						<div><input class="md-input" type="text" name="telephone" placeholder="telefono"></div>
-					</div>
-					<button class="btn blue">Salva</button>
-				</form>
-			</div>
-		</div>
 	</div>
 
 
@@ -148,9 +121,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												<div class="delivery-only">
 													<div class="general-heading">Seleziona il pony</div>
 													<div id="pony" class="list-block-container pick-one-of-these">
-														<div class="md-checkbox-lg pickable" data-id_pony="">Non selezionato</div>
+														<div class="md-checkbox-lg pickable js-pony" data-id_pony="">Non selezionato</div>
 														<?php foreach ($ponies as $pony) { ?>
-															<div class="md-checkbox-lg pickable" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
+															<div class="md-checkbox-lg pickable js-pony" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
 														<?php } ?>
 													</div>
 												</div>
@@ -230,7 +203,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</div>
 											</div>
 											<div id="resultsFound">
-												<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this)">
+												<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this.getAttribute('data-id'))">
 													<div class="d-flex">
 														<div class="show-on-parent-hover">
 															<div class="open-customer-container d-flex">

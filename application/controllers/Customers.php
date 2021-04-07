@@ -76,8 +76,17 @@ class Customers extends CB_Controller {
 					'created' => date('Y-m-d H:i:s'),
 				];
 				$this->db->insert('customers', $new_customer);
+				$new_customer['id_customer'] = $id_customer = $this->db->insert_id();
 			}
-			echo JSON_encode(['created' => true]);
+			$utf8ized = [];
+			foreach ($new_customer as $key => $val) {
+				if (!JSON_encode($val)) {
+					$val = utf8ize($val);
+				}
+				$utf8ized[$key] = $val;
+			}
+
+			echo JSON_encode(['created' => true, 'id_customer' => $id_customer, 'customer_data' => $utf8ized]);
 		} else {
 			echo JSON_encode(['errors' => ['Non è stato possibile creare il cliente']]);
 		}

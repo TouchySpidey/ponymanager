@@ -41,7 +41,7 @@ let sendRequest = function(search) {
 
 						for (let i in response.results) {
 							customer_found = customer_el.clone();
-							customer_found.data('id', response.results[i].id_customer);
+							customer_found.attr('data-id', response.results[i].id_customer);
 							customer_found.find('.nome-cliente').text(response.results[i].name);
 							customer_found.find('.indirizzo-cliente').text(response.results[i].address);
 							customer_found.find('.telefono-cliente').text(response.results[i].telephone);
@@ -368,10 +368,9 @@ let newCustomer = {
 	telephone: '',
 };
 
-function select_customer(el = false) {
+function select_customer(id_customer = false) {
 	// open modal to create order
-	if (el) {
-		let id_customer = $(el).data('id');
+	if (id_customer) {
 		$('#deliveryTo [name="id_customer"]').val(id_customer);
 		let customer = customers_cache[id_customer];
 		$('#deliveryTo [name="name"]').val(customer.name);
@@ -435,7 +434,8 @@ function saveCustomer(brandNew = false) {
 				} else {
 					$('#deliveryToForm input').val('');
 					// todo
-					select_customer();
+					customers_cache[response.id_customer] = response.customer_data;
+					select_customer(response.id_customer);
 				}
 			}
 		} catch(e) {
@@ -486,8 +486,8 @@ function resetModalData(_draft) {
 	$('#paymentMethods .list-block').removeClass('selected');
 	$('#paymentMethods .list-block[data-id_payment="' + _draft.payment_method + '"]').addClass('selected');
 
-	$('#pony .list-block').removeClass('selected');
-	$('#pony .list-block[data-id_pony="' + _draft.cod_pony + '"]').addClass('selected');
+	$('#pony .js-pony').removeClass('selected');
+	$('#pony .js-pony[data-id_pony="' + _draft.cod_pony + '"]').addClass('selected');
 
 	$('#timetable .timetable-row').removeClass('selected');
 	$('#timetable .timetable-row[data-time="' + _draft.delivery_time + '"]').addClass('selected');
@@ -514,7 +514,7 @@ function patchOrder() {
 		notes: $('#order-notes').val(),
 		is_delivery: 0 + $('#deliveryOrder').hasClass('selected'),
 		payment_method: $('#paymentMethods .list-block.selected').data('id_payment'),
-		cod_pony: $('#pony .list-block.selected').data('id_pony'),
+		cod_pony: $('#pony .js-pony.selected').data('id_pony'),
 		delivery_time: $('#timetable .timetable-row.selected').data('time'),
 	};
 	$('#deliveryTo input').each(function(i, v) {

