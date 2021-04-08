@@ -37,6 +37,7 @@ class Orders_model extends CI_Model {
 				$deliveries[$info['id_delivery']] = [
 					'address' => $info['address'],
 					'city' => $info['city'],
+					'guid' => $info['guid'],
 					'cod_pony' => $info['cod_pony'],
 					'delivery_time' => date('H:i', strtotime($info['delivery_time'])),
 					'doorbell' => $info['doorbell'],
@@ -197,6 +198,8 @@ class Orders_model extends CI_Model {
 				->get('deliveries')->result_array();
 				if (!empty($old_order)) {
 					$old_order = $old_order[0];
+					$order['order_time'] = $old_order['order_time']; # we don't want to keep alive the guid at every update
+					$order['guid'] = $old_order['guid']; # but it shall be persistent through updates
 					if ($old_order['north'] || $old_order['east']) {
 						# geocode già fatto
 						if ($order['city'] == $old_order['city'] && $order['address'] == $old_order['address']) {

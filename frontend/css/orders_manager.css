@@ -105,7 +105,7 @@
 	font-size: 20px;
 	font-weight: bold;
 	color: #1a73e8;
-	border-top: 2px solid rgba(0, 0, 0, 0.2);
+	border-bottom: 2px solid rgba(0, 0, 0, 0.2);
 }
 #totaleOrdine .tot-label {
 
@@ -170,7 +170,8 @@
 }
 .categoria {
 	font-size: 20px;
-	width: 160px;
+	width: 164px;
+	border-right: 4px solid transparent;
 	word-break: break-word;
 	padding: 6px 12px;
 	cursor: pointer;

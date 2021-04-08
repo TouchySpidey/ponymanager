@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Ordini', ['orders_manager']) ?>
+<?php html_head('Ordini', ['orders_manager'], ['qrcode.min']) ?>
 <body>
 	<?php topbar() ?>
 	<?php main_menu() ?>
@@ -95,7 +95,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						<span class="tab-icon"><i class="mdi mdi-credit-card-outline"></i></span>
 						<span>Pagamento</span>
 					</div>
-					<div class="tab" data-tab="stampa">
+					<div class="tab" data-tab="stampa" style="display: none;">
 						<span class="tab-icon"><i class="mdi mdi-printer"></i></span>
 						<span>Stampa</span>
 					</div>
@@ -303,6 +303,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						</div>
 					</div>
 					<div class="ml-auto v-flex" id="riepilogoOrdine">
+						<div id="totaleOrdine" class="d-flex"><div class="tot-label">Totale: </div><div tot-text class="ml-auto"></div></div>
 						<div id="scrollOrdine" class="flex-1">
 							<div class="item delivery-only">
 								<div class="d-flex">
@@ -329,7 +330,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 							</div>
 						</div>
-						<div id="totaleOrdine" class="d-flex"><div class="tot-label">Totale: </div><div tot-text class="ml-auto"></div></div>
 						<div class="d-flex">
 							<button class="ml-auto btn blue" id="sendOrder"><i class="mdi mdi-check"></i> Salva</button>
 						</div>
@@ -395,17 +395,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="value" address="">GLORIA LUNIAN</div>
 		<div class="label">Campanello</div>
 		<div class="value" doorbell="">GLORIA LUNIAN</div>
-		<div pizze-container="">
-			<div id="ghostPizza">
-				<div class="pizza-heading"><span pizza-quantity="">1</span> <span pizza-name="">Vegetariana</span></div>
-				<div pizza-ingredient="" id="kitchenIngredient">Zucchine</div>
-				<div pizza-ingredient="" without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name>Peperoni</span></div>
-				<div pizza-aggiunta="" id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name>Champignon</span></div>
-			</div>
-		</div>
-		<div>
-			QR
-		</div>
+		<div pizze-container=""></div>
+		<div class="d-flex" id="qrcode_printable"></div>
 	</div>
 	<div id="ghostKitchenPrint">
 		<div class="data">29/03/2021</div>

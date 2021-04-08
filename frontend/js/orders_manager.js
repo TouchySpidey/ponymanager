@@ -1,3 +1,4 @@
+ // before .remove()
 
 $(function() {
 	order_reset();
@@ -485,6 +486,12 @@ function resetModalData(_draft) {
 		$('#deliveryOrder').removeClass('selected');
 	}
 
+	if (_draft.id_order) {
+		$('#orderTabs .tab[data-tab="stampa"]').show();
+	} else {
+		$('#orderTabs .tab[data-tab="stampa"]').hide();
+	}
+
 	$('#order-notes').val(_draft.notes);
 
 	$('#paymentMethods .list-block').removeClass('selected');
@@ -674,7 +681,7 @@ function ordersFromDb() {
 	});
 }
 
-function filterByTime(from, to) {
+function filterByTime(from = false, to = false) {
 	if (from > to) {
 		let dummy = to;
 		to = from;
@@ -682,7 +689,7 @@ function filterByTime(from, to) {
 	}
 
 	$('#scrollTimeFilter .timetable-row').each(function(i, v) {
-		if ($(v).data('time') >= from && $(v).data('time') <= to) {
+		if (from && to && $(v).data('time') >= from && $(v).data('time') <= to) {
 			$(v).addClass('gblue');
 		} else {
 			$(v).removeClass('gblue');
@@ -690,7 +697,7 @@ function filterByTime(from, to) {
 	});
 
 	for (let t in timedMarkers) {
-		if (t >= from && t <= to) {
+		if (!from && !to || t >= from && t <= to) {
 			for (let i in timedMarkers[t]) {
 				timedMarkers[t][i].setMap(map);
 			}
@@ -713,7 +720,12 @@ $('#scrollTimeFilter .timetable-row').click(function() {
 		} else {
 			// ce n'è un altro
 			let to = $another.data('time');
-			filterByTime(from, to);
+			if (from == to) {
+				// ho cliccato esattamente quello già selezionato, quindi tolgo i filtri
+				filterByTime();
+			} else {
+				filterByTime(from, to);
+			}
 		}
 	} else {
 		// è il primo
@@ -734,6 +746,8 @@ function ponyPrint() {
 		$ponyPrint.find('[order-type][delivery]').hide();
 	}
 	$ponyPrint.find('[time]').text(_order.delivery_time);
+	$ponyPrint.find('[address]').text(_order.city + ', ' + _order.address);
+	$ponyPrint.find('[doorbell]').text(_order.doorbell);
 	$ponyPrint.find('[customer]').text(_order.name);
 	if ('rows' in _order) {
 		if (_order.rows.length) {
@@ -768,7 +782,32 @@ function ponyPrint() {
 		}
 	}
 	$('#printable').append($ponyPrint);
-	window.print();
+	console.log(deliveries);
+	console.log(_order);
+	console.log(_order.id_order);
+	console.log(deliveries[_order.id_order]);
+	console.log(deliveries[_order.id_order].guid);
+
+	let qrcode = new QRCodeStyling({
+		data: 'https://www.ponymanager.com/pony/qr/' + _order.id_order + '/' + deliveries[_order.id_order].guid,
+		image: 'https://www.ponymanager.com/frontend/images/logos/pm.png',
+		dotsOptions: {
+			color: '#000000',
+			type: 'rounded'
+		},
+		backgroundOptions: {
+			color: '#ffffff',
+		},
+		imageOptions: {
+			crossOrigin: 'anonymous',
+			margin: 20
+		}
+	});
+	qrcode.append(document.getElementById('qrcode_printable'));
+	qrcode._drawingPromise.then(() => {
+		window.print();
+		delete qrcode;
+	});
 }
 
 function kitchenPrint() {
@@ -822,6 +861,7 @@ function kitchenPrint() {
 
 function promptNewOrder() {
 	// is a draft available?
+	order_reset();
 	if (draft) {
 		resetModalData(draft);
 		draft = false;
