@@ -8,7 +8,11 @@ class Pony_model extends CI_Model {
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->get('ponies')
 		->result_array();
-		return $db_ponies;
+		$ponies = [];
+		foreach ($db_ponies as $pony) {
+			$ponies[$pony['id_pony']] = $pony;
+		}
+		return $ponies;
 
 	}
 

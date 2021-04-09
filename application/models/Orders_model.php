@@ -12,6 +12,13 @@ class Orders_model extends CI_Model {
 
 	}
 
+	public function company_shifts() {
+		return $this->db
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->order_by('from', 'ASC')
+		->get('open_shifts')->result_array();
+	}
+
 	public function get_all_orders($from_date = false, $to_date = false) {
 		$this->db->group_start();
 		if ($from_date || $to_date) {
@@ -38,8 +45,10 @@ class Orders_model extends CI_Model {
 					'address' => $info['address'],
 					'city' => $info['city'],
 					'guid' => $info['guid'],
+					'dismissed' => boolval($info['dismissed']),
 					'cod_pony' => $info['cod_pony'],
-					'delivery_time' => date('H:i', strtotime($info['delivery_time'])),
+					'delivery_time' => $info['delivery_time'] ? date('H:i', strtotime($info['delivery_time'])) : false,
+					'delivery_date' => $info['delivery_time'] ? date('d/m/Y', strtotime($info['delivery_time'])) : false,
 					'doorbell' => $info['doorbell'],
 					'id_customer' => $info['cod_customer'],
 					'id_order' => $info['id_delivery'],
@@ -173,7 +182,7 @@ class Orders_model extends CI_Model {
 			'order_time' => date('Y-m-d H:i:s'),
 			'total_price' => $total,
 		];
-		$time = isset($post['delivery_time']) ? $post['delivery_time'] : '00:00';
+		$time = isset($post['delivery_time']) ? $post['delivery_time'] : false;
 		$day = date('Y-m-d');
 
 		$order['id_delivery'] = isset($post['id_order']) ? $post['id_order'] : null;
@@ -184,7 +193,9 @@ class Orders_model extends CI_Model {
 		$order['telephone'] = isset($post['telephone']) ? $post['telephone'] : null;
 		$order['name'] = isset($post['name']) ? $post['name'] : '';
 		$order['notes'] = isset($post['notes']) ? $post['notes'] : '';
-		$order['delivery_time'] = $day.' '.$time.':00';
+		if ($time) {
+			$order['delivery_time'] = $day.' '.$time.':00';
+		}
 		if ($order['is_delivery']) {
 			$order['north'] = false;
 			$order['east'] = false;
@@ -269,6 +280,36 @@ class Orders_model extends CI_Model {
 			$delivery['active'] = 0;
 			$delivery['date_of_deactivation'] = date('Y-m-d H:i:s');
 			$this->db->replace('deliveries', $delivery);
+		}
+	}
+
+	public function dismissDeliveries($ids) {
+		foreach ((array) $ids as $id) {
+			$delivery = $this->db
+			->where('cod_company', _GLOBAL_COMPANY['id_company'])
+			->where('id_delivery', $id)
+			->where('active', 1)
+			->get('deliveries')->result_array();
+			if (!empty($delivery)) {
+				$delivery = $delivery[0];
+				$delivery['dismissed'] = 1;
+				$this->db->replace('deliveries', $delivery);
+			}
+		}
+	}
+
+	public function assignDeliveries($cod_pony, $ids) {
+		foreach ((array) $ids as $id) {
+			$delivery = $this->db
+			->where('cod_company', _GLOBAL_COMPANY['id_company'])
+			->where('id_delivery', $id)
+			->where('active', 1)
+			->get('deliveries')->result_array();
+			if (!empty($delivery)) {
+				$delivery = $delivery[0];
+				$delivery['cod_pony'] = $cod_pony;
+				$this->db->replace('deliveries', $delivery);
+			}
 		}
 	}
 

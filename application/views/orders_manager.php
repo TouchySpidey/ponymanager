@@ -7,58 +7,110 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<?php topbar() ?>
 	<?php main_menu() ?>
 	<div id="pageContainer">
-		<div id="ordersFilters">
-			<div class="d-flex filter-orders-by-type">
-				<div class="filter-tab ml-auto" type="dismissed">Dimesse</div>
-				<div class="filter-tab" type="takeaway">TakeAway</div>
-				<div class="filter-tab" type="delivery">Delivery</div>
-				<div class="filter-tab" type="all">Mostra tutto</div>
+		<div>
+			<div id="ordersFilters" class="d-flex filter-orders-by-type pick-one-of-these">
+				<div class="actionable pickable filter-tab ml-auto" type="dismissed">Dimesse</div>
+				<div class="actionable pickable filter-tab" type="takeaway">TakeAway</div>
+				<div class="actionable pickable filter-tab" type="delivery">Delivery</div>
+				<div class="actionable pickable filter-tab selected" type="all">Mostra tutto</div>
 			</div>
 		</div>
 		<div>
 			<div class="d-flex">
 				<div class="scroll-on-left" id="scrollTimeFilter">
 					<div>
-						<?php
-						$ora_apertura = 10;
-						$minuto_apertura = 00;
-						$ora_chiusura = 15;
-						$minuto_chiusura = 00;
-						?>
-						<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
-							<?php foreach (range(0, 50, 10) as $minuto) { ?>
-								<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
+						<?php foreach ($shifts as $shift) { ?>
+							<?php
+							$ora_apertura = explode(':', $shift['from'])[0];
+							$minuto_apertura = explode(':', $shift['from'])[1];
+							$ora_chiusura = explode(':', $shift['to'])[0];
+							$minuto_chiusura = explode(':', $shift['to'])[1];
+							if ($ora_apertura > $ora_chiusura) {
+								# night shift over midnight
+								$ora_chiusura += 24;
+							}
+							?>
+							<?php while ($ora_apertura < $ora_chiusura || ($ora_apertura == $ora_chiusura && $minuto_apertura <= $minuto_chiusura)) { ?>
+								<div class="timetable-row d-flex pickable" data-time="<?= $ora_apertura ?>:<?= $minuto_apertura ?>">
 									<div class="order-n delivery n-consegne delivery-only"></div>
 									<div class="order-n delivery n-pizze"></div>
-									<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+									<div class="time"><?= $ora_apertura ?>:<?= $minuto_apertura ?></div>
 								</div>
+								<?php
+								$minuto_apertura += 10;
+								if ($minuto_apertura >= 60) {
+									$minuto_apertura -= 60;
+									$ora_apertura++;
+									$ora_apertura = str_pad($ora_apertura, 2, '0');
+									$minuto_apertura = str_pad($minuto_apertura, 2, '0');
+									if ($ora_apertura >= 24) {
+										$ora_apertura -= 24;
+										$ora_chiusura -= 24;
+										$ora_chiusura = str_pad($ora_chiusura, 2, '0');
+									}
+								}
+								?>
 							<?php } ?>
 						<?php } ?>
 					</div>
 				</div>
-				<div class="flex-1">
-					<div id="Gmap"></div>
+				<div class="flex-1 v-flex">
+					<div id="Gmap" class="flex-1"></div>
 				</div>
 				<div id="boxOrdini">
-					<div class="info-cliente" id="ghostDelivery">
+					<div class="info-cliente">
 						<div class="d-flex">
-							<div class="mt-auto mb-auto panner btn gred">
-								<i class="mdi mdi-map-marker"></i>
+							<div class="ml-auto mt-auto mb-auto">
+								<input type="checkbox" class="js-deliverable" id="selectAllVisibleOrders" />
 							</div>
-							<div class="mt-auto mb-auto opener btn gblue" onclick="selectOrder(this.getAttribute('id-order'))">
-								<i class="mdi mdi-open-in-new"></i>
-							</div>
-							<div class="info-container">
-								<div class="d-flex">
-									<div>
-										<div class="nome-cliente">GLORIA LUNIAN</div>
-										<div class="indirizzo-cliente">VIA ISTRIA 32</div>
-									</div>
+						</div>
+					</div>
+					<div id="listaOrdini">
+						<div class="info-cliente" id="ghostDelivery">
+							<div class="d-flex">
+								<div class="mt-auto mb-auto panner btn gred">
+									<i class="mdi mdi-map-marker"></i>
 								</div>
-							</div><!-- info-container -->
-							<div class="d-flex ml-auto">
-								<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" /></div>
+								<div class="mt-auto mb-auto opener btn gblue" onclick="selectOrder(this.getAttribute('id-order'))">
+									<i class="mdi mdi-open-in-new"></i>
+								</div>
+								<div class="info-container">
+									<div class="d-flex">
+										<div>
+											<div class="nome-cliente"></div>
+											<div class="indirizzo-cliente"></div>
+										</div>
+									</div>
+								</div><!-- info-container -->
+								<div class="d-flex ml-auto">
+									<div class="mt-auto mb-auto"><input type="checkbox" class="js-deliverable" onchange="mayDisableMaster()" /></div>
+								</div>
 							</div>
+						</div>
+					</div>
+					<div id="ordersControl">
+						<div class="d-flex">
+							<div class="btn-group dropdown-opener">
+								<button type="button" class="btn orange dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="mdi mdi-bike-fast"></i> Pony <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<?php foreach ($ponies as $pony) { ?>
+										<li id_pony="<?= $pony['id_pony'] ?>" onclick="selectPony(this.getAttribute('id_pony'))"><a href="#"><?= $pony['name'] ?></a></li>
+									<?php } ?>
+								</ul>
+							</div>
+							<div class="btn-group dropdown-opener">
+								<button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="mdi mdi-printer"></i> Stampa <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li onclick="kitchenPrintSelected()"><a href="#">Cucina</a></li>
+									<li onclick="ponyPrintSelected()"><a href="#">Pony</a></li>
+									<!-- <li><a href="#">Cliente</a></li> -->
+								</ul>
+							</div>
+							<div class="btn gblue ml-auto" onclick="dismissSelected()"><i class="mdi mdi-close"></i> Dimetti</div>
 						</div>
 					</div>
 				</div>
@@ -73,29 +125,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="w3-modal-content order-modal-content v-flex">
 			<div class="modal-topbar">
 				<div class="d-flex">
-					<div onclick="closeModal(this)" class="action-container"><i class="mdi mdi-arrow-left"></i></div>
-					<div class="ml-auto action-container" onclick="delete_order()"><i class="mdi mdi-delete"></i></div>
+					<div onclick="closeModal(this)" class="action-container actionable"><i class="mdi mdi-arrow-left"></i></div>
+					<div class="ml-auto action-container actionable" onclick="delete_order()"><i class="mdi mdi-delete"></i></div>
 				</div>
 			</div>
 			<div id="addOrder" class="flex-1 v-flex">
 				<div id="orderTabs" class="d-flex tabs-container scroll-x">
-					<div class="tab" data-tab="consegna">
+					<div class="actionable tab" data-tab="consegna">
 						<span class="tab-icon"><i class="mdi mdi-mailbox"></i></span>
 						<span>Consegna</span>
 					</div>
-					<div class="tab" data-tab="cliente">
+					<div class="actionable tab" data-tab="cliente">
 						<span class="tab-icon"><i class="mdi mdi-account"></i></span>
 						<span>Cliente</span>
 					</div>
-					<div class="tab" data-tab="menu">
+					<div class="actionable tab" data-tab="menu">
 						<span class="tab-icon"><i class="mdi mdi-format-list-checkbox"></i></span>
 						<span>Ordine</span>
 					</div>
-					<div class="tab" data-tab="pagamento">
+					<div class="actionable tab" data-tab="pagamento">
 						<span class="tab-icon"><i class="mdi mdi-credit-card-outline"></i></span>
 						<span>Pagamento</span>
 					</div>
-					<div class="tab" data-tab="stampa" style="display: none;">
+					<div class="actionable tab" data-tab="stampa" style="display: none;">
 						<span class="tab-icon"><i class="mdi mdi-printer"></i></span>
 						<span>Stampa</span>
 					</div>
@@ -119,11 +171,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												<div class="flex-1 bros-16-between">
 													<div class="general-heading">Tipologia di ordine</div>
 													<div class="pick-one-of-these">
-														<div id="deliveryOrder" class="md-checkbox-lg pickable">
+														<div id="deliveryOrder" class="actionable md-checkbox-lg pickable">
 															<div>Delivery</div>
 															<div class="order-pricing">1,50€</div>
 														</div>
-														<div id="takeawayOrder" class="md-checkbox-lg pickable">
+														<div id="takeawayOrder" class="actionable md-checkbox-lg pickable">
 															<div>Takeaway</div>
 															<div class="order-pricing">Gratis</div>
 														</div>
@@ -139,9 +191,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											<div class="delivery-only">
 												<div class="general-heading">Seleziona il pony</div>
 												<div id="pony" class="list-block-container pick-one-of-these">
-													<div class="md-checkbox-lg pickable js-pony" data-id_pony="">Non selezionato</div>
+													<div class="actionable md-checkbox-lg pickable js-pony" data-id_pony="">Non selezionato</div>
 													<?php foreach ($ponies as $pony) { ?>
-														<div class="md-checkbox-lg pickable js-pony" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
+														<div class="actionable md-checkbox-lg pickable js-pony" data-id_pony="<?= $pony['id_pony'] ?>"><?= $pony['name'] ?></div>
 													<?php } ?>
 												</div>
 											</div>
@@ -150,14 +202,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div id="timetable" class="ml-auto">
 										<div class="general-heading">Orario</div>
 										<div id="scrollTimeTable" class="pick-one-of-these">
-											<?php foreach (range($ora_apertura, $ora_chiusura) as $ora) { ?>
-												<?php foreach (range(0, 50, 10) as $minuto) { ?>
-													<div class="timetable-row d-flex pickable" data-time="<?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?>">
+											<?php foreach ($shifts as $shift) { ?>
+												<?php
+												$ora_apertura = explode(':', $shift['from'])[0];
+												$minuto_apertura = explode(':', $shift['from'])[1];
+												$ora_chiusura = explode(':', $shift['to'])[0];
+												$minuto_chiusura = explode(':', $shift['to'])[1];
+												if ($ora_apertura > $ora_chiusura) {
+													# night shift over midnight
+													$ora_chiusura += 24;
+												}
+												?>
+												<?php while ($ora_apertura < $ora_chiusura || ($ora_apertura == $ora_chiusura && $minuto_apertura <= $minuto_chiusura)) { ?>
+													<div class="timetable-row d-flex pickable" data-time="<?= $ora_apertura ?>:<?= $minuto_apertura ?>">
 														<div class="order-n delivery n-consegne delivery-only"></div>
 														<div class="order-n delivery n-pizze"></div>
 														<div class="order-n takeaway n-pizze"></div>
-														<div class="time"><?= str_pad($ora, 2, '0') ?>:<?= str_pad($minuto, 2, '0') ?></div>
+														<div class="time"><?= $ora_apertura ?>:<?= $minuto_apertura ?></div>
 													</div>
+													<?php
+													$minuto_apertura += 10;
+													if ($minuto_apertura >= 60) {
+														$minuto_apertura -= 60;
+														$ora_apertura++;
+														$ora_apertura = str_pad($ora_apertura, 2, '0');
+														$minuto_apertura = str_pad($minuto_apertura, 2, '0');
+														if ($ora_apertura >= 24) {
+															$ora_apertura -= 24;
+															$ora_chiusura -= 24;
+															$ora_chiusura = str_pad($ora_chiusura, 2, '0');
+														}
+													}
+													?>
 												<?php } ?>
 											<?php } ?>
 										</div>
@@ -174,6 +250,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											<input type="hidden" name="id_delivery" />
 											<div id="deliveryTo">
 												<input type="hidden" name="id_customer" />
+												<input type="hidden" name="delivery_date" />
 												<div class="input-block">
 													<div><label>Nome e cognome</label></div>
 													<input class="md-input" type="text" name="name" placeholder="Nome e cognome" />
@@ -293,9 +370,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										</div>
 									</div>
 									<div id="paymentMethods" class="ml-auto mr-auto mt-auto mb-auto list-block-container pick-one-of-these">
-										<div class="list-block pickable" data-id_payment="">Non pagato</div>
+										<div class="actionable list-block pickable" data-id_payment="">Non pagato</div>
 										<?php foreach ($payment_methods as $payment_method) { ?>
-											<div class="list-block pickable" data-id_payment="<?= $payment_method['id_payment'] ?>"><?= $payment_method['description'] ?></div>
+											<div class="actionable list-block pickable" data-id_payment="<?= $payment_method['id_payment'] ?>"><?= $payment_method['description'] ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -312,10 +389,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 							</div>
 							<div id="listaPizze">
-								<div class="item" id="ghostOrderItem" onclick="select_pizza(this)">
+								<div class="actionable item" id="ghostOrderItem" onclick="select_pizza(this)">
 									<div class="d-flex">
-										<div quantity>1</div>
-										<div main>Capricciosa</div>
+										<div quantity></div>
+										<div main></div>
 										<div price class="ml-auto mt-auto mb-auto"></div>
 									</div>
 									<div metapizza>
@@ -324,8 +401,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										</div>
 									</div>
 									<div modifiche>
-										<div ingrediente id="ghostPizzaIngredient">prosciutto</div>
-										<div aggiunta id="ghostPizzaAddition">Salsiccia</div>
+										<div ingrediente id="ghostPizzaIngredient"></div>
+										<div aggiunta id="ghostPizzaAddition"></div>
 									</div>
 								</div>
 							</div>
@@ -386,50 +463,49 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div id="ghostCustomerPrint">
 	</div>
 	<div id="ghostPonyPrint">
-		<div class="data">29/03/2021</div>
+		<div class="data"></div>
 		<div class="label">Orario</div>
-		<div class="value" time="">19:30</div>
+		<div class="value" time=""></div>
 		<div class="label">Cliente</div>
-		<div class="value" customer="">GLORIA LUNIAN</div>
+		<div class="value" customer=""></div>
 		<div class="label">Indirizzo</div>
-		<div class="value" address="">GLORIA LUNIAN</div>
+		<div class="value" address=""></div>
 		<div class="label">Campanello</div>
-		<div class="value" doorbell="">GLORIA LUNIAN</div>
+		<div class="value" doorbell=""></div>
+		<div class="notes">
+			<div class="label">Note</div>
+			<div class="value" text-notes=""></div>
+		</div>
+		<div id="qrcode_printable"></div>
 		<div pizze-container=""></div>
-		<div class="d-flex" id="qrcode_printable"></div>
 	</div>
 	<div id="ghostKitchenPrint">
-		<div class="data">29/03/2021</div>
+		<div class="data"></div>
 		<div class="label">Ordine</div>
 		<div order-type="" takeaway="" class="value" style="display: none;">TakeAway</div>
 		<div order-type="" delivery="" class="value">Domicilio</div>
 		<div class="label">Orario</div>
-		<div class="value" time="">19:30</div>
+		<div class="value" time=""></div>
 		<div class="label">Cliente</div>
-		<div class="value" customer="">GLORIA LUNIAN</div>
+		<div class="value" customer=""></div>
 		<div pizze-container="">
 			<div id="ghostPizza">
-				<div class="pizza-heading"><span pizza-quantity="">1</span> <span pizza-name="">Vegetariana</span></div>
-				<div pizza-ingredient="" id="kitchenIngredient">Zucchine</div>
-				<div pizza-ingredient="" without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name>Peperoni</span></div>
-				<div pizza-aggiunta="" id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name>Champignon</span></div>
+				<div class="stackable-stuff">
+					<div class="pizza-heading"><span pizza-quantity=""></span> <span pizza-name=""></span></div>
+					<div pizza-ingredient="" id="kitchenIngredient"></div>
+					<div pizza-ingredient="" without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name></span></div>
+					<div pizza-aggiunta="" id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name></span></div>
+				</div>
+				<div class="notes">
+					<div class="label">Note</div>
+					<div class="value" text-notes=""></div>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div id="printable">
-		<div>Stampa prova prova ciao</div>
-	</div>
-	<style>
-	#Gmap {
-		height: 100%;
-	}
-	html, body {
-		height: 100%;
-		margin: 0;
-		padding: 0;
-	}
-	</style>
+	<div id="printable"></div>
 	<script>
+	let ponies = JSON.parse(`<?= JSON_encode($ponies) ?>`);
 	let ingredients = JSON.parse(`<?= JSON_encode($ingredients) ?>`);
 	let ingredients_categories = JSON.parse(`<?= JSON_encode($ingredients_categories) ?>`);
 	let pizzas = JSON.parse(`<?= JSON_encode($pizzas) ?>`);

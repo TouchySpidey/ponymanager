@@ -1,10 +1,3 @@
- // before .remove()
-
-$(function() {
-	order_reset();
-	ordersFromDb();
-});
-
 let $kitchenAddition = $('#kitchenAddition').remove().removeAttr('id');
 let $kitchenWithout = $('#kitchenWithout').remove().removeAttr('id');
 let $kitchenIngredient = $('#kitchenIngredient').remove().removeAttr('id');
@@ -15,10 +8,11 @@ let $ghostPonyPrint = $('#ghostPonyPrint').remove().removeAttr('id');
 let $ghostPizzaIngredient = $('#ghostPizzaIngredient').remove().removeAttr('id');
 let $ghostDelivery = $('#ghostDelivery').remove().removeAttr('id');
 let deliveries = false;
-let timedMarkers = [];
+let meta_deliveries = [];
 // in questo ordine
 let $ghostOrderItem = $('#ghostOrderItem').remove().removeAttr('id');
 let req_sent = 0, last_accepted = 0;
+let from = false, to = false, mode = 'all';
 
 let customer_el = $('#resultsFound .info-cliente').remove().removeAttr('hidden');
 
@@ -476,14 +470,20 @@ $('#deliveryTo input').on('input', function() {
 
 function resetModalData(_draft) {
 	$('#deliveryToForm [name="id_delivery"]').val(_draft.id_order)
-	newOrder.sconto = _draft.sconto;
-	newOrder.notes = _draft.notes;
+	// newOrder.sconto = _draft.sconto;
+	// newOrder.notes = _draft.notes;
+	// newOrder.is_delivery = _draft.is_delivery;
+	// newOrder.cod_pony = _draft.cod_pony;
+	// newOrder.id_order = _draft.id_order;
+	newOrder = $.extend(true, {}, _draft);
 	if (_draft.is_delivery) {
 		$('#deliveryOrder').addClass('selected');
 		$('#takeawayOrder').removeClass('selected');
+		$('.delivery-only').show();
 	} else {
 		$('#takeawayOrder').addClass('selected');
 		$('#deliveryOrder').removeClass('selected');
+		$('.delivery-only').hide();
 	}
 
 	if (_draft.id_order) {
@@ -624,18 +624,27 @@ function calculateOrderTotal() {
 	$('#totaleOrdine [tot-text]').text(total.toString());
 }
 
+function purgeMetaDeliveries() {
+	for (let i in meta_deliveries) {
+		meta_deliveries[i].marker.setMap(null);
+	}
+	delete meta_deliveries;
+	meta_deliveries = [];
+}
 
 function ordersFromDb() {
 	$.post(site_url + 'orders/get_todays_orders').always(function(data) {
 		try {
 			let json = JSON.parse(data);
 			deliveries = json;
-			$('#boxOrdini').empty();
+			$('#scrollTimeFilter .timetable-row .order-n').text('');
+			$('#timetable .timetable-row .order-n').text('');
+			$('#listaOrdini').empty();
+			purgeMetaDeliveries();
 			for (let i in deliveries) {
 				let $delivery = $ghostDelivery.clone();
 				$delivery.find('.opener').attr('id-order', deliveries[i].id_order);
 				$delivery.find('.nome-cliente').text(deliveries[i].name);
-				$delivery.find('.indirizzo-cliente').text(deliveries[i].city + ', ' + deliveries[i].address);
 				let markerGeo = new google.maps.LatLng(deliveries[i].north, deliveries[i].east);
 				let marker = new google.maps.Marker({
 					position: markerGeo,
@@ -643,20 +652,57 @@ function ordersFromDb() {
 					title: deliveries[i].name,
 					icon: '/frontend/images/icons/gmarker.png',
 					label: {
-						text: deliveries[i].delivery_time,
+						text: deliveries[i]?.delivery_time ? deliveries[i].delivery_time : 'X',
 						className: 'my-g-label',
 						fontSize: '22px',
 						padding: '4px',
 						fontWeight: 'bold',
 					},
+					zIndex: 1,
 				});
 				if (deliveries[i].delivery_time) {
-					if (!(deliveries[i].delivery_time in timedMarkers)) {
-						timedMarkers[deliveries[i].delivery_time] = [];
+					let d_n = $('#timetable .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.n-consegne').text();
+					let d_p = $('#timetable .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.delivery.n-pizze').text();
+					let t_p = $('#timetable .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.takeaway.n-pizze').text();
+					d_n = parseInt(d_n);
+					if (!d_n) {
+						d_n = 0;
 					}
-					timedMarkers[deliveries[i].delivery_time].push(marker);
+					d_p = parseInt(d_p);
+					if (!d_p) {
+						d_p = 0;
+					}
+					t_p = parseInt(t_p);
+					if (!t_p) {
+						t_p = 0;
+					}
+					if (deliveries[i].is_delivery) {
+						d_n++;
+						d_p += deliveries[i].rows.length;
+					} else {
+						t_p += deliveries[i].rows.length;
+					}
+
+					$('#timetable .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.n-consegne').text(d_n);
+					$('#timetable .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.delivery.n-pizze').text(d_p);
+					$('#timetable .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.takeaway.n-pizze').text(t_p);
+					$('#scrollTimeFilter .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.n-consegne').text(d_n);
+					$('#scrollTimeFilter .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.delivery.n-pizze').text(d_p);
+					$('#scrollTimeFilter .timetable-row[data-time="' + deliveries[i].delivery_time + '"] .order-n.takeaway.n-pizze').text(t_p);
 				}
+				meta_deliveries.push({
+					listItem: $delivery,
+					order_data: deliveries[i],
+					marker: marker,
+					dismissed: deliveries[i].dismissed,
+					takeaway:!deliveries[i].is_delivery,
+					delivery: !!deliveries[i].is_delivery,
+					delivery_time: deliveries[i].delivery_time,
+					all: true,
+				});
 				if (deliveries[i].is_delivery) {
+					$delivery.find('.indirizzo-cliente').text(deliveries[i].city + ', ' + deliveries[i].address);
+
 					$delivery.find('.panner').click(() => {
 						map.panTo(marker.getPosition());
 					});
@@ -669,19 +715,27 @@ function ordersFromDb() {
 					marker.addListener('click', () => {
 						let checked = $delivery.find('.js-deliverable').prop('checked');
 						$delivery.find('.js-deliverable').prop('checked', !checked);
+						mayDisableMaster();
 					});
 				} else {
 					$delivery.find('.panner').remove();
 				}
-				$('#boxOrdini').append($delivery);
+				$('#listaOrdini').append($delivery);
 			}
+			filterOrders(mode, from, to);
 		} catch(e) {
 			console.log(e);
 		}
 	});
 }
 
-function filterByTime(from = false, to = false) {
+$('#ordersFilters .filter-tab').click(function() {
+	mode = $(this).attr('type');
+	filterOrders(mode, from, to);
+});
+$('#ordersFilters .filter-tab[type="all"]').click();
+
+function filterOrders(mode = false, from = false, to = false) {
 	if (from > to) {
 		let dummy = to;
 		to = from;
@@ -696,49 +750,161 @@ function filterByTime(from = false, to = false) {
 		}
 	});
 
-	for (let t in timedMarkers) {
-		if (!from && !to || t >= from && t <= to) {
-			for (let i in timedMarkers[t]) {
-				timedMarkers[t][i].setMap(map);
-			}
+	for (let i in meta_deliveries) {
+		let t = meta_deliveries[i].delivery_time;
+		if (meta_deliveries[i][mode] && (!t || !from && !to || t >= from && t <= to)) {
+			meta_deliveries[i].marker.setMap(map);
+			meta_deliveries[i].listItem.show();
 		} else {
-			for (let i in timedMarkers[t]) {
-				timedMarkers[t][i].setMap(null);
+			meta_deliveries[i].marker.setMap(null);
+			meta_deliveries[i].listItem.hide();
+		}
+	}
+	mayDisableMaster();
+}
+
+$('#scrollTimeFilter .timetable-row').click(function() {
+	let $another = $('#scrollTimeFilter').find('.timetable-row.filtering-range');
+	mode = $('#ordersFilters .filter-tab.selected').attr('type');
+	from = $(this).data('time');
+	if ($another.length) {
+		if ($another.length > 1) {
+			// ce ne sono due!
+			$another.removeClass('filtering-range');
+			to = from;
+		} else {
+			// ce n'è un altro
+			to = $another.data('time');
+			if (from == to) {
+				// ho cliccato esattamente quello già selezionato, quindi tolgo i filtri
+				from = false;
+				to = false;
+			}
+		}
+	} else {
+		// è il primo
+		to = from;
+	}
+	filterOrders(mode, from, to);
+	$(this).addClass('filtering-range');
+});
+
+function mayDisableMaster() {
+	let allSelected = true;
+	let atLeastOneSelected = false;
+	for (let i in meta_deliveries) {
+		let t = meta_deliveries[i].delivery_time;
+		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
+			if (!chk) {
+				allSelected = false;
+			} else {
+				atLeastOneSelected = true;
+			}
+		}
+	}
+	$('#selectAllVisibleOrders').prop('checked', allSelected);
+	if (atLeastOneSelected) {
+		$('#ordersControl').show();
+	} else {
+		$('#ordersControl').hide();
+	}
+}
+
+$('.dropdown-opener').click(function() {
+	$(this).toggleClass('open');
+});
+
+function selectPony(id_pony) {
+	let n_ordini = 0, ids_to_assign = [];
+	for (let i in meta_deliveries) {
+		let t = meta_deliveries[i].delivery_time;
+		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
+			if (chk) {
+				n_ordini++;
+				ids_to_assign.push(meta_deliveries[i].order_data.id_order);
+			}
+		}
+	}
+	if (id_pony in ponies) {
+		if (confirm('Stai assegnando ' + n_ordini + ' ordini a ' + ponies[id_pony].name)) {
+			$.post('/orders/assign_orders', {ids: ids_to_assign, cod_pony: id_pony}).always(function() {
+				ordersFromDb();
+			});
+		}
+	} else {
+		alert('Errore! pony non trovato!');
+	}
+}
+
+$('#selectAllVisibleOrders').change(function() {
+	if (this.checked) {
+		// accendi tutti
+		let atLeastOneSelected = false;
+		for (let i in meta_deliveries) {
+			let t = meta_deliveries[i].delivery_time;
+			if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+				meta_deliveries[i].listItem.find('.js-deliverable').prop('checked', true);
+				atLeastOneSelected = true;
+			}
+		}
+		if (atLeastOneSelected) {
+			$('#ordersControl').show();
+		}
+	} else {
+		// spegni tutti
+		for (let i in meta_deliveries) {
+			let t = meta_deliveries[i].delivery_time;
+			if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+				meta_deliveries[i].listItem.find('.js-deliverable').prop('checked', false);
+			}
+		}
+		$('#ordersControl').hide();
+	}
+});
+
+function dismissSelected() {
+	let n_ordini = 0, ids_to_dismiss = [];
+	for (let i in meta_deliveries) {
+		let t = meta_deliveries[i].delivery_time;
+		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
+			if (chk) {
+				n_ordini++;
+				ids_to_dismiss.push(meta_deliveries[i].order_data.id_order);
+			}
+		}
+	}
+	if (confirm('Stai segnando ' + n_ordini + ' ordini come conclusi')) {
+		$.post('/orders/dismiss_orders', {ids: ids_to_dismiss}).always(function() {
+			ordersFromDb();
+		});
+	}
+}
+
+function ponyPrintSelected() {
+	for (let i in meta_deliveries) {
+		let t = meta_deliveries[i].delivery_time;
+		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
+			if (chk) {
+				ponyPrint(meta_deliveries[i].order_data);
 			}
 		}
 	}
 }
 
-$('#scrollTimeFilter .timetable-row').click(function() {
-	let $another = $('#scrollTimeFilter').find('.timetable-row.filtering-range');
-	let from = $(this).data('time');
-	if ($another.length) {
-		if ($another.length > 1) {
-			// ce ne sono due!
-			$another.removeClass('filtering-range');
-			filterByTime(from, from);
-		} else {
-			// ce n'è un altro
-			let to = $another.data('time');
-			if (from == to) {
-				// ho cliccato esattamente quello già selezionato, quindi tolgo i filtri
-				filterByTime();
-			} else {
-				filterByTime(from, to);
-			}
-		}
-	} else {
-		// è il primo
-		filterByTime(from, from);
-	}
-	$(this).addClass('filtering-range');
-});
-
-function ponyPrint() {
+function ponyPrint(_order = false) {
 	$('#printable').empty();
-	let _order = patchOrder();
+	if (!_order) {
+		_order = patchOrder();
+	}
+
 	let $ponyPrint = $ghostPonyPrint.clone();
+
 	if (_order.is_delivery == 1) {
+		$ponyPrint.find('.data').text(_order.delivery_date);
 		$ponyPrint.find('[order-type][delivery]').show();
 		$ponyPrint.find('[order-type][takeaway]').hide();
 	} else {
@@ -749,6 +915,12 @@ function ponyPrint() {
 	$ponyPrint.find('[address]').text(_order.city + ', ' + _order.address);
 	$ponyPrint.find('[doorbell]').text(_order.doorbell);
 	$ponyPrint.find('[customer]').text(_order.name);
+
+	if (_order.notes) {
+		$ponyPrint.find('[text-notes]').text(_order.notes);
+	} else {
+		$ponyPrint.find('.notes').remove();
+	}
 	if ('rows' in _order) {
 		if (_order.rows.length) {
 			let rows = _order.rows;
@@ -757,7 +929,7 @@ function ponyPrint() {
 				let $pizza = $ghostPizza.clone();
 				let pizza = pizzas[row.id_piatto];
 				$pizza.find('[pizza-name]').text(pizza.name);
-				$pizza.find('[pizza-quantity]').text(row.n);
+				$pizza.find('[pizza-quantity]').text(row.n >= 1 ? parseInt(row.n) : row.n);
 				for (let j in pizza.ingredients) {
 					if (pizza.ingredients[j] in ingredients) {
 						if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
@@ -781,40 +953,39 @@ function ponyPrint() {
 			}
 		}
 	}
-	$('#printable').append($ponyPrint);
-	console.log(deliveries);
-	console.log(_order);
-	console.log(_order.id_order);
-	console.log(deliveries[_order.id_order]);
-	console.log(deliveries[_order.id_order].guid);
 
-	let qrcode = new QRCodeStyling({
-		data: 'https://www.ponymanager.com/pony/qr/' + _order.id_order + '/' + deliveries[_order.id_order].guid,
-		image: 'https://www.ponymanager.com/frontend/images/logos/pm.png',
-		dotsOptions: {
-			color: '#000000',
-			type: 'rounded'
-		},
-		backgroundOptions: {
-			color: '#ffffff',
-		},
-		imageOptions: {
-			crossOrigin: 'anonymous',
-			margin: 20
-		}
+	$('#printable').append($ponyPrint);
+	new QRCode(document.getElementById('qrcode_printable'), {
+		text: 'https://www.ponymanager.com/pony/qr/' + _order.id_order + '/' + deliveries[_order.id_order].guid,
+		colorDark : "#000000",
+		colorLight : "#ffffff",
+		correctLevel : QRCode.CorrectLevel.H
 	});
-	qrcode.append(document.getElementById('qrcode_printable'));
-	qrcode._drawingPromise.then(() => {
-		window.print();
-		delete qrcode;
-	});
+
+	window.print();
+
 }
 
-function kitchenPrint() {
+function kitchenPrintSelected() {
+	for (let i in meta_deliveries) {
+		let t = meta_deliveries[i].delivery_time;
+		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
+			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
+			if (chk) {
+				kitchenPrint(meta_deliveries[i].order_data);
+			}
+		}
+	}
+}
+
+function kitchenPrint(_order = false) {
 	$('#printable').empty();
-	let _order = patchOrder();
+	if (!_order) {
+		_order = patchOrder();
+	}
 	let $kitchenPrint = $ghostKitchenPrint.clone();
 	if (_order.is_delivery == 1) {
+		$kitchenPrint.find('.data').text(_order.delivery_date);
 		$kitchenPrint.find('[order-type][delivery]').show();
 		$kitchenPrint.find('[order-type][takeaway]').hide();
 	} else {
@@ -831,7 +1002,7 @@ function kitchenPrint() {
 				let $pizza = $ghostPizza.clone();
 				let pizza = pizzas[row.id_piatto];
 				$pizza.find('[pizza-name]').text(pizza.name);
-				$pizza.find('[pizza-quantity]').text(row.n);
+				$pizza.find('[pizza-quantity]').text(row.n >= 1 ? parseInt(row.n) : row.n);
 				for (let j in pizza.ingredients) {
 					if (pizza.ingredients[j] in ingredients) {
 						if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
@@ -840,7 +1011,7 @@ function kitchenPrint() {
 							let ingredient = ingredients[pizza.ingredients[j]];
 							$ingredient.find('[without-name]').text(ingredients[pizza.ingredients[j]].name);
 							$ingredient.addClass('without');
-							$pizza.append($ingredient);
+							$pizza.find('.stackable-stuff').append($ingredient);
 						}
 					}
 				}
@@ -848,8 +1019,13 @@ function kitchenPrint() {
 					if (pizza.ingredients.indexOf(row.ingredients[j]) === -1) {
 						$addition = $kitchenAddition.clone();
 						$addition.find('[addition-name]').text(ingredients[row.ingredients[j]].name);
-						$pizza.append($addition);
+						$pizza.find('.stackable-stuff').append($addition);
 					}
+				}
+				if (row.notes) {
+					$pizza.find('[text-notes]').text(row.notes);
+				} else {
+					$pizza.find('.notes').remove();
 				}
 				$kitchenPrint.find('[pizze-container]').append($pizza);
 			}
@@ -886,16 +1062,14 @@ function selectOrder(id_order) {
 }
 
 function delete_order() {
-	console.log('delete!!!!');
 	let _draft = patchOrder();
 	if (_draft.id_order) {
 		if (confirm('ATTENZIONE! Eliminare questo ordine?')) {
 			$.post('/orders/delete_order', _draft).always(function(data) {
-				console.log(data);
+				ordersFromDb();
 			});
 			closeModal('#addOrderModal');
 			order_reset();
-			ordersFromDb();
 		}
 	} else {
 		if (confirm('Annullare la bozza d\'ordine?')) {
@@ -903,14 +1077,26 @@ function delete_order() {
 			order_reset();
 		}
 	}
-	console.log(_draft);
 }
 
 let map;
 
 function initMap() {
+	let markerGeo = new google.maps.LatLng(45.77959757471461, 12.259677457279782);
 	map = new google.maps.Map(document.getElementById("Gmap"), {
-		center: { lat: 45.56080421699978, lng: 12.237069202199795 },
+		center: { lat: 45.77959757471461, lng: 12.259677457279782 },
 		zoom: 13,
+	});
+	let center_marker = new google.maps.Marker({
+		position: markerGeo,
+		map: map,
+		title: 'Calima',
+		icon: '/frontend/images/icons/blue_dot.svg',
+		zIndex: 2,
+	});
+
+	$(function() {
+		order_reset();
+		ordersFromDb();
 	});
 }

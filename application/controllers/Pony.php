@@ -19,7 +19,7 @@ class Pony extends CI_Controller {
 		->where('guid', $guid)
 		->get('deliveries')->result_array();
 		debug($delivery);
-		$this->load->view('pony');
+		// $this->load->view('pony');
 	}
 
 }

@@ -69,9 +69,8 @@ a {
 .modal-topbar {
 	font-size: 30px;
 }
-.modal-topbar .action-container:hover {
+.actionable:hover {
 	background-color: rgba(95,99,104,0.157);
-	border-radius: 100%;
 }
 .modal-topbar .action-container {
 	padding: 16px;
@@ -79,6 +78,7 @@ a {
 	height: 75px;
 	text-align: center;
 	cursor: pointer;
+	border-radius: 100%;
 }
 label {
 	margin-bottom: 0px;
