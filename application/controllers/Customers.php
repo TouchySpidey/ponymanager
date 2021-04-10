@@ -96,7 +96,7 @@ class Customers extends CB_Controller {
 		$string = $this->input->post('string');
 		$uid = intval($this->input->post('uid'));
 		$all = $this->db
-		->select('*')
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->get('customers')
 		->result_array();
 		$matches = [];
