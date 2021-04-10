@@ -16,7 +16,11 @@ class Orders_model extends CI_Model {
 		return $this->db
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->order_by('from', 'ASC')
-		->get('open_shifts')->result_array();
+		->get('open_shifts')->result_array() ?: [[
+			'cod_company' => _GLOBAL_COMPANY['id_company'],
+			'from' => '10:10',
+			'to' => '10:50',
+		]];
 	}
 
 	public function get_all_orders($from_date = false, $to_date = false) {
