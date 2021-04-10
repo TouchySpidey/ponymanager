@@ -1080,9 +1080,9 @@ function delete_order() {
 let map;
 
 function initMap() {
-	let markerGeo = new google.maps.LatLng(45.77959757471461, 12.259677457279782);
+	let markerGeo = new google.maps.LatLng(geoShop.north, geoShop.east);
 	map = new google.maps.Map(document.getElementById("Gmap"), {
-		center: { lat: 45.77959757471461, lng: 12.259677457279782 },
+		center: { lat: geoShop.north, lng: geoShop.east },
 		zoom: 13,
 	});
 	let center_marker = new google.maps.Marker({

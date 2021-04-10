@@ -505,6 +505,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</div>
 	<div id="printable"></div>
 	<script>
+	let geoShop = {
+		north: <?= _GLOBAL_COMPANY['north'] ?>,
+		east: <?= _GLOBAL_COMPANY['east'] ?>,
+	};
 	let ponies = JSON.parse(`<?= JSON_encode($ponies) ?>`);
 	let ingredients = JSON.parse(`<?= JSON_encode($ingredients) ?>`);
 	let ingredients_categories = JSON.parse(`<?= JSON_encode($ingredients_categories) ?>`);
