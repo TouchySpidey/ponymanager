@@ -1035,8 +1035,8 @@ function kitchenPrint(_order = false) {
 
 function promptNewOrder() {
 	// is a draft available?
-	order_reset();
 	if (draft) {
+		order_reset();
 		resetModalData(draft);
 		draft = false;
 	}
