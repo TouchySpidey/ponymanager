@@ -36,6 +36,7 @@ class Pizzeria_model extends CI_Model {
 		$db_ingredients = $this->db
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->order_by('name')
 		->get('ingredients')->result_array();
 		$ingredients = [];
 		foreach ($db_ingredients as $ingredient) {
@@ -51,6 +52,7 @@ class Pizzeria_model extends CI_Model {
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->join('pizzas_ingredients', 'pizzas.id_pizza = pizzas_ingredients.cod_pizza', 'left')
+		->order_by('name')
 		->get('pizzas')->result_array();
 		$pizzas = [];
 		foreach ($db_pizzas as $pizza) {
