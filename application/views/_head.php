@@ -2,11 +2,11 @@
 	<title><?= $title ?></title>
 	<link rel="manifest" href="<?= site_url() ?>manifest.json">
 	<meta name="theme-color" content="#141414"/>
-	<link rel="apple-touch-startup-image" href="<?= site_url() ?>frontend/images/icons/icon-128.png">
-	<link rel="apple-touch-icon" href="<?= site_url() ?>frontend/images/icons/icon-128.png">
+	<link rel="apple-touch-startup-image" href="<?= site_url() ?>frontend/images/icons/128.png">
+	<link rel="apple-touch-icon" href="<?= site_url() ?>frontend/images/icons/128.png">
 	<meta name="format-detection" content="telephone=no">
 	<meta name="apple-mobile-web-app-title" content="Data Quality">
-	<link rel="shortcut icon" href="<?= site_url() ?>frontend/images/icons/icon-128.png" type="image/x-icon">
+	<link rel="shortcut icon" href="<?= site_url() ?>frontend/images/icons/128.png" type="image/x-icon">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link rel="stylesheet" media="print" href="<?= site_url() ?>frontend/css/print.css?v=<?= VERSION ?>" />
@@ -28,8 +28,12 @@
 	<?php } ?>
 	<script>
 	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('<?= site_url() ?>service-worker.js').then(function() {
-			console.log('Service Worker Registered');
+		navigator.serviceWorker.register('<?= site_url() ?>service-worker.js?v3', {
+			scope: '.'
+		}).then(function(registration) {
+			console.log('Service Worker Registered with scope: ' + registration.scope);
+		}, function(err) {
+			console.log('Service Worker Registration FAILED: ' + err);
 		});
 	}
 	let site_url = '<?= site_url() ?>';

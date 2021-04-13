@@ -13,10 +13,6 @@ class Orders extends CB_Controller {
 		$this->ordini();
 	}
 
-	public function test() {
-		debug(geocode('mogliano', 'via falcone borsellino'));
-	}
-
 	public function ordini() {
 		$_delivery = [
 			'payment_methods' => $this->orders_model->payment_methods(),
@@ -25,6 +21,10 @@ class Orders extends CB_Controller {
 		];
 		$_menu = $this->pizzeria->menu_components();
 		$this->load->view('orders_manager', array_merge($_delivery, $_menu));
+	}
+
+	public function analytics() {
+		$this->load->view('orders_list');
 	}
 
 	public function get_todays_orders() {

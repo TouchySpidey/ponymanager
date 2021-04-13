@@ -18,8 +18,7 @@ class Pony extends CI_Controller {
 		->where('id_delivery', $cod_delivery)
 		->where('guid', $guid)
 		->get('deliveries')->result_array();
-		debug($delivery);
-		// $this->load->view('pony');
+		echo '<script>window.open(\'https://www.google.com/maps/search/?api=1&query='.$delivery[0]['north'].','.$delivery[0]['east'].'\')</script>';
 	}
 
 }

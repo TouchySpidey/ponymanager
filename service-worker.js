@@ -1,8 +1,12 @@
 var v = '0.0.1';
-var dataCacheName = 'calimaData-v'+v;
-var cacheName = 'calima-v'+v;
+var dataCacheName = 'ponymanagerData-v'+v;
+var cacheName = 'ponymanager-v'+v;
 var filesToCache = [
-	// '/calima/main/ordini',
+	'/',
+	'/manifest.json',
+	'/frontend/css/main.css',
+	'/frontend/css/bootstrap.css',
+	'/frontend/css/normalize.css',
 ];
 
 self.addEventListener('install', function(e) {

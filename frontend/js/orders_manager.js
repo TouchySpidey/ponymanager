@@ -1054,8 +1054,8 @@ function kitchenPrint(_order = false) {
 		_order = patchOrder();
 	}
 	let $kitchenPrint = $ghostKitchenPrint.clone();
+	$kitchenPrint.find('.data').text(_order.delivery_date);
 	if (_order.is_delivery == 1) {
-		$kitchenPrint.find('.data').text(_order.delivery_date);
 		$kitchenPrint.find('[order-type][delivery]').show();
 		$kitchenPrint.find('[order-type][takeaway]').hide();
 	} else {
