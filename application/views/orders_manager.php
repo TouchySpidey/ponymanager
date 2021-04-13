@@ -113,6 +113,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div class="btn gblue ml-auto" onclick="dismissSelected()"><i class="mdi mdi-close"></i> Dimetti</div>
 						</div>
 					</div>
+
+							<!-- <div class="input-block" style="padding: 16px;">
+								<input autocomplete="off" class="md-input" id="gfinder" type="text" placeholder="CercaGoogle">
+							</div> -->
 				</div>
 			</div>
 		</div>
@@ -244,34 +248,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<div class="d-flex">
 									<div>
 										<div class="input-block" style="padding: 16px;">
-											<input autocomplete="off" class="md-input" id="finder" type="text" placeholder="Cerca">
+											<input class="md-input" id="finder" type="text" placeholder="Cerca">
 										</div>
 										<form id="deliveryToForm">
 											<input type="hidden" name="id_delivery" />
 											<div id="deliveryTo">
 												<input type="hidden" name="id_customer" />
+												<input type="hidden" name="total_price" />
 												<input type="hidden" name="delivery_date" />
 												<div class="input-block">
 													<div><label>Nome e cognome</label></div>
 													<input class="md-input" type="text" name="name" placeholder="Nome e cognome" />
 												</div>
-												<div class="input-block">
-													<div><label>Telefono</label></div>
-													<div><input class="md-input" type="text" name="telephone" placeholder="Telefono"></div>
-												</div>
 												<div class="delivery-only">
 													<div class="input-block">
+														<div><label>Indirizzo</label></div>
+														<div><input class="md-input" id="gfinder" name="address" type="text" placeholder="Indirizzo"></div>
+													</div>
+													<!-- <div class="input-block">
 														<div><label>Città</label></div>
 														<div><input class="md-input" type="text" name="city" placeholder="Città"></div>
-													</div>
-													<div class="input-block">
-														<div><label>Indirizzo</label></div>
-														<div><input class="md-input" type="text" name="address" placeholder="Indirizzo"></div>
-													</div>
+													</div> -->
 													<div class="input-block">
 														<div><label>Nome sul campanello</label></div>
 														<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
 													</div>
+												</div>
+												<div class="input-block">
+													<div><label>Telefono</label></div>
+													<div><input class="md-input" type="text" name="telephone" placeholder="Telefono"></div>
 												</div>
 												<div class="d-flex">
 													<div id="overwriteCustomer" class="btn ml-auto orange"><i class="mdi mdi-pencil"></i> Aggiorna</div>
@@ -321,8 +326,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div tab="menu" order-component>
 								<div class="d-flex">
 									<div id="categorieContainer">
+										<div class="categoria finder-container">
+											<i class="mdi mdi-magnify finder-icon"></i>
+											<input class="md-input finder-input" type="search" id="pizzaFinder" placeholder="Cerca" />
+										</div>
 										<?php foreach ($pizzas_categories as $category) { ?>
-											<div class="categoria" data-category="<?= $category ?>"><?= $category ?></div>
+											<div class="categoria" data-category="<?= $category ?>" onclick="select_category('<?= addslashes($category) ?>')"><?= $category ?></div>
 										<?php } ?>
 									</div>
 									<div id="elencoPiatti" class="flex-1">
@@ -402,7 +411,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									</div>
 									<div modifiche>
 										<div ingrediente id="ghostPizzaIngredient"></div>
-										<div aggiunta id="ghostPizzaAddition"></div>
+										<div aggiunta id="ghostPizzaAddition">
+											<div class="d-flex">
+												<div testo-ingrediente></div>
+												<div class="ml-auto" prezzo-aggiunto></div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -425,10 +439,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div class="v-flex flex-1">
 					<div class="d-flex">
 						<div id="categorieIngredientiContainer" class="pick-one-of-these">
+							<div class="categoria finder-container">
+								<i class="mdi mdi-magnify finder-icon"></i>
+								<input class="md-input finder-input" type="search" id="ingredientFinder" placeholder="Cerca" />
+							</div>
 							<div class="categoria pickable" id="assigned" onclick="show_assigned()">Assegnati</div>
 							<div class="categoria pickable" id="pizzanote" onclick="show_notes()">Note</div>
 							<?php foreach ($ingredients_categories as $category) { ?>
-								<div class="categoria pickable" data-category="<?= $category ?>" onclick="select_ingredients_category('<?= $category ?>')"><?= $category ?></div>
+								<div class="categoria pickable" data-category="<?= $category ?>" onclick="select_ingredients_category('<?= addslashes($category) ?>')"><?= $category ?></div>
 							<?php } ?>
 						</div>
 						<div id="elencoIngredienti" class="flex-1">
@@ -465,40 +483,44 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div id="ghostPonyPrint">
 		<div class="data"></div>
 		<div class="label">Orario</div>
-		<div class="value" time=""></div>
+		<div class="value" time></div>
 		<div class="label">Cliente</div>
-		<div class="value" customer=""></div>
+		<div class="value" customer></div>
 		<div class="label">Indirizzo</div>
-		<div class="value" address=""></div>
+		<div class="value" address></div>
 		<div class="label">Campanello</div>
-		<div class="value" doorbell=""></div>
+		<div class="value" doorbell></div>
+		<div class="value" telephone></div>
 		<div class="notes">
 			<div class="label">Note</div>
-			<div class="value" text-notes=""></div>
+			<div class="value" text-notes></div>
 		</div>
 		<div id="qrcode_printable"></div>
-		<div pizze-container=""></div>
+		<div pizze-container></div>
+		<div totale-ordine></div>
 	</div>
 	<div id="ghostKitchenPrint">
 		<div class="data"></div>
-		<div class="label">Ordine</div>
-		<div order-type="" takeaway="" class="value" style="display: none;">TakeAway</div>
-		<div order-type="" delivery="" class="value">Domicilio</div>
-		<div class="label">Orario</div>
-		<div class="value" time=""></div>
 		<div class="label">Cliente</div>
-		<div class="value" customer=""></div>
-		<div pizze-container="">
+		<div class="value" customer></div>
+		<div class="label">Ordine</div>
+		<div order-type takeaway class="value" style="display: none;">TakeAway</div>
+		<div order-type delivery class="value">Domicilio</div>
+		<div class="label">Orario</div>
+		<div class="value">
+			<span time></span> (<span travel_duration></span>)
+		</div>
+		<div pizze-container>
 			<div id="ghostPizza">
 				<div class="stackable-stuff">
-					<div class="pizza-heading"><span pizza-quantity=""></span> <span pizza-name=""></span></div>
-					<div pizza-ingredient="" id="kitchenIngredient"></div>
-					<div pizza-ingredient="" without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name></span></div>
-					<div pizza-aggiunta="" id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name></span></div>
+					<div class="pizza-heading"><span pizza-quantity></span> <span pizza-name></span></div>
+					<div pizza-ingredient id="kitchenIngredient"></div>
+					<div pizza-ingredient without id="kitchenWithout"><i class="mdi mdi-minus"></i> <span without-name></span></div>
+					<div pizza-aggiunta id="kitchenAddition"><i class="mdi mdi-plus-thick"></i> <span addition-name></span></div>
 				</div>
 				<div class="notes">
 					<div class="label">Note</div>
-					<div class="value" text-notes=""></div>
+					<div class="value" text-notes></div>
 				</div>
 			</div>
 		</div>
@@ -516,6 +538,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	let pizzas_categories = JSON.parse(`<?= JSON_encode($pizzas_categories) ?>`);
 	</script>
 	<?= import_js('orders_manager') ?>
-	<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_PUBLIC_API ?>&callback=initMap&libraries=&v=weekly" async></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_PUBLIC_API ?>&callback=initMap&libraries=places&v=weekly" async></script>
 </body>
 </html>

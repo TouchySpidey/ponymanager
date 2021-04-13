@@ -1,3 +1,6 @@
+.pac-container {
+	z-index: 1002;
+}
 #tabSwitcher {
 	padding: 16px;
 }
@@ -49,6 +52,9 @@
 #toPrepping, #toDelivering {
 	width: 50%;
 	color: black;
+}
+[prezzo-aggiunto]:before {
+	content: '€';
 }
 #pendingOrders .info-cliente {
 	border-bottom: 2px solid #f57c00;
@@ -167,6 +173,20 @@
 } */
 #elencoPiatti {
 	padding: 0 16px;
+}
+.categoria.finder-container {
+	position: relative;
+}
+.finder-container .finder-icon {
+	position: absolute;
+	top: 8px;
+	left: 16px;
+}
+.finder-container .finder-input {
+	outline-offset: 0px;
+	height: 28px;
+	width: 130px;
+	padding-left: 30px;
 }
 .categoria {
 	font-size: 20px;

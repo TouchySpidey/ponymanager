@@ -61,6 +61,9 @@ class Orders_model extends CI_Model {
 					'notes' => $info['notes'],
 					'north' => $info['north'],
 					'east' => $info['east'],
+					'travel_duration' => $info['travel_duration'],
+					'total_price' => $info['total_price'],
+					'telephone' => $info['telephone'],
 					'payment_method' => $info['cod_payment'],
 					'rows' => [],
 					'sconto' => null,
@@ -203,6 +206,7 @@ class Orders_model extends CI_Model {
 		if ($order['is_delivery']) {
 			$order['north'] = false;
 			$order['east'] = false;
+			$order['travel_duration'] = null;
 			$order['doorbell'] = $post['doorbell'];
 			$order['address'] = $post['address'];
 			$order['city'] = $post['city'];
@@ -221,6 +225,7 @@ class Orders_model extends CI_Model {
 							# indirizzo non cambiato
 							$order['north'] = $old_order['north'];
 							$order['east'] = $old_order['east'];
+							$order['travel_duration'] = $old_order['travel_duration'];
 						}
 					}
 				}
@@ -238,6 +243,7 @@ class Orders_model extends CI_Model {
 							if ($customer['north'] || $customer['east']) {
 								$order['north'] = $customer['north'];
 								$order['east'] = $customer['east'];
+								$order['travel_duration'] = $customer['travel_duration'];
 							}
 						}
 					}
@@ -246,12 +252,13 @@ class Orders_model extends CI_Model {
 			if (!$order['north'] && !$order['east']) {
 				$geo = geocode($order['city'], $order['address']);
 				if ($geo) {
+					$order['travel_duration'] = distancematrix(_GLOBAL_COMPANY, $geo);
 					$order['north'] = $geo['north'];
 					$order['east'] = $geo['east'];
 				}
 			}
 		} else {
-			$order['doorbell'] = $order['address'] = $order['city'] = $order['north'] = $order['east'] = $order['delivery_time'] = null;
+			$order['doorbell'] = $order['address'] = $order['city'] = $order['north'] = $order['east'] = $order['travel_duration'] = null;
 		}
 		if ($order['id_delivery']) {
 			$id_delivery = $order['id_delivery'];

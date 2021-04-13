@@ -34,6 +34,7 @@ class Customers extends CB_Controller {
 		if ($name) {
 			$north = 0;
 			$east = 0;
+			$travel_duration = null;
 			if ($address) {
 				if (!$old_customer || !$old_customer['north'] && !$old_customer['east'] || $old_customer['address'] != $address) {
 					# motivi per fare il geocode:
@@ -44,6 +45,7 @@ class Customers extends CB_Controller {
 					if ($geo) {
 						$north = $geo['north'];
 						$east = $geo['east'];
+						$travel_duration = distancematrix(_GLOBAL_COMPANY, $geo);
 					}
 				}
 			}
@@ -59,6 +61,7 @@ class Customers extends CB_Controller {
 					'address' => $address,
 					'north' => $north,
 					'east' => $east,
+					'travel_duration' => $travel_duration,
 					'created' => $old_customer['created'],
 				];
 				$this->db->replace('customers', $new_customer);
@@ -73,6 +76,7 @@ class Customers extends CB_Controller {
 					'address' => $address,
 					'north' => $north,
 					'east' => $east,
+					'travel_duration' => $travel_duration,
 					'created' => date('Y-m-d H:i:s'),
 				];
 				$this->db->insert('customers', $new_customer);

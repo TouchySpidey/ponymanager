@@ -18,6 +18,21 @@ function geocode($city, $address) {
 	}
 	return false;
 }
+function distancematrix($origin, $destination) {
+	$url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=decimal'
+	.'&language=it'
+	.'&origins='.$origin['north'].','.$origin['east']
+	.'&destinations='.$destination['north'].','.$destination['east']
+	.'&key='.GOOGLE_SECRET_API;
+	$response = file_get_contents($url);
+	if ($response) {
+		$json = JSON_decode($response, true);
+		if (isset($json['rows'][0]['elements'][0]['duration']['text'])) {
+			return $json['rows'][0]['elements'][0]['duration']['text'];
+		}
+	}
+	return false;
+}
 function debug(...$pieces) {
 	echo "<pre style='white-space: pre-wrap; word-break: break-word;'>";
 	foreach ((array) $pieces as $piece) {

@@ -54,7 +54,6 @@ let sendRequest = function(search) {
 		}
 	});
 };
-
 let existing_timeout = false;
 $('#finder').on('input', function() {
 	let str_search = $(this).val();
@@ -133,6 +132,7 @@ function order_reset() {
 }
 
 function show_assigned() {
+	resetIngredientFinder();
 	let $selected_pizza = $('#listaPizze .item.selected');
 	if (!$selected_pizza.length) {
 		return;
@@ -155,6 +155,7 @@ function show_assigned() {
 }
 
 function select_category(category = false) {
+	resetPizzaFinder();
 	if (category) {
 		newOrder.last_pizza_category = category;
 		$('#categorieContainer .categoria').removeClass('selected');
@@ -170,6 +171,7 @@ function show_notes() {
 }
 
 function select_ingredients_category(category = false) {
+	resetIngredientFinder();
 	if (category) {
 		$('#elencoIngredienti .ingrediente, #elencoIngredienti .notes-container').hide();
 		$('#elencoIngredienti .ingrediente[data-elenco="' + category + '"]').show();
@@ -178,11 +180,6 @@ function select_ingredients_category(category = false) {
 
 $('.tabs-container .tab').click(function() {
 	order_init(this);
-});
-
-$('#categorieContainer .categoria').click(function() {
-	let categoria = $(this).data('category');
-	select_category(categoria);
 });
 
 function addPizzaToOrder(id_pizza, order_data = false) {
@@ -199,6 +196,7 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 		};
 	}
 	let $orderItem = $ghostOrderItem.clone();
+	$orderItem.find('[quantity]').text(order_row.n >= 1 ? parseInt(order_row.n) : order_row.n);
 	$orderItem.find('[main]').text(pizza.name);
 	$orderItem.find('[price]').text(pizza.price);
 	for (let i in pizza.ingredients) {
@@ -223,7 +221,8 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 			if (pizza.ingredients.indexOf(order_row.ingredients[i]) == -1 && (order_row.ingredients[i] in ingredients)) {
 				let ingredient = ingredients[order_row.ingredients[i]];
 				let $pizzaAddition = $ghostPizzaAddition.clone();
-				$pizzaAddition.text(ingredient.name);
+				$pizzaAddition.find('[testo-ingrediente]').text(ingredient.name);
+				$pizzaAddition.find('[prezzo-aggiunto]').text(ingredient.price);
 				$pizzaAddition.attr('id_ingredient', ingredient.id_ingredient);
 				$orderItem.find('[modifiche]').append($pizzaAddition);
 			}
@@ -262,7 +261,8 @@ $('#elencoIngredienti .ingrediente').click(function() {
 		} else {
 			// nuova aggiunta
 			let pizzaAddition = $ghostPizzaAddition.clone();
-			pizzaAddition.text(ingredient.name);
+			pizzaAddition.find('[testo-ingrediente]').text(ingredient.name);
+			pizzaAddition.find('[prezzo-aggiunto]').text(ingredient.price);
 			pizzaAddition.attr('id_ingredient', id_ingredient);
 			$selected_pizza.find('[modifiche]').append(pizzaAddition);
 		}
@@ -650,7 +650,7 @@ function ordersFromDb() {
 					position: markerGeo,
 					map: map,
 					title: deliveries[i].name,
-					icon: '/frontend/images/icons/map_marker.svg',
+					icon: site_url + 'frontend/images/icons/map_marker.svg',
 					label: {
 						text: deliveries[i]?.delivery_time ? deliveries[i].delivery_time : 'X',
 						fontSize: '18px',
@@ -699,7 +699,7 @@ function ordersFromDb() {
 					all: true,
 				});
 				if (deliveries[i].is_delivery) {
-					$delivery.find('.indirizzo-cliente').text(deliveries[i].city + ', ' + deliveries[i].address);
+					$delivery.find('.indirizzo-cliente').text((deliveries[i].city ? deliveries[i].city + ', ' : '') + deliveries[i].address);
 
 					$delivery.find('.panner').click(() => {
 						map.panTo(marker.getPosition());
@@ -750,12 +750,22 @@ function filterOrders(mode = false, from = false, to = false) {
 
 	for (let i in meta_deliveries) {
 		let t = meta_deliveries[i].delivery_time;
-		if (meta_deliveries[i][mode] && (!t || !from && !to || t >= from && t <= to)) {
-			meta_deliveries[i].marker.setMap(map);
-			meta_deliveries[i].listItem.show();
+		if (mode == 'dismissed') {
+			if (meta_deliveries[i][mode] && (!t || !from && !to || t >= from && t <= to)) {
+				meta_deliveries[i].marker.setMap(map);
+				meta_deliveries[i].listItem.show();
+			} else {
+				meta_deliveries[i].marker.setMap(null);
+				meta_deliveries[i].listItem.hide();
+			}
 		} else {
-			meta_deliveries[i].marker.setMap(null);
-			meta_deliveries[i].listItem.hide();
+			if (!meta_deliveries[i]['dismissed'] && meta_deliveries[i][mode] && (!t || !from && !to || t >= from && t <= to)) {
+				meta_deliveries[i].marker.setMap(map);
+				meta_deliveries[i].listItem.show();
+			} else {
+				meta_deliveries[i].marker.setMap(null);
+				meta_deliveries[i].listItem.hide();
+			}
 		}
 	}
 	mayDisableMaster();
@@ -827,13 +837,73 @@ function selectPony(id_pony) {
 	}
 	if (id_pony in ponies) {
 		if (confirm('Stai assegnando ' + n_ordini + ' ordini a ' + ponies[id_pony].name)) {
-			$.post('/orders/assign_orders', {ids: ids_to_assign, cod_pony: id_pony}).always(function() {
+			$.post(site_url + '/orders/assign_orders', {ids: ids_to_assign, cod_pony: id_pony}).always(function() {
 				ordersFromDb();
 			});
 		}
 	} else {
 		alert('Errore! pony non trovato!');
 	}
+}
+
+function filterPizzasByName(toSearch) {
+	if (toSearch.length) {
+		$('#categorieContainer .categoria:not(.finder-container)').removeClass('selected');
+		$('#categorieContainer .categoria.finder-container').addClass('selected');
+		$('#elencoPiatti .piatto').hide();
+		$('#elencoPiatti .piatto').each(function(i, v) {
+			let id_piatto = $(v).attr('data-id_pizza');
+			if (id_piatto in pizzas) {
+				let piatto = pizzas[id_piatto];
+				if (piatto.name.toLowerCase().indexOf(toSearch.toLowerCase()) !== -1) {
+					// è una sottostringa
+					$(v).show();
+				}
+			}
+		});
+	} else {
+		$('#categorieContainer .categoria.finder-container').removeClass('selected');
+		$('#pizzaFinder').val('');
+	}
+}
+
+function filterIngredientsByName(toSearch) {
+	if (toSearch.length) {
+		$('#categorieIngredientiContainer .categoria:not(.finder-container)').removeClass('selected');
+		$('#categorieIngredientiContainer .categoria.finder-container').addClass('selected');
+		$('#elencoIngredienti .ingrediente').hide();
+		$('#elencoIngredienti .ingrediente').each(function(i, v) {
+			let id_ingredient = $(v).attr('data-id_ingredient');
+			if (id_ingredient in ingredients) {
+				let ingredient = ingredients[id_ingredient];
+				if (ingredient.name.toLowerCase().indexOf(toSearch.toLowerCase()) !== -1) {
+					// è una sottostringa
+					$(v).show();
+				}
+			}
+		});
+	} else {
+		$('#categorieIngredientiContainer .categoria.finder-container').removeClass('selected');
+		$('#ingredientFinder').val('');
+	}
+}
+
+$('#ingredientFinder').on('input change', function() {
+	let str = $(this).val();
+	filterIngredientsByName(str);
+});
+
+function resetIngredientFinder() {
+	$('#ingredientFinder').val('').trigger('change');
+}
+
+$('#pizzaFinder').on('input change', function() {
+	let str = $(this).val();
+	filterPizzasByName(str);
+});
+
+function resetPizzaFinder() {
+	$('#pizzaFinder').val('').trigger('change');
 }
 
 $('#selectAllVisibleOrders').change(function() {
@@ -875,7 +945,7 @@ function dismissSelected() {
 		}
 	}
 	if (confirm('Stai segnando ' + n_ordini + ' ordini come conclusi')) {
-		$.post('/orders/dismiss_orders', {ids: ids_to_dismiss}).always(function() {
+		$.post(site_url + '/orders/dismiss_orders', {ids: ids_to_dismiss}).always(function() {
 			ordersFromDb();
 		});
 	}
@@ -910,9 +980,11 @@ function ponyPrint(_order = false) {
 		$ponyPrint.find('[order-type][delivery]').hide();
 	}
 	$ponyPrint.find('[time]').text(_order.delivery_time);
-	$ponyPrint.find('[address]').text(_order.city + ', ' + _order.address);
+	$ponyPrint.find('[totale-ordine]').text(_order.total_price);
+	$ponyPrint.find('[address]').text((_order.city ? _order.city + ', ' : '') + _order.address);
 	$ponyPrint.find('[doorbell]').text(_order.doorbell);
 	$ponyPrint.find('[customer]').text(_order.name);
+	$ponyPrint.find('[telephone]').text(_order.telephone);
 
 	if (_order.notes) {
 		$ponyPrint.find('[text-notes]').text(_order.notes);
@@ -991,6 +1063,7 @@ function kitchenPrint(_order = false) {
 		$kitchenPrint.find('[order-type][delivery]').hide();
 	}
 	$kitchenPrint.find('[time]').text(_order.delivery_time);
+	$kitchenPrint.find('[travel_duration]').text(_order.travel_duration);
 	$kitchenPrint.find('[customer]').text(_order.name);
 	if ('rows' in _order) {
 		if (_order.rows.length) {
@@ -1063,7 +1136,7 @@ function delete_order() {
 	let _draft = patchOrder();
 	if (_draft.id_order) {
 		if (confirm('ATTENZIONE! Eliminare questo ordine?')) {
-			$.post('/orders/delete_order', _draft).always(function(data) {
+			$.post(site_url + '/orders/delete_order', _draft).always(function(data) {
 				ordersFromDb();
 			});
 			closeModal('#addOrderModal');
@@ -1089,9 +1162,41 @@ function initMap() {
 		position: markerGeo,
 		map: map,
 		title: 'Calima',
-		icon: '/frontend/images/icons/blue_dot.svg',
+		icon: site_url + 'frontend/images/icons/blue_dot.svg',
 		zIndex: 2,
 	});
+
+
+	let neBound = new google.maps.LatLng(geoShop.north + 0.04, geoShop.east + 0.04);
+	let swBound = new google.maps.LatLng(geoShop.north - 0.04, geoShop.east - 0.04);
+	// let sw_marker = new google.maps.Marker({
+	// 	position: swBound,
+	// 	map: map,
+	// 	title: 'Calima',
+	// 	icon: site_url + 'frontend/images/icons/blue_dot.svg',
+	// 	zIndex: 2,
+	// });
+	// let ne_marker = new google.maps.Marker({
+	// 	position: neBound,
+	// 	map: map,
+	// 	title: 'Calima',
+	// 	icon: site_url + 'frontend/images/icons/blue_dot.svg',
+	// 	zIndex: 2,
+	// });
+	let acBound = new google.maps.LatLngBounds(swBound, neBound);
+	const input = document.getElementById("gfinder");
+	const options = {
+		bounds: acBound,
+		// componentRestrictions: { country: "it" },
+		fields: ["address_components", "geometry"],
+		origin: markerGeo,
+		strictBounds: false,
+		types: ["address"],
+	};
+	const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+
+
 
 	$(function() {
 		order_reset();
