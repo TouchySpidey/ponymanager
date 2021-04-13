@@ -2,7 +2,7 @@
 
 .ftpconfig
 !.gitattributes
-!.editorconfig
+.editorconfig
 user_guide
 application/config/secrets.php
 
