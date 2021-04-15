@@ -24,11 +24,13 @@ class Orders extends CB_Controller {
 	}
 
 	public function analytics() {
-		$this->load->view('orders_list');
+		$_menu = $this->pizzeria->menu_components();
+		$_analytics = $this->orders_model->get_analytics();
+		$this->load->view('orders_list', array_merge($_menu, $_analytics));
 	}
 
 	public function get_todays_orders() {
-		echo JSON_encode($this->orders_model->get_all_orders(date('Y-m-d H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s', strtotime('+1 day'))));
+		echo JSON_encode($this->orders_model->get_orders_between(date('Y-m-d H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s', strtotime('+1 day'))));
 	}
 
 	public function add_or_edit_order() {
@@ -47,11 +49,6 @@ class Orders extends CB_Controller {
 
 	public function delete_order() {
 		$this->orders_model->disableDelivery($this->input->post('id_order'));
-	}
-
-	public function print_demo() {
-		$orders = $this->orders_model->get_all_orders(date('Y-m-d H:i:s', strtotime('-1 day')));
-		$this->load->view('print_demo', compact('orders'));
 	}
 
 }

@@ -1042,6 +1042,7 @@ function kitchenPrintSelected() {
 		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
 			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
 			if (chk) {
+				console.log(meta_deliveries[i].order_data);
 				kitchenPrint(meta_deliveries[i].order_data);
 			}
 		}
@@ -1066,41 +1067,42 @@ function kitchenPrint(_order = false) {
 	$kitchenPrint.find('[travel_duration]').text(_order.travel_duration);
 	$kitchenPrint.find('[customer]').text(_order.name);
 	if ('rows' in _order) {
-		if (_order.rows.length) {
-			let rows = _order.rows;
-			for (let i in rows) {
-				let row = rows[i];
-				let $pizza = $ghostPizza.clone();
-				let pizza = pizzas[row.id_piatto];
-				$pizza.find('[pizza-name]').text(pizza.name);
-				$pizza.find('[pizza-quantity]').text(row.n >= 1 ? parseInt(row.n) : row.n);
-				for (let j in pizza.ingredients) {
-					if (pizza.ingredients[j] in ingredients) {
-						if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
-							// without
-							let $ingredient = $kitchenWithout.clone();
-							let ingredient = ingredients[pizza.ingredients[j]];
-							$ingredient.find('[without-name]').text(ingredients[pizza.ingredients[j]].name);
-							$ingredient.addClass('without');
-							$pizza.find('.stackable-stuff').append($ingredient);
-						}
+		let rows = _order.rows;
+		for (let i in rows) {
+			let row = rows[i];
+			console.log(row);
+			let $pizza = $ghostPizza.clone();
+			let pizza = pizzas[row.id_piatto];
+			$pizza.find('[pizza-name]').text(pizza.name);
+			$pizza.find('[pizza-quantity]').text(row.n >= 1 ? parseInt(row.n) : row.n);
+			for (let j in pizza.ingredients) {
+				if (pizza.ingredients[j] in ingredients) {
+					if (row.ingredients.indexOf(pizza.ingredients[j]) === -1) {
+						// without
+						let $ingredient = $kitchenWithout.clone();
+						let ingredient = ingredients[pizza.ingredients[j]];
+						$ingredient.find('[without-name]').text(ingredients[pizza.ingredients[j]].name);
+						$ingredient.addClass('without');
+						$pizza.find('.stackable-stuff').append($ingredient);
 					}
 				}
-				for (let j in row.ingredients) {
-					if (pizza.ingredients.indexOf(row.ingredients[j]) === -1) {
-						$addition = $kitchenAddition.clone();
-						$addition.find('[addition-name]').text(ingredients[row.ingredients[j]].name);
-						$pizza.find('.stackable-stuff').append($addition);
-					}
-				}
-				if (row.notes) {
-					$pizza.find('[text-notes]').text(row.notes);
-				} else {
-					$pizza.find('.notes').remove();
-				}
-				$kitchenPrint.find('[pizze-container]').append($pizza);
 			}
+			for (let j in row.ingredients) {
+				if (pizza.ingredients.indexOf(row.ingredients[j]) === -1) {
+					$addition = $kitchenAddition.clone();
+					$addition.find('[addition-name]').text(ingredients[row.ingredients[j]].name);
+					$pizza.find('.stackable-stuff').append($addition);
+				}
+			}
+			if (row.notes) {
+				$pizza.find('[text-notes]').text(row.notes);
+			} else {
+				$pizza.find('.notes').remove();
+			}
+			$kitchenPrint.find('[pizze-container]').append($pizza);
 		}
+	} else {
+		console.log(_order);
 	}
 	$('#printable').append($kitchenPrint);
 	window.print();

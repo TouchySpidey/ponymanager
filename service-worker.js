@@ -36,5 +36,16 @@ self.addEventListener('activate', function(e) {
 	return self.clients.claim();
 });
 
-self.addEventListener('fetch', function(e) {
+self.addEventListener('fetch', function(ev) {
+	ev.respondWith(
+		caches.match(ev.request)
+		.then(function(response) {
+			// Cache hit - return response
+			if (response) {
+				return response;
+			}
+			return fetch(ev.request);
+		}
+	)
+);
 });

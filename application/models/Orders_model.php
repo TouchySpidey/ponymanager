@@ -23,25 +23,26 @@ class Orders_model extends CI_Model {
 		]];
 	}
 
-	public function get_all_orders($from_date = false, $to_date = false) {
-		$this->db->group_start();
+	public function get_orders_between($from_date = false, $to_date = false) {
 		if ($from_date || $to_date) {
+			$this->db->group_start();
 			if ($from_date) {
 				$this->db->where('delivery_time >=', $from_date);
 			}
 			if ($to_date) {
 				$this->db->where('delivery_time <=', $to_date);
 			}
+			$this->db->or_where('delivery_time', null);
+			$this->db->group_end();
 		}
-		$this->db->or_where('delivery_time', null);
-		$this->db->group_end();
 		$db_deliveries = $this->db
 		->join('order_pizzas', 'order_pizzas.cod_delivery = deliveries.id_delivery', 'LEFT')
 		->join('order_pizza_ingredients', 'deliveries.id_delivery = order_pizza_ingredients.x_cod_delivery AND order_pizzas.order_serial = order_pizza_ingredients.x_order_serial', 'LEFT')
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->where('active', 1)
+		->order_by('delivery_time', 'desc')
 		->get('deliveries')->result_array();
-		$deliveries = [];
+		$_rows = $deliveries = [];
 		$orders_pizzas_ingredients = [];
 		foreach ($db_deliveries as $info) {
 			if (!isset($deliveries[$info['id_delivery']])) {
@@ -53,6 +54,7 @@ class Orders_model extends CI_Model {
 					'cod_pony' => $info['cod_pony'],
 					'delivery_time' => $info['delivery_time'] ? date('H:i', strtotime($info['delivery_time'])) : false,
 					'delivery_date' => $info['delivery_time'] ? date('d/m/Y', strtotime($info['delivery_time'])) : false,
+					'delivery_datetime' => $info['delivery_time'],
 					'doorbell' => $info['doorbell'],
 					'id_customer' => $info['cod_customer'],
 					'id_order' => $info['id_delivery'],
@@ -79,13 +81,14 @@ class Orders_model extends CI_Model {
 						$orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']][] = $info['cod_ingredient'];
 					}
 				}
-				$deliveries[$info['id_delivery']]['rows'][$info['order_serial']] = [
+				$_rows[$info['id_delivery']][$info['order_serial']] = [
 					'id_piatto' => $info['cod_pizza'],
 					'n' => $info['pizza_quantity'],
 					'omaggio' => $info['uncharged'] ? true : false,
 					'notes' => $info['pizza_notes'],
 					'ingredients' => isset($orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']]) ? $orders_pizzas_ingredients[$info['id_delivery']][$info['order_serial']] : [],
 				];
+				$deliveries[$info['id_delivery']]['rows'] = array_values($_rows[$info['id_delivery']]);
 			}
 		}
 
@@ -280,6 +283,21 @@ class Orders_model extends CI_Model {
 		return $id_delivery;
 	}
 
+	public function get_all_orders() {
+		$deliveries = [];
+		$orders_pizzas_ingredients = $this->db
+		->join('order_pizzas', 'id_delivery = cod_delivery', 'LEFT')
+		->join('order_pizza_ingredients', 'cod_delivery = x_cod_delivery', 'LEFT')
+		->get('deliveries')->result_array();
+		foreach ($order_pizzas_ingredients as $i => $dump) {
+			if (!isset($deliveries[$dump['id_delivery']])) {
+				$deliveries[$dump['id_delivery']] = [
+
+				];
+			}
+		}
+	}
+
 	public function disableDelivery($id) {
 		$delivery = $this->db
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
@@ -322,6 +340,37 @@ class Orders_model extends CI_Model {
 				$this->db->replace('deliveries', $delivery);
 			}
 		}
+	}
+
+	public function get_analytics() {
+		$ordini = $this->get_orders_between();
+		$_chart_weekdays = [];
+		$_chart_delivery_type = [];
+		foreach ($ordini as $ordine) {
+			if (!isset($_chart_weekdays[date('l', strtotime($ordine['delivery_datetime']))])) {
+				$_chart_weekdays[date('l', strtotime($ordine['delivery_datetime']))] = 0;
+			}
+			$_chart_weekdays[date('l', strtotime($ordine['delivery_datetime']))] += $ordine['total_price'];
+			if (!isset($_chart_delivery_type[$ordine['is_delivery']])) {
+				$_chart_delivery_type[$ordine['is_delivery']] = 0;
+			}
+			$_chart_delivery_type[$ordine['is_delivery']] += $ordine['total_price'];
+		}
+		$chart_weekdays = [
+			['Monday', isset($_chart_weekdays['Monday']) ? $_chart_weekdays['Monday'] : 0],
+			['Tuesday', isset($_chart_weekdays['Tuesday']) ? $_chart_weekdays['Tuesday'] : 0],
+			['Wednesday', isset($_chart_weekdays['Wednesday']) ? $_chart_weekdays['Wednesday'] : 0],
+			['Thursday', isset($_chart_weekdays['Thursday']) ? $_chart_weekdays['Thursday'] : 0],
+			['Friday', isset($_chart_weekdays['Friday']) ? $_chart_weekdays['Friday'] : 0],
+			['Saturday', isset($_chart_weekdays['Saturday']) ? $_chart_weekdays['Saturday'] : 0],
+			['Sunday', isset($_chart_weekdays['Sunday']) ? $_chart_weekdays['Sunday'] : 0],
+		];
+		$chart_delivery_type = [
+			['Delivery', $_chart_delivery_type[1]],
+			['Takeaway', $_chart_delivery_type[0]],
+		];
+
+		return compact('ordini', 'chart_weekdays', 'chart_delivery_type');
 	}
 
 }
