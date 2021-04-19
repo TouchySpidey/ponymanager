@@ -1,6 +1,7 @@
 <?php
 
 function html_head($title = false, $extra_css = [], $extra_js = []) {
+	$title = 'PonyManager | '.$title;
 	include APPPATH.'views/_head.php';
 }
 
@@ -8,7 +9,11 @@ function topbar() {
 	include APPPATH.'views/_topbar.php';
 }
 function main_menu() {
-	include APPPATH.'views/_main_menu.php';
+	if (defined('_COMPANY_URI') && defined('_GLOBAL_COMPANY')) {
+		include APPPATH.'views/_company_menu.php';
+	} else {
+		include APPPATH.'views/_general_menu.php';
+	}
 }
 
 function import_js(...$jss) {

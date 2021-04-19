@@ -5,18 +5,26 @@ class Main extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
+		if ($this->session->user) {
+			defined('_GLOBAL_USER') OR define('_GLOBAL_USER', $this->session->user);
+		}
 	}
 
 	public function index() {
 		if ($this->session->user) {
-			$this->profile();
+			$this->home();
 		} else {
 			$this->login();
 		}
 	}
 
-	public function profile() {
-		$this->load->view('profile');
+	public function home() {
+		$privileges = $this->db
+		->join('privileges', 'cod_company = id_company', 'LEFT')
+		->where('owner', $this->session->user['email'])
+		->or_where('user', $this->session->user['email'])
+		->get('companies')->result_array();
+		$this->load->view('home', compact('privileges'));
 	}
 
 	public function login() {

@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Ordini', ['orders_manager'], ['qrcode.min']) ?>
+<?php html_head('Consegna') ?>
 <body>
 	<?php topbar() ?>
 	<?php main_menu() ?>
