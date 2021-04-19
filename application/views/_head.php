@@ -28,6 +28,6 @@
 	<?php } ?>
 	<script>
 	let site_url = '<?= site_url() ?>'; // has trailing slash
-	let company_url_suffix = '/company/<?= _COMPANY_URI ?>';
+	<?php if (defined('_COMPANY_URI')) { ?>let company_url_suffix = '/company/<?= _COMPANY_URI ?>';<?php } ?>
 	</script>
 </head>

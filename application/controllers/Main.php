@@ -5,50 +5,56 @@ class Main extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
-
-		if ($this->session->user) {
-			redirect('/orders');
-		}
 	}
 
 	public function index() {
-		$this->login();
+		if ($this->session->user) {
+			$this->profile();
+		} else {
+			$this->login();
+		}
+	}
+
+	public function profile() {
+		$this->load->view('profile');
 	}
 
 	public function login() {
-		if (($email = $this->input->post('email')) && ($password = $this->input->post('password'))) {
-			$email = trim($email);
-			$salted = $password . LOGIN_SALT;
-			$hash = hash('sha256', $salted);
-			$user = $this->db
-			->where('email', $email)
-			->where('password', $hash)
-			->get('users')->result_array();
-			if (!empty($user)) {
-				$this->session->user = $user[0];
-				$company = $this->db
-				->where('id_company', $user['cod_company'])
-				->get('companies')->result_array();
-				if (empty($company)) {
-
-				} else {
-					$this->session->company = $company[0];
+		if ($this->session->user) {
+			redirect('/');
+		} else {
+			if (($email = $this->input->post('email')) && ($password = $this->input->post('password'))) {
+				$email = trim($email);
+				$salted = $password . LOGIN_SALT;
+				$hash = hash('sha256', $salted);
+				$user = $this->db
+				->where('email', $email)
+				->where('password', $hash)
+				->get('users')->result_array();
+				if (!empty($user)) {
+					$this->session->user = $user[0];
+					$this->db->insert('heavy_logger', [
+						'user_if_any' => $this->session->user ? $this->session->user['email'] : null,
+						'url' => current_url(),
+						'querystring' => $this->input->get() ? serialize($this->input->get()) : null,
+						'ipaddress' => $this->input->ip_address(),
+						'useragent' => $this->input->user_agent(),
+					]);
+					if ($redirect = $this->session->redirect) {
+						$this->session->unset_userdata('redirect');
+						redirect($redirect);
+					}
+					redirect('/');
 				}
-				$this->db->insert('heavy_logger', [
-					'user_if_any' => $this->session->user ? $this->session->user['email'] : null,
-					'url' => current_url(),
-					'querystring' => $this->input->get() ? serialize($this->input->get()) : null,
-					'ipaddress' => $this->input->ip_address(),
-					'useragent' => $this->input->user_agent(),
-				]);
-				if ($redirect = $this->session->redirect) {
-					$this->session->unset_userdata('redirect');
-					redirect($redirect);
-				}
-				redirect('/orders');
 			}
+			$this->load->view('login', ['email' => $email]);
 		}
-		$this->load->view('login', ['email' => $email]);
+	}
+
+	public function logout() {
+		$this->session->sess_destroy();
+		// echo 'logg out';
+		redirect('/');
 	}
 
 	public function reset_password($guid = false) {
@@ -83,15 +89,7 @@ class Main extends CI_Controller {
 							$user['password'] = $hash;
 							$this->db->replace('users', $user);
 							$this->session->user = $user;
-							$company = $this->db
-							->where('id_company', $user['cod_company'])
-							->get('companies')->result_array();
-							if (empty($company)) {
-
-							} else {
-								$this->session->company = $company[0];
-							}
-							redirect('/orders');
+							redirect('/');
 						} else {
 							$error = 'Il link è scaduto o l\'email non è corretta';
 						}
