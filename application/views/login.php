@@ -1,6 +1,19 @@
 <html>
 <?php html_head('Login', ['login']) ?>
 <body translate="no" class="d-flex">
+
+	<script>
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('<?= site_url() ?>service-worker.js?v4', {
+			scope: '.'
+		}).then(function(registration) {
+			console.log('Service Worker Registered with scope: ' + registration.scope);
+		}, function(err) {
+			console.log('Service Worker Registration FAILED: ' + err);
+		});
+	}
+	</script>
+
 	<div class="container">
 		<div class="card">
 			<?php if ($email) { ?><h4 class="login-failed">Email o password non corretti</h4><?php } ?>

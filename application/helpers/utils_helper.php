@@ -75,6 +75,9 @@ function string_similarity($str1, $str2) {
 			$pairs2[] = $pair;
 		}
 	}
+	if (empty($pairs1) && empty($pairs2)) {
+		return 0;
+	}
 	$union = count($pairs1) + count($pairs2);
 	$intersection = 0;
 	foreach ($pairs1 as $p1) {

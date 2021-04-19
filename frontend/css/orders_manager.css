@@ -83,27 +83,6 @@
 	color: #70757A;
 	font-size: 13px;
 }
-.md-checkbox-lg {
-	font-size: 22px;
-	line-height: 20px;
-	padding: 12px 32px;
-	border-radius: 6px;
-	border: 1px solid #ccc;
-	cursor: pointer;
-	margin-bottom: 12px;
-}
-.md-checkbox-lg.selected {
-	background-color: #e4f6fe;
-	border: 1px solid #00A8FF;
-	color: black;
-}
-.md-checkbox-lg .order-pricing {
-	font-size: 14px;
-}
-.md-checkbox-lg:not(.selected) {
-	border: 1px solid #bbb;
-	color: #bbb;
-}
 #totaleOrdine [tot-text]:after {
 	content: '€';
 }
@@ -401,15 +380,4 @@
 }
 #tastiera > div:last-child [tasto]:last-child {
 	border-bottom-right-radius: 20px;
-}
-.filter-orders-by-type .filter-tab {
-	font-size: 26px;
-	padding: 12px 24px;
-	cursor: pointer;
-	font-weight: 500;
-	border-bottom: 2px solid transparent;
-}
-.filter-orders-by-type .filter-tab.selected {
-	border-bottom: 2px solid #0564e0;
-	color: #0564e0;
 }

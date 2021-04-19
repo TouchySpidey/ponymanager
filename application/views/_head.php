@@ -27,15 +27,7 @@
 		<script src="<?= site_url() ?>frontend/js/<?= $js ?>.js?v=<?= VERSION ?>"></script>
 	<?php } ?>
 	<script>
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('<?= site_url() ?>service-worker.js?v3', {
-			scope: '.'
-		}).then(function(registration) {
-			console.log('Service Worker Registered with scope: ' + registration.scope);
-		}, function(err) {
-			console.log('Service Worker Registration FAILED: ' + err);
-		});
-	}
-	let site_url = '<?= site_url() ?>';
+	let site_url = '<?= site_url() ?>'; // has trailing slash
+	let company_url_suffix = '/company/<?= _COMPANY_URI ?>';
 	</script>
 </head>

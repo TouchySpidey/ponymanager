@@ -20,7 +20,7 @@ let customers_cache = {};
 
 let sendRequest = function(search) {
 	req_sent++;
-	$.post(site_url + 'customers/find', {
+	$.post(site_url + 'customers/find' + company_url_suffix, {
 		string: search,
 		uid: req_sent
 	}).done(function(data) {
@@ -424,7 +424,7 @@ function saveCustomer(brandNew = false) {
 		address: $('#deliveryTo [name="address"]').val(),
 		city: $('#deliveryTo [name="city"]').val(),
 	};
-	$.post(site_url + 'customers/add_or_edit_customer', customer).always(function(data) {
+	$.post(site_url + 'customers/add_or_edit_customer' + company_url_suffix, customer).always(function(data) {
 		try {
 			let response = JSON.parse(data);
 			if ('created' in response || !response.created) {
@@ -538,7 +538,7 @@ function patchOrder() {
 
 $('#sendOrder').click(function() {
 	let formData = patchOrder();
-	$.post(site_url + 'orders/add_or_edit_order', formData).always(function(data) {
+	$.post(site_url + 'orders/add_or_edit_order' + company_url_suffix, formData).always(function(data) {
 		ordersFromDb();
 		order_reset();
 		closeModal('#addOrderModal');
@@ -633,7 +633,7 @@ function purgeMetaDeliveries() {
 }
 
 function ordersFromDb() {
-	$.post(site_url + 'orders/get_todays_orders').always(function(data) {
+	$.post(site_url + 'orders/get_todays_orders' + company_url_suffix).always(function(data) {
 		try {
 			let json = JSON.parse(data);
 			deliveries = json;
@@ -837,7 +837,7 @@ function selectPony(id_pony) {
 	}
 	if (id_pony in ponies) {
 		if (confirm('Stai assegnando ' + n_ordini + ' ordini a ' + ponies[id_pony].name)) {
-			$.post(site_url + '/orders/assign_orders', {ids: ids_to_assign, cod_pony: id_pony}).always(function() {
+			$.post(site_url + 'orders/assign_orders' + company_url_suffix, {ids: ids_to_assign, cod_pony: id_pony}).always(function() {
 				ordersFromDb();
 			});
 		}
@@ -945,7 +945,7 @@ function dismissSelected() {
 		}
 	}
 	if (confirm('Stai segnando ' + n_ordini + ' ordini come conclusi')) {
-		$.post(site_url + '/orders/dismiss_orders', {ids: ids_to_dismiss}).always(function() {
+		$.post(site_url + 'orders/dismiss_orders' + company_url_suffix, {ids: ids_to_dismiss}).always(function() {
 			ordersFromDb();
 		});
 	}
@@ -1138,7 +1138,7 @@ function delete_order() {
 	let _draft = patchOrder();
 	if (_draft.id_order) {
 		if (confirm('ATTENZIONE! Eliminare questo ordine?')) {
-			$.post(site_url + '/orders/delete_order', _draft).always(function(data) {
+			$.post(site_url + 'orders/delete_order' + company_url_suffix, _draft).always(function(data) {
 				ordersFromDb();
 			});
 			closeModal('#addOrderModal');
@@ -1156,7 +1156,7 @@ let map;
 
 function initMap() {
 	let markerGeo = new google.maps.LatLng(geoShop.north, geoShop.east);
-	map = new google.maps.Map(document.getElementById("Gmap"), {
+	map = new google.maps.Map(document.getElementById('Gmap'), {
 		center: { lat: geoShop.north, lng: geoShop.east },
 		zoom: 13,
 	});
@@ -1171,34 +1171,19 @@ function initMap() {
 
 	let neBound = new google.maps.LatLng(geoShop.north + 0.04, geoShop.east + 0.04);
 	let swBound = new google.maps.LatLng(geoShop.north - 0.04, geoShop.east - 0.04);
-	// let sw_marker = new google.maps.Marker({
-	// 	position: swBound,
-	// 	map: map,
-	// 	title: 'Calima',
-	// 	icon: site_url + 'frontend/images/icons/blue_dot.svg',
-	// 	zIndex: 2,
-	// });
-	// let ne_marker = new google.maps.Marker({
-	// 	position: neBound,
-	// 	map: map,
-	// 	title: 'Calima',
-	// 	icon: site_url + 'frontend/images/icons/blue_dot.svg',
-	// 	zIndex: 2,
-	// });
+
 	let acBound = new google.maps.LatLngBounds(swBound, neBound);
-	const input = document.getElementById("gfinder");
+
+	const input = document.getElementById('gfinder');
 	const options = {
 		bounds: acBound,
-		// componentRestrictions: { country: "it" },
-		fields: ["address_components", "geometry"],
+		// componentRestrictions: { country: 'it' },
+		fields: ['address_components', 'geometry'],
 		origin: markerGeo,
 		strictBounds: false,
-		types: ["address"],
+		types: ['address'],
 	};
 	const autocomplete = new google.maps.places.Autocomplete(input, options);
-
-
-
 
 	$(function() {
 		order_reset();

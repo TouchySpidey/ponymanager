@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Ordini', ['orders_manager'], ['qrcode.min']) ?>
+<?php html_head('Ordini') ?>
 <body>
 	<?php topbar() ?>
 	<?php main_menu() ?>
@@ -56,7 +56,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<script>
 	let chart_weekdays_data = <?= json_encode($chart_weekdays) ?>;
 	let chart_delivery_type_data = <?= json_encode($chart_delivery_type) ?>;
-	console.log(chart_delivery_type_data);
 	</script>
 	<?= import_js('orders_list') ?>
 </body>

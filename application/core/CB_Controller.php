@@ -3,9 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class CB_Controller extends CI_Controller {
 
+	protected $request = false;
+
 	public function __construct() {
 
 		parent::__construct();
+
+		$request = $this->uri->uri_to_assoc(3);
 
 		$this->db->insert('heavy_logger', [
 			'user_if_any' => $this->session->user ? $this->session->user['email'] : null,
@@ -18,19 +22,21 @@ class CB_Controller extends CI_Controller {
 		if (!$this->session->user) {
 			$this->session->redirect = $_SERVER['REDIRECT_QUERY_STRING'];
 			redirect('/');
-		} elseif (!$this->session->company) {
+		} elseif (!isset($request['company'])) {
+			die('Richiesta non valida!');
+		} else {
 			$company = $this->db
-			->where('id_company', $this->session->user['cod_company'])
+			->where('uri_name', $request['company'])
 			->get('companies')->result_array();
-			if (empty($company)) {
-				die('Utente non abilitato!');
+			if ($company) {
+				defined('_GLOBAL_COMPANY') OR define('_GLOBAL_COMPANY', $company[0]);
+				defined('_COMPANY_URI') OR define('_COMPANY_URI', $company[0]['uri_name']);
+				$this->request = $request;
 			} else {
-				# tutto ok
-				$this->session->company = $company[0];
+				die('URL non valido!');
 			}
 		}
 		defined('_GLOBAL_USER') OR define('_GLOBAL_USER', $this->session->user);
-		defined('_GLOBAL_COMPANY') OR define('_GLOBAL_COMPANY', $this->session->company);
 
 	}
 }
