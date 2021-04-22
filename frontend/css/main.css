@@ -201,20 +201,21 @@ label {
 	max-width: 500px;
 	padding: 2px 48px;
 }
-@media (max-width: 991px) {
-	.card:not(:last-child) {
-		margin-right: 16px;
-	}
-	.card {
-		min-width: 300px;
-		width: 50%;
-	}
+.card:not(.card-paddingless) {
+	padding: 16px;
+}
+.card .card-body {
+	padding: 16px;
 }
 .card {
 	border: 1px solid rgba(0, 0, 0, 0.2);
-	padding: 16px;
 	border-radius: 6px;
 	margin-bottom: 12px;
+}
+.card-title {
+	font-size: 18px;
+	text-align: center;
+	font-weight: 600;
 }
 .input-block {
 	margin-bottom: 12px;
