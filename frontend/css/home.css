@@ -1,18 +1,11 @@
-#splash .title {
-	font-size: 44px;
-}
 
-#splash .subtitle {
-	color: #5f6368;
-	font-size: 18px;
-}
 
 @media (min-width: 992px) {
 	.reducer {
-		max-width: 600px;
+		max-width: 645px;
 	}
 	.fixer {
-		width: 332px;
+		width: 347px;
 		margin-left: auto;
 	}
 	.fixer .card {
@@ -20,7 +13,7 @@
 	}
 }
 .reducer {
-	padding: 32px;
+	padding: 64px 32px;
 }
 .fixer {
 	padding: 16px;

@@ -35,7 +35,7 @@
 	],
 	"start_url": "https://www.ponymanager.com",
 	"display": "standalone",
-	"background_color": "#141414",
+	"background_color": "#eb6534",
 	"theme_color": "#bbbbbb",
 	"prefer_related_applications": false
 }

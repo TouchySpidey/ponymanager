@@ -3,12 +3,12 @@
 	#mainMenu {
 		float: left;
 	}
-	#menuToggler {
+	/* #menuToggler {
 		display: none!important;
-	}
-	#pageContainer {
+	} */
+	/* #pageContainer {
 		margin-left: 240px;
-	}
+	} */
 	#resultsFound {
 		overflow-y: auto;
 		max-height: calc(100vh - 200px);

@@ -26,6 +26,11 @@ class CB_Controller extends CI_Controller {
 			die('Richiesta non valida!');
 		} else {
 			$company = $this->db
+			->join('privileges', 'cod_company = id_company', 'LEFT')
+			->group_start()
+			->where('owner', $this->session->user['email'])
+			->or_where('user', $this->session->user['email'])
+			->group_end()
 			->where('uri_name', $request['company'])
 			->get('companies')->result_array();
 			if ($company) {
@@ -33,7 +38,7 @@ class CB_Controller extends CI_Controller {
 				defined('_COMPANY_URI') OR define('_COMPANY_URI', $company[0]['uri_name']);
 				$this->request = $request;
 			} else {
-				die('URL non valido!');
+				redirect('/');
 			}
 		}
 		defined('_GLOBAL_USER') OR define('_GLOBAL_USER', $this->session->user);

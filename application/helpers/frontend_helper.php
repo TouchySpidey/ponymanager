@@ -5,7 +5,7 @@ function html_head($title = false, $extra_css = [], $extra_js = []) {
 	include APPPATH.'views/_head.php';
 }
 
-function topbar() {
+function topbar($withToggler = TRUE, $landing = FALSE) {
 	include APPPATH.'views/_topbar.php';
 }
 function main_menu() {

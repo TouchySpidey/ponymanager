@@ -1,0 +1,3 @@
+$('#newCompanyButton').click(function() {
+
+});

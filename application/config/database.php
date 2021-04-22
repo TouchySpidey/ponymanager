@@ -73,7 +73,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$db['default'] = site_url() == 'https://www.thewebmaker.it/calima/' ? array(
+$db['default'] = site_url() == 'https://www.thewebmaker.it/ponymanager/' ? array(
 	'dsn'	=> '',
 	'hostname' => WM_DATABASE_HOST,
 	'username' => WM_DATABASE_USER,

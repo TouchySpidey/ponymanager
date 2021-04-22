@@ -14,8 +14,12 @@ class Main extends CI_Controller {
 		if ($this->session->user) {
 			$this->home();
 		} else {
-			$this->login();
+			$this->landing();
 		}
+	}
+
+	public function landing() {
+		$this->load->view('landing');
 	}
 
 	public function home() {
@@ -76,7 +80,9 @@ class Main extends CI_Controller {
 				($c_password = $this->input->post('c_password'))
 			) {
 				$email = trim($email);
-				if ($password != $c_password) {
+				if (strlen($password) < 8) {
+					$error = 'La password deve contenere almeno 8 caratteri';
+				} elseif ($password != $c_password) {
 					$error = 'Le password devono coincidere';
 				} else {
 					$salted = $guid . LOGIN_SALT;
@@ -97,12 +103,21 @@ class Main extends CI_Controller {
 							$user['password'] = $hash;
 							$this->db->replace('users', $user);
 							$this->session->user = $user;
-							redirect('/');
+							$this->load->view('password_changed');
+							return;
 						} else {
 							$error = 'Il link è scaduto o l\'email non è corretta';
 						}
 					}
 				}
+			} elseif (
+				($email = $this->input->post('email'))
+				||
+				($password = $this->input->post('password'))
+				||
+				($c_password = $this->input->post('c_password'))
+			) {
+				$error = 'Email, password e conferma password sono campi obbligatori';
 			}
 			$this->load->view('password_reset', compact('guid', 'email', 'error'));
 		} else {
@@ -139,7 +154,6 @@ class Main extends CI_Controller {
 				$this->email->send();
 			}
 		}
-		$this->load->view('forgot', ['email' => $email]);
 	}
 
 }

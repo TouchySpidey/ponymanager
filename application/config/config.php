@@ -24,7 +24,7 @@ require_once './application/config/secrets.php';
 |
 */
 if ($_SERVER['SERVER_NAME'] == 'www.thewebmaker.it') {
-	$config['base_url'] = 'https://www.thewebmaker.it/calima/';
+	$config['base_url'] = 'https://www.thewebmaker.it/ponymanager/';
 } else {
 	$config['base_url'] = 'https://'.$_SERVER['SERVER_NAME'];
 }

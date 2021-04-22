@@ -198,7 +198,7 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 	let $orderItem = $ghostOrderItem.clone();
 	$orderItem.find('[quantity]').text(order_row.n >= 1 ? parseInt(order_row.n) : order_row.n);
 	$orderItem.find('[main]').text(pizza.name);
-	$orderItem.find('[price]').text(pizza.price);
+	let prezzo_aggiunte = parseFloat(pizza.price);
 	for (let i in pizza.ingredients) {
 		if (pizza.ingredients[i]) {
 			if (pizza.ingredients[i] in ingredients) {
@@ -223,11 +223,13 @@ function addPizzaToOrder(id_pizza, order_data = false) {
 				let $pizzaAddition = $ghostPizzaAddition.clone();
 				$pizzaAddition.find('[testo-ingrediente]').text(ingredient.name);
 				$pizzaAddition.find('[prezzo-aggiunto]').text(ingredient.price);
+				prezzo_aggiunte += parseFloat(ingredient.price);
 				$pizzaAddition.attr('id_ingredient', ingredient.id_ingredient);
 				$orderItem.find('[modifiche]').append($pizzaAddition);
 			}
 		}
 	}
+	$orderItem.find('[price]').text(prezzo_aggiunte);
 	$orderItem.data('orderRow', order_row);
 	$('#listaPizze').append($orderItem);
 	newOrder.rows.push(order_row);
@@ -278,6 +280,16 @@ $('#elencoIngredienti .ingrediente').click(function() {
 			order_row.ingredients.push(id_ingredient);
 		}
 	}
+
+	let prezzo_aggiunte = parseFloat(pizzas[order_row.id_piatto].price);
+	for (let i in order_row.ingredients) {
+		id_ingredient = order_row.ingredients[i];
+		if (pizzas[order_row.id_piatto].ingredients.indexOf(id_ingredient.toString()) === -1) {
+			prezzo_aggiunte += parseFloat(ingredients[id_ingredient].price);
+		}
+	}
+	$selected_pizza.find('[price]').text(prezzo_aggiunte);
+
 	$(this).toggleClass('selected');
 	calculateOrderTotal();
 });

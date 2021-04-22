@@ -1,71 +1,97 @@
 @charset "UTF-8";
 body {
-	background: #e9e9e9;
-	color: #666666;
 	font-family: "RobotoDraft", "Roboto", sans-serif;
 	font-size: 14px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	height: 100%;
 }
-
-
-/* Container */
-.container {
-	position: relative;
-	max-width: 570px;
+#pageContainer {
+	padding: 0 12px;
+}
+#topBar {
+	position: static;
+}
+.dual-vis {
+	display: flex;
+	width: 200%;
+	transition: transform .25s;
+}
+.dual-vis > .vis {
 	width: 100%;
-	margin: auto;
 }
-
-.container.active .card:nth-child(2) {
-	background: #fafafa;
-	margin: 0 10px;
+.dual-vis.toggled {
+	transform: translateX(-50%);
 }
-
-
-/* Card */
-.card {
-	position: relative;
-	background: #ffffff;
-	border-radius: 5px;
-	padding: 60px 0 40px 0;
-	box-sizing: border-box;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-	transition: 0.3s ease;
-	/* Title */
-	/* Inputs */
-	/* Button */
-	/* Footer */
-	/* Alt Card */
+.login-container {
+	padding: 48px 40px 40px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	margin: 48px auto auto;
+	width: 100%;
+	max-width: 448px;
 }
-
-.card .title {
-	position: relative;
-	z-index: 1;
-	margin: 0 0 35px;
-	padding: 10px 60px;
-	color: #267ae9;
-	font-size: 32px;
+.whole-page {
+	width: 100%;
+	display: flex;
+}
+.login-text {
+	font-size: 24px;
+	text-align: center;
+	padding-bottom: 32px;
+}
+.submit-login:hover {
+	background-color: #1b66c9;
+}
+.submit-login {
+	font-weight: 500;
+	color: white;
+	padding: 0 24px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	font-size: 16px;
+	margin-right: 1px;
+}
+.login-container a {
+	color: #1a73e8;
+	font-size: 14px;
 	font-weight: 600;
-	text-transform: uppercase;
-	text-align: right;
 }
-.card .mail-sent {
+.new-account {
+	display: flex;
+	align-items: center;
+}
+.login-container .forgot-password {
+	margin: 0 0 40px;
+	/* text-align: center; */
+}
+
+
+.login-container .mail-sent {
 	color: #6fbf6e;
 }
-.card .login-failed {
+.login-container .password-reset {
+	color: #6fbf6e;
+	font-size: 16px;
+	margin-top: 32px;
+}
+.login-container .login-failed {
 	color: #ff5c5c;
+	font-weight: 600;
+	font-size: 16px;
+	padding-bottom: 8px;
 }
-.card .login-failed, .card .mail-sent {
-	font-weight: bold;
+.login-container .login-failed, .login-container .mail-sent, .password-reset {
 	text-align: center;
-	padding: 0 32px;
 }
-.card .input-container {
+.login-container .input-container {
 	position: relative;
-	margin: 0 60px 50px;
 }
-.card .input-container input {
+.login-container .input-container:not(:last-child) {
+	margin-bottom: 36px;
+}
+.login-container .input-container input {
 	outline: none;
 	z-index: 1;
 	position: relative;
@@ -74,32 +100,32 @@ body {
 	height: 60px;
 	border: 0;
 	color: #212121;
-	font-size: 24px;
+	font-size: 16px;
 	font-weight: 400;
 	padding-left: 24px;
 }
-.card .input-container input:focus ~ label {
+.login-container .input-container input:focus ~ label {
 	color: #9d9d9d;
 	transform: translate(-12%, -65%) scale(0.75);
 }
-.card .input-container input:focus ~ .bar:before, .card .input-container input:focus ~ .bar:after {
+.login-container .input-container input:focus ~ .bar:before, .login-container .input-container input:focus ~ .bar:after {
 	width: 50%;
 }
-.card .input-container input:valid ~ label {
+.login-container .input-container input:valid ~ label {
 	color: #9d9d9d;
 	transform: translate(-12%, -65%) scale(0.75);
 }
-.card .input-container label {
+.login-container .input-container label {
 	position: absolute;
 	top: 0;
 	left: 0;
 	color: #757575;
-	font-size: 24px;
+	font-size: 16px;
 	font-weight: 300;
-	line-height: 60px;
+	line-height: 54px;
 	transition: 0.2s ease;
 }
-.card .input-container .bar {
+.login-container .input-container .bar {
 	position: absolute;
 	left: 0;
 	bottom: 0;
@@ -107,7 +133,7 @@ body {
 	width: 100%;
 	height: 1px;
 }
-.card .input-container .bar:before, .card .input-container .bar:after {
+.login-container .input-container .bar:before, .login-container .input-container .bar:after {
 	content: "";
 	position: absolute;
 	background: #267ae9;
@@ -115,17 +141,17 @@ body {
 	height: 2px;
 	transition: 0.2s ease;
 }
-.card .input-container .bar:before {
+.login-container .input-container .bar:before {
 	left: 50%;
 }
-.card .input-container .bar:after {
+.login-container .input-container .bar:after {
 	right: 50%;
 }
-.card .button-container {
+.login-container .button-container {
 	margin: 0 60px;
 	text-align: center;
 }
-.card .button-container button {
+.login-container .button-container button {
 	outline: 0;
 	cursor: pointer;
 	position: relative;
@@ -141,13 +167,13 @@ body {
 	overflow: hidden;
 	transition: 0.3s ease;
 }
-.card .button-container button span {
+.login-container .button-container button span {
 	position: relative;
 	z-index: 1;
 	color: #ddd;
 	transition: 0.3s ease;
 }
-.card .button-container button:before {
+.login-container .button-container button:before {
 	content: "";
 	position: absolute;
 	top: 50%;
@@ -161,33 +187,18 @@ body {
 	opacity: 0;
 	transition: 0.3s ease;
 }
-.card .button-container button:hover, .card .button-container button:active, .card .button-container button:focus {
+.login-container .button-container button:hover, .login-container .button-container button:active, .login-container .button-container button:focus {
 	border-color: #267ae9;
 }
-.card .button-container button:hover span, .card .button-container button:active span, .card .button-container button:focus span {
+.login-container .button-container button:hover span, .login-container .button-container button:active span, .login-container .button-container button:focus span {
 	color: #267ae9;
 }
-.card .button-container button:active span, .card .button-container button:focus span {
+.login-container .button-container button:active span, .login-container .button-container button:focus span {
 	color: #ffffff;
 }
-.card .button-container button:active:before, .card .button-container button:focus:before {
+.login-container .button-container button:active:before, .login-container .button-container button:focus:before {
 	opacity: 1;
 	transform: scale(10);
-}
-.card .footer {
-	margin: 40px 0 0;
-	color: #d3d3d3;
-	font-size: 24px;
-	font-weight: 300;
-	text-align: center;
-}
-.card .footer a {
-	color: inherit;
-	text-decoration: none;
-	transition: 0.3s ease;
-}
-.card .footer a:hover {
-	color: #bababa;
 }
 /* Keyframes */
 @-webkit-keyframes

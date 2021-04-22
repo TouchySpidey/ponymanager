@@ -17,6 +17,10 @@ class Company extends CB_Controller {
 		$this->load->view('manage_company');
 	}
 
+	public function add_new() {
+		// $this->load->
+	}
+
 	/*
 		un utente può registrarsi, accedere, creare pizzerie
 			> quando la crea ne diventa il master

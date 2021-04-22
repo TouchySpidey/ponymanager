@@ -67,7 +67,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="w3-modal-content">
 			<div class="w3-container">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
-				<form autocomplete="off" method="POST" action="<?= site_url() ?>menu/add_or_edit_ingredient" id="saveIngredient">
+				<form autocomplete="off" method="POST" action="<?= site_url() ?>menu/add_or_edit_ingredient/company/<?= _GLOBAL_COMPANY['uri_name'] ?>" id="saveIngredient">
 					<input type="hidden" name="id_ingredient" />
 					<div>
 						<div class="d-flex input-block">
@@ -97,7 +97,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<button type="submit" class="hidden"></button>
 				</form>
 				<div class="d-flex">
-					<form method="POST" id="deleteIngredient" action="<?= site_url() ?>menu/delete_ingredient">
+					<form method="POST" id="deleteIngredient" action="<?= site_url() ?>menu/delete_ingredient/company/<?= _GLOBAL_COMPANY['uri_name'] ?>">
 						<input type="hidden" class="hidden" name="id_ingredient" />
 						<button class="btn red-800 js-disable-ingredient"><i class="mdi mdi-delete"></i> Elimina</button>
 					</form>
@@ -111,7 +111,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="w3-modal modal-backdrop"></div>
 		<div class="w3-modal-content">
 			<div class="w3-container">
-				<form autocomplete="off" method="POST" action="<?= site_url() ?>menu/add_or_edit_pizza" id="savePizza">
+				<form autocomplete="off" method="POST" action="<?= site_url() ?>menu/add_or_edit_pizza/company/<?= _GLOBAL_COMPANY['uri_name'] ?>" id="savePizza">
 					<input type="hidden" class="hidden" name="id_pizza" />
 					<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
 					<div class="d-flex">
@@ -161,7 +161,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					</div>
 				</form>
 				<div class="d-flex">
-					<form method="POST" id="deletePizza" action="<?= site_url() ?>menu/delete_pizza">
+					<form method="POST" id="deletePizza" action="<?= site_url() ?>menu/delete_pizza/company/<?= _GLOBAL_COMPANY['uri_name'] ?>">
 						<input type="hidden" class="hidden" name="id_pizza" />
 						<button class="btn red-800 js-disable-pizza"><i class="mdi mdi-delete"></i> Elimina</button>
 					</form>
