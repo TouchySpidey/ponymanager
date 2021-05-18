@@ -1,6 +1,6 @@
 <head>
 	<title><?= $title ?></title>
-	<link rel="manifest" href="<?= site_url() ?>manifest.json">
+	<link rel="manifest" href="<?= site_url() ?>manifest.json?v=1">
 	<meta name="theme-color" content="#141414"/>
 	<link rel="apple-touch-startup-image" href="<?= site_url() ?>frontend/images/icons/128.png">
 	<link rel="apple-touch-icon" href="<?= site_url() ?>frontend/images/icons/128.png">

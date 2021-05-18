@@ -2,8 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Menù', ['menu_manager']) ?>
+<?php html_head('Menù', ['menu_manager', 'pizze_ingredienti']) ?>
 <body>
+	<style>
+	#topBar {
+		border-bottom: initial;
+		box-shadow: initial;
+	}
+	</style>
 	<?php topbar() ?>
 	<?php main_menu() ?>
 	<div id="pageContainer">
@@ -72,25 +78,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div>
 						<div class="d-flex input-block">
 							<div>
-								Categoria:
-								<select class="md-input" name="category" id="selectIngredientCategory">
+								<div>Categoria</div>
+								<select class="md-input-xs" style="margin-right: 12px" name="category" id="selectIngredientCategory">
 									<option disabled default-option>───────────</option>
 									<option value='' default-option>Crea nuova</option>
 								</select>
-							</div>
-							<div>
-								Nome Categoria
-								<input type="text" class="md-input" name="new_category" />
+								<input type="text" class="md-input-xs" id="createIngredientCategory" name="new_category" placeholder="Nome categoria" />
 							</div>
 						</div>
 						<div class="d-flex input-block">
-							<div>
-								Nome Ingrediente
-								<input class="md-input" type="text" name="name" />
+							<div style="margin-right: 12px">
+								<div>Nome</div>
+								<input class="md-input-xs" type="text" name="name" />
 							</div>
 							<div>
-								Prezzo
-								<input class="md-input" type="text" name="price" />
+								<div>Prezzo</div>
+								<input class="md-input-xs" type="text" name="price" />
 							</div>
 						</div>
 					</div>
@@ -116,46 +119,50 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
 					<div class="d-flex">
 						<div>
-							<div id="pizzeComponent" order-component>
-								<div id="categorieContainer" class="flex-wrap">
-									<div class="categoria" id="ghostIngredientCategory" onclick="filterIngredients(this)">Pizze basic</div>
+							<div style="margin-bottom: 20px;">
+								<div class="d-flex input-block">
+									<div>
+										<div>Categoria</div>
+										<div class="d-flex">
+											<select class="md-input-xs" style="margin-right: 12px" name="category" id="selectPizzaCategory">
+												<option disabled default-option>───────────</option>
+												<option value='' default-option>Crea nuova</option>
+											</select>
+											<input type="text" id="createPizzaCategory" class="md-input-xs" name="new_category" placeholder="Nome categoria" />
+										</div>
+									</div>
 								</div>
-								<div id="elencoIngredienti" class="flex-wrap">
-									<div class="ingrediente" id="ghostPickableIngredient" onclick="pick(this)" data-elenco="basic">Margherita</div>
+								<div class="d-flex input-block">
+									<div style="margin-right: 12px">
+										<div>Nome</div>
+										<input class="md-input-xs" type="text" name="name" />
+									</div>
+									<div>
+										<div>Prezzo</div>
+										<input class="md-input-xs" type="text" name="price" />
+									</div>
 								</div>
 							</div>
-							<div>
-								<div class="d-flex input-block">
-									<div>
-										Categoria
-										<select class="md-input" name="category" id="selectPizzaCategory">
-											<option disabled default-option>───────────</option>
-											<option value='' default-option>Crea nuova</option>
-										</select>
-									</div>
-									<div>
-										Categoria
-										<input type="text" class="md-input" name="new_category" />
-									</div>
+							<div class="d-flex">
+								<div id="categorieIngredientiContainer" style="direction: rtl">
+									<div style="direction: ltr;" class="categoria pickable" id="assigned" onclick="show_assigned()">Assegnati</div>
+									<scrollfix style="direction: ltr">
+										<div class="categoria" id="ghostIngredientCategory" onclick="filterIngredients(this)">Pizze basic</div>
+									</scrollfix>
 								</div>
-								<div class="d-flex input-block">
-									<div>
-										Nome
-										<input class="md-input" type="text" name="name" />
+								<div id="elencoIngredienti" class="flex-wrap" style="height: 0;">
+									<div id="ghostPickableIngredient" onclick="pick(this)" class="ingrediente">
+										<div class="d-flex light-green-600 -colorful">
+											<div ingredient-full-name></div>
+										</div>
 									</div>
-									<div>
-										Prezzo
-										<input class="md-input" type="text" name="price" />
-									</div>
+									<!-- <div class="ingrediente" id="ghostPickableIngredient" onclick="pick(this)" data-elenco="basic">Margherita</div> -->
 								</div>
 							</div>
 						</div>
 						<div class="ml-auto" id="ingredientsContainer">
 							<div id="ghostIngredient" class="pizza-composition">
-								<div class="d-flex">
-									<div class="mb-auto mt-auto small-round-button red-800" onclick="unpick(this)"><i class="mdi mdi-close"></i></div>
-									<div ingredient-name></div>
-								</div>
+								<div ingredient-name></div>
 							</div>
 						</div>
 					</div>

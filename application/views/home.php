@@ -7,6 +7,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<?php topbar(false) ?>
 	<?php main_menu() ?>
 	<div id="pageContainer">
+		<div class="landing-link">
+			<a class="bluelink" href="<?= site_url() ?>main/landing"><i class="mdi mdi-arrow-left-thick"></i> Landing page</a>
+		</div>
 		<div class="home-grid">
 			<div class="many-cards">
 				<div class="general-heading">Gestione account</div>
@@ -17,7 +20,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div>È consigliabile modificare la password ogni qualche mese per prevenire accessi non autorizzati</div>
 							<div class="custom-message mt-auto"><b>Ultimo cambio password: <span></span></b></div>
 						</div>
-						<div class="actionable action-list-item"><a>Modifica password</a></div>
+						<div class="actionable action-list-item"><a class="bluelink">Modifica password</a></div>
 					</div>
 					<div class="card card-paddingless v-flex">
 						<div class="card-body v-flex flex-1">
@@ -25,7 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div>Controlla il tuo metodo di pagamento per continuare a utilizzare PonyManager al termine della prova gratuita</div>
 							<div class="custom-message mt-auto"><b>Giorni di prova gratuita rimanenti: <span></span></b></div>
 						</div>
-						<div class="actionable action-list-item"><a>Abbonamento</a></div>
+						<div class="actionable action-list-item"><a class="bluelink">Abbonamento</a></div>
 					</div>
 					<div class="card card-paddingless v-flex">
 						<div class="card-body v-flex flex-1">
@@ -33,12 +36,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div>Visualizza i ticket che hai aperto per chiedere assistenza sulla piattaforma</div>
 							<div class="custom-message mt-auto"><b>Non hai nuovi messaggi</b></div>
 						</div>
-						<div class="actionable action-list-item"><a>Chiedi assistenza</a></div>
+						<div class="actionable action-list-item"><a class="bluelink">Chiedi assistenza</a></div>
 					</div>
 				</div>
 			</div>
 			<div class="companies-list flex-1">
-				<div class="general-heading">Le tue aziende</div>
+				<div class="general-heading">I tuoi locali</div>
 				<?php foreach ($privileges as $privilege) { ?>
 					<a class="card actionable" href="<?= site_url() ?>orders/index/company/<?= $privilege['uri_name'] ?>" style="color: black;">
 						<div class="card-title"> <?= $privilege['name'] ?> </div>
@@ -50,7 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					</a>
 				<?php } ?>
 				<div class="d-flex">
-					<div class="btn teal-700 ml-auto" id="newCompanyButton"><i class="mdi mdi-store"></i> Crea nuova</div>
+					<div class="btn teal-700 ml-auto" id="newCompanyButton"><i class="mdi mdi-store"></i> Crea nuovo</div>
 				</div>
 			</div>
 		</div>

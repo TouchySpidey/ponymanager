@@ -21,7 +21,7 @@ class CB_Controller extends CI_Controller {
 
 		if (!$this->session->user) {
 			$this->session->redirect = $_SERVER['REDIRECT_QUERY_STRING'];
-			redirect('/');
+			redirect('/main/login');
 		} elseif (!isset($request['company'])) {
 			die('Richiesta non valida!');
 		} else {

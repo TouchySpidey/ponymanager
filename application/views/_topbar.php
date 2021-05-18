@@ -13,6 +13,8 @@
 	<?php if ($landing) { ?>
 		<?php if (!defined('_GLOBAL_USER')) { ?>
 			<a href="<?= site_url() ?>main/login" class="ml-auto mt-auto mb-auto login-button">Accedi</a>
+		<?php } else { ?>
+			<a href="<?= site_url() ?>" class="ml-auto mt-auto mb-auto login-button">Area riservata</a>
 		<?php } ?>
 	<?php } ?>
 </div>

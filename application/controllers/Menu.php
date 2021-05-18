@@ -12,10 +12,6 @@ class Menu extends CB_Controller {
 	}
 
 	public function menu() {
-		$ingredients = $this->pizzeria->get_ingredients();
-		$ingredients_categories = $this->pizzeria->get_ingredients_categories();
-		$pizzas = $this->pizzeria->get_pizzas();
-		$pizzas_categories = $this->pizzeria->get_pizzas_categories();
 		$this->load->view('menu_manager', $this->pizzeria->menu_components());
 	}
 

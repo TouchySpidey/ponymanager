@@ -999,6 +999,7 @@ function ponyPrint(_order = false) {
 	$ponyPrint.find('[telephone]').text(_order.telephone);
 
 	if (_order.notes) {
+		console.log(_order.notes);
 		$ponyPrint.find('[text-notes]').text(_order.notes);
 	} else {
 		$ponyPrint.find('.notes').remove();
@@ -1033,6 +1034,7 @@ function ponyPrint(_order = false) {
 				}
 				$ponyPrint.find('[pizze-container]').append($pizza);
 			}
+			$ponyPrint.find('[pizze-container] .notes').remove();
 		}
 	}
 
@@ -1082,7 +1084,6 @@ function kitchenPrint(_order = false) {
 		let rows = _order.rows;
 		for (let i in rows) {
 			let row = rows[i];
-			console.log(row);
 			let $pizza = $ghostPizza.clone();
 			let pizza = pizzas[row.id_piatto];
 			$pizza.find('[pizza-name]').text(pizza.name);

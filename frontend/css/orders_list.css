@@ -1,0 +1,40 @@
+table.bordered-table td:not([colspan="999"]) {
+	border-right: 1px solid rgba(0, 0, 0, 0.2);
+	padding: 4px 8px;
+}
+td.date-rowcell {
+	font-weight: 600;
+	font-size: 16px;
+	padding-top: 16px;
+}
+td.total-rowcell {
+	font-size: 16px;
+	font-weight: 600;
+	text-align: right;
+}
+.tab {
+	margin-bottom: 64px;
+}
+#spy {
+	background-color: white;
+	width: 220px;
+	font-size: 16px;
+	border-right: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: var(--devsite-book-nav-box-shadow,0 1px 2px 0 rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15));
+	align-self: flex-start;
+	height: auto;
+	position: sticky;
+	top: 64px;
+}
+#spy heightfix {
+	padding: 24px;
+	height: calc(100vh - 64px);
+}
+#spy .scroller {
+	padding: 6px 0;
+	cursor: pointer;
+}
+#spy .scroller.visible {
+	color: #1a73e8;
+	font-weight: bold;
+}

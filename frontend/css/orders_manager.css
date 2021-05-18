@@ -1,6 +1,3 @@
-.pac-container {
-	z-index: 1002;
-}
 #tabSwitcher {
 	padding: 16px;
 }
@@ -167,17 +164,6 @@
 	width: 130px;
 	padding-left: 30px;
 }
-.categoria {
-	font-size: 20px;
-	width: 164px;
-	border-right: 4px solid transparent;
-	word-break: break-word;
-	padding: 6px 12px;
-	cursor: pointer;
-}
-.categoria.selected {
-	padding-right: 8px;
-}
 .notes-container {
 	padding: 16px;
 }
@@ -187,53 +173,9 @@
 #categorieContainer .categoria {
 	/* background-color: #ffff9c; */
 }
-#categorieIngredientiContainer .categoria.selected {
-	background-color: #e8f5e9;
-	border-right: 4px solid #1b5e20;
-	color: #1b5e20;
-	font-weight: bold;
-}
-#categorieContainer .categoria.selected {
-	background-color: #fbe9e7;
-	border-right: 4px solid #d84315;
-	color: #d84315;
-	font-weight: bold;
-}
-#elencoPiatti .piatto:hover .-colorful {
-	background-color: #ff9800;
-}
-#elencoIngredienti .ingrediente:hover .-colorful, #elencoIngredienti .ingrediente.selected .-colorful {
-	background-color: #8bc34a;
-}
-#elencoPiatti .piatto .-colorful, #elencoIngredienti .ingrediente .-colorful {
-	width: 100%;
-	padding: 22px;
-	font-size: 18px;
-	line-height: 14px;
-	text-align: center;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	flex-grow: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-#elencoIngredienti .ingrediente [selecting-mark] {
-	padding-right: 8px;
-}
-#elencoIngredienti .ingrediente:not(.selected) [selecting-mark] {
-	display: none;
-}
-#elencoPiatti .piatto, #elencoIngredienti .ingrediente {
-	font-size: 16px;
-	min-width: 120px;
-	width: calc(100% / 5);
-	padding: 4px;
-	cursor: pointer;
-	display: flex;
-	flex-direction: column;
-}
 #boxOrdini {
 	max-height: calc(100vh - 200px);
+	max-width: 30%;
 	overflow-y: auto;
 }
 #scrollTimeFilter {

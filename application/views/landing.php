@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div class="subtitle">L'unico tool online per facilitare la gestione degli ordini. Ottimizzato per gli esercizi che effettuano consegne a domicilio grazie all'integrazione con Google Maps</div>
 				<div class="subtitle">Registrati ora per una prova gratuita!</div>
 				<div class="d-flex">
-					<a href="/" class="btn teal-700 signup-button">Registrati</a>
+					<a href="<?= site_url() ?>main/signup" class="btn teal-700 signup-button">Registrati</a>
 				</div>
 			</div>
 			<div id="infographic">
@@ -27,7 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="cookieBarInner">
 			<span class="cookieBarText">PonyManager utilizza i cookie per fornire i propri servizi e analizzare il traffico in forma anonima. Puoi limitare l'accesso ai cookie in qualsiasi momento nelle impostazioni del browser.</span>
 			<span class="cookieBarButtons">
-				<a href="/main/cookies" rel="noopener" target="_blank" class="cookieBarButton cookieBarMoreButton">Ulteriori informazioni.</a>
+				<a href="<?= site_url() ?>main/cookies" rel="noopener" target="_blank" class="cookieBarButton cookieBarMoreButton">Ulteriori informazioni.</a>
 				<a href="#" class="cookieBarButton cookieBarConsentButton" id="cookieOk">Ok, ho capito.</a>
 			</span>
 		</div>

@@ -48,7 +48,6 @@
 	padding-top: 8px;
 }
 .action-list-item a {
-	color: #1a73e8;
 	font-size: 14px;
 	font-weight: 600;
 }
@@ -90,4 +89,7 @@
 }
 .fixer {
 	padding: 16px;
+}
+.landing-link {
+	padding: 16px 0 0 16px;
 }

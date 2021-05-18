@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Ordini', ['orders_manager'], ['qrcode.min']) ?>
+<?php html_head('Ordini', ['orders_manager', 'pizze_ingredienti'], ['qrcode.min']) ?>
 <body>
 	<?php topbar() ?>
 	<?php main_menu() ?>
@@ -37,18 +37,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 									<div class="time"><?= $ora_apertura ?>:<?= $minuto_apertura ?></div>
 								</div>
 								<?php
-								$minuto_apertura += 10;
+								$minuto_apertura += 5;
 								if ($minuto_apertura >= 60) {
 									$minuto_apertura -= 60;
 									$ora_apertura++;
-									$ora_apertura = str_pad($ora_apertura, 2, '0');
-									$minuto_apertura = str_pad($minuto_apertura, 2, '0');
 									if ($ora_apertura >= 24) {
 										$ora_apertura -= 24;
 										$ora_chiusura -= 24;
-										$ora_chiusura = str_pad($ora_chiusura, 2, '0');
+										$ora_chiusura = str_pad($ora_chiusura, 2, '0', STR_PAD_LEFT);
 									}
 								}
+								$ora_apertura = str_pad($ora_apertura, 2, '0', STR_PAD_LEFT);
+								$minuto_apertura = str_pad($minuto_apertura, 2, '0', STR_PAD_LEFT);
 								?>
 							<?php } ?>
 						<?php } ?>
@@ -165,7 +165,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div tab="stampa" order-component>
 								<div class="btn gblue" onclick="kitchenPrint()">cucina</div>
 								<div class="btn gblue" onclick="ponyPrint()">pony</div>
-								<div class="btn gblue" onclick="customerPrint()">cliente</div>
+								<!-- <div class="btn gblue" onclick="customerPrint()">cliente</div> -->
 							</div>
 							<div tab="consegna" order-component>
 								<div class="d-flex">
@@ -173,7 +173,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div>
 											<div class="d-flex">
 												<div class="flex-1 bros-16-between">
-													<div class="general-heading">Tipologia di ordine</div>
+													<div class="general-heading">Tipo di servizio</div>
 													<div class="pick-one-of-these">
 														<div id="deliveryOrder" class="actionable md-checkbox-lg pickable">
 															<div>Delivery</div>
@@ -225,18 +225,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 														<div class="time"><?= $ora_apertura ?>:<?= $minuto_apertura ?></div>
 													</div>
 													<?php
-													$minuto_apertura += 10;
+													$minuto_apertura += 5;
 													if ($minuto_apertura >= 60) {
 														$minuto_apertura -= 60;
 														$ora_apertura++;
-														$ora_apertura = str_pad($ora_apertura, 2, '0');
-														$minuto_apertura = str_pad($minuto_apertura, 2, '0');
 														if ($ora_apertura >= 24) {
 															$ora_apertura -= 24;
 															$ora_chiusura -= 24;
-															$ora_chiusura = str_pad($ora_chiusura, 2, '0');
+															$ora_chiusura = str_pad($ora_chiusura, 2, '0', STR_PAD_LEFT);
 														}
 													}
+													$ora_apertura = str_pad($ora_apertura, 2, '0', STR_PAD_LEFT);
+													$minuto_apertura = str_pad($minuto_apertura, 2, '0', STR_PAD_LEFT);
 													?>
 												<?php } ?>
 											<?php } ?>
@@ -414,7 +414,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										<div aggiunta id="ghostPizzaAddition">
 											<div class="d-flex">
 												<div testo-ingrediente></div>
-												<div class="ml-auto" prezzo-aggiunto></div>
+												<!-- <div class="ml-auto" prezzo-aggiunto></div> -->
 											</div>
 										</div>
 									</div>
@@ -456,8 +456,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 								<?php foreach ($ingredients as $ingredient) { ?>
 									<div class="ingrediente" data-elenco="<?= $ingredient['category'] ?>" data-id_ingredient="<?= $ingredient['id_ingredient'] ?>">
-										<div class="d-flex light-green-200 -colorful">
-											<div selecting-mark class="mr-auto mt-auto mb-auto"><i class="mdi mdi-check-bold"></i></div><div ingredient-full-name><?= $ingredient['name'] ?></div>
+										<div class="d-flex light-green-600 -colorful">
+											<!-- <div selecting-mark class="mr-auto mt-auto mb-auto"><i class="mdi mdi-check-bold"></i></div> -->
+											<div ingredient-full-name><?= $ingredient['name'] ?></div>
 										</div>
 									</div>
 								<?php } ?>
@@ -490,6 +491,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="value" address></div>
 		<div class="label">Campanello</div>
 		<div class="value" doorbell></div>
+		<div class="label">Telefono</div>
 		<div class="value" telephone></div>
 		<div class="notes">
 			<div class="label">Note</div>
@@ -507,9 +509,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div order-type takeaway class="value" style="display: none;">TakeAway</div>
 		<div order-type delivery class="value">Domicilio</div>
 		<div class="label">Orario</div>
-		<div class="value">
-			<span time></span> (<span travel_duration></span>)
-		</div>
+		<div class="value" time></div>
+		<div class="label">Distanza in macchina</div>
+		<div class="value" travel_duration></div>
 		<div pizze-container>
 			<div id="ghostPizza">
 				<div class="stackable-stuff">

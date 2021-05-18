@@ -8,7 +8,7 @@ function openNewIngredientModal(id_ingredient = false) {
 	if (id_ingredient) {
 		for (let i in ingredients) {
 			if (ingredients[i].id_ingredient == id_ingredient) {
-				$('#saveIngredient [name="category"]').val(ingredients[i].category);
+				$('#saveIngredient [name="category"]').val(ingredients[i].category).trigger('change');
 				$('#addIngredientModal [name="id_ingredient"]').val(ingredients[i].id_ingredient);
 				$('#saveIngredient [name="price"]').val(ingredients[i].price);
 				$('#saveIngredient [name="name"]').val(ingredients[i].name);
@@ -21,11 +21,12 @@ function openNewIngredientModal(id_ingredient = false) {
 }
 
 function openNewPizzaModal(id_pizza = false) {
+	$('#elencoIngredienti .ingrediente').removeClass('selected');
 	$('#ingredientsContainer').empty();
 	if (id_pizza) {
 		for (let i in pizzas) {
 			if (pizzas[i].id_pizza == id_pizza) {
-				$('#savePizza [name="category"]').val(pizzas[i].category);
+				$('#savePizza [name="category"]').val(pizzas[i].category).trigger('change');;
 				$('#addPizzaModal [name="id_pizza"]').val(pizzas[i].id_pizza);
 				$('#savePizza [name="price"]').val(pizzas[i].price);
 				$('#savePizza [name="name"]').val(pizzas[i].name);
@@ -37,7 +38,7 @@ function openNewPizzaModal(id_pizza = false) {
 	} else {
 		$('#savePizza input, #savePizza select').val('');
 	}
-	$('#categorieContainer .categoria:first-child').trigger('click');
+	$('#categorieIngredientiContainer .categoria:first-child').trigger('click');
 	$('#addPizzaModal').css('display', 'block');
 }
 
@@ -51,20 +52,31 @@ function collapse(category) {
 
 function pick(ingredient) {
 	let id_ingredient = $(ingredient).data('id_ingredient');
-	let ingredient_name = $(ingredient).text();
-	let ingredientsListItem = ghostIngredient.clone();
-	ingredientsListItem.attr('data-id_ingredient', id_ingredient);
-	ingredientsListItem.find('[ingredient-name]').text(ingredient_name);
-	$('#ingredientsContainer').append(ingredientsListItem);
+	let removing = $(ingredient).hasClass('selected');
+	$(ingredient).toggleClass('selected');
+	if (removing) {
+		let ingredientsListItem = $('#ingredientsContainer .pizza-composition[data-id_ingredient="' + id_ingredient + '"]').closest('.pizza-composition');
+		ingredientsListItem.remove();
+	} else {
+		let ingredient_name = $(ingredient).text();
+		let ingredientsListItem = ghostIngredient.clone();
+		ingredientsListItem.attr('data-id_ingredient', id_ingredient);
+		ingredientsListItem.find('[ingredient-name]').text(ingredient_name);
+		$('#ingredientsContainer').append(ingredientsListItem);
+	}
 }
 
-function unpick(ingredient) {
-	let ingredientsListItem = $(ingredient).closest('.pizza-composition');
-	ingredientsListItem.remove();
+function show_assigned() {
+	$('#categorieIngredientiContainer .categoria').removeClass('selected');
+	$('#assigned').addClass('selected');
+	$('#elencoIngredienti .ingrediente').addClass('hidden');
+	$('#elencoIngredienti .ingrediente.selected').removeClass('hidden');
 }
 
 function filterIngredients(category_element) {
 	let category = $(category_element).data('category');
+	$('#categorieIngredientiContainer .categoria').removeClass('selected');
+	$(category_element).addClass('selected');
 	$('#elencoIngredienti .ingrediente').addClass('hidden');
 	$('#elencoIngredienti .ingrediente[data-category="' + category + '"]').removeClass('hidden');
 }
@@ -72,7 +84,7 @@ function filterIngredients(category_element) {
 function db_has_changed() {
 
 	$('#selectIngredientCategory option:not([default-option])').remove();
-	$('#categorieContainer').empty();
+	$('#categorieIngredientiContainer scrollfix').empty();
 	for (let cat in ingredients_categories.reverse()) { // reverse perché faccio prepend
 		// aggiorna select categoria ingrediente in add_or_edit
 		let option = document.createElement('option');
@@ -83,7 +95,7 @@ function db_has_changed() {
 		let ingredientCategory_ELEMENT = ghostIngredientCategory.clone();
 		ingredientCategory_ELEMENT.text(ingredients_categories[cat]);
 		ingredientCategory_ELEMENT.data('category', ingredients_categories[cat]);
-		$('#categorieContainer').append(ingredientCategory_ELEMENT);
+		$('#categorieIngredientiContainer scrollfix').append(ingredientCategory_ELEMENT);
 	}
 
 	$('#selectPizzaCategory option:not([default-option])').remove();
@@ -113,7 +125,7 @@ function db_has_changed() {
 
 		// aggiorno la lista di ingredienti in add_or_edit pizza
 		let ingredient_ELEMENT = ghostPickableIngredient.clone();
-		ingredient_ELEMENT.text(ingredients[i].name);
+		ingredient_ELEMENT.find('[ingredient-full-name]').text(ingredients[i].name);
 		ingredient_ELEMENT.attr('data-category', ingredients[i].category);
 		ingredient_ELEMENT.attr('data-id_ingredient', ingredients[i].id_ingredient);
 		$('#elencoIngredienti').append(ingredient_ELEMENT);
@@ -305,6 +317,22 @@ function optimizeSearchResults(results) {
 	return returnSet;
 }
 
+$('#selectPizzaCategory').change(function() {
+	if (this.value) {
+		$('#createPizzaCategory').hide();
+	} else {
+		$('#createPizzaCategory').show();
+	}
+}).trigger('change');
+
+$('#selectIngredientCategory').change(function() {
+	if (this.value) {
+		$('#createIngredientCategory').hide();
+	} else {
+		$('#createIngredientCategory').show();
+	}
+}).trigger('change');
+
 $('#finder').on('input', function() {
 	let find = $(this).val();
 
@@ -314,7 +342,7 @@ $('#finder').on('input', function() {
 	for (let i in pizzas) {
 		let name = pizzas[i].name;
 		let match = string_similarity(name, find);
-		if (match > 0.3) {
+		if (match > 0.1) {
 			// match
 			let id_pizza = pizzas[i].id_pizza;
 			let pizzaItemElement = $('#piatti .menu-item[data-id_pizza="' + id_pizza + '"]').clone(true);

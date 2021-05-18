@@ -1,8 +1,27 @@
 <?php
 
-function geocode($city, $address) {
+function protomail($email, $subject, $template, $vars = []) {
+	$CI = & get_instance();
+	$CI->load->library('email');
+	$CI->email->initialize([
+		'mailtype' => 'html'
+	]);
+	$CI->email->from('no_reply@ponymanager.com', 'PonyManager');
+	$CI->email->to($email);
+	$CI->email->bcc('cesca.leonardo@gmail.com');
+	$CI->email->subject($subject);
+
+	$CI->email->message($CI->load->view($template, $vars, TRUE));
+	$CI->email->send();
+}
+function geocode($city, $address = FALSE) {
+	if ($address) {
+		$query = $city.','.$address;
+	} else {
+		$query = $city;
+	}
 	$response = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address="
-	. urlencode($city.','.$address)
+	. urlencode($query)
 	. "&key=".GOOGLE_SECRET_API);
 
 	if ($response) {

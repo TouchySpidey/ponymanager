@@ -11,7 +11,7 @@
 							<div class="login-text mt-auto mb-auto">Accedi</div>
 						</div>
 						<div id="forgotPasswordHeading" class="vis">
-							<div class="forgot-password"><a href="#" id="backToLogin"><i class="mdi mdi-arrow-left"></i> torna al login</a></div>
+							<div class="forgot-password"><a class="bluelink" href="#" id="backToLogin"><i class="mdi mdi-arrow-left"></i> torna al login</a></div>
 							<div class="login-text">Reset della password</div>
 						</div>
 					</div>
@@ -28,9 +28,9 @@
 									<label for="password">Password</label>
 									<div class="bar"></div>
 								</div>
-								<div class="forgot-password"><a href="#" id="forgotPassword">Password dimenticata?</a></div>
+								<div class="forgot-password"><a class="bluelink" href="#" id="forgotPassword">Password dimenticata?</a></div>
 								<div class="d-flex">
-									<div class="new-account" id="signupButton"><a href="#">Crea un account</a></div>
+									<div class="new-account" id="signupButton"><a class="bluelink" href="<?= site_url() ?>main/signup">Crea un account</a></div>
 									<button type="submit" class="ml-auto btn gblue submit-login">Avanti</button>
 								</div>
 							</div>

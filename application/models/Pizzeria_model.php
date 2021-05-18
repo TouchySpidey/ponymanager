@@ -8,6 +8,7 @@ class Pizzeria_model extends CI_Model {
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->group_by('category')
+		->order_by('category', 'ASC')
 		->get('ingredients')
 		->result_array();
 		return array_map(function($ingredient_category) {
@@ -23,6 +24,7 @@ class Pizzeria_model extends CI_Model {
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->group_by('category')
+		->order_by('category', 'ASC')
 		->get('pizzas')
 		->result_array();
 		return array_map(function($pizza_category) {
@@ -36,7 +38,7 @@ class Pizzeria_model extends CI_Model {
 		$db_ingredients = $this->db
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
-		->order_by('name')
+		->order_by('name', 'ASC')
 		->get('ingredients')->result_array();
 		$ingredients = [];
 		foreach ($db_ingredients as $ingredient) {
@@ -52,7 +54,7 @@ class Pizzeria_model extends CI_Model {
 		->where('active', 1)
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->join('pizzas_ingredients', 'pizzas.id_pizza = pizzas_ingredients.cod_pizza', 'left')
-		->order_by('name')
+		->order_by('name', 'ASC')
 		->get('pizzas')->result_array();
 		$pizzas = [];
 		foreach ($db_pizzas as $pizza) {

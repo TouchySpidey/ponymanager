@@ -11,9 +11,9 @@ body > :not(#printable) {
 	line-height: 12px;
 }
 #printable .value {
-	line-height: 24px;
+	line-height: 32px;
 	font-size: 24px;
-	padding-bottom: 12px;
+	padding-bottom: 16px;
 }
 #printable .data {
 	text-align: right;

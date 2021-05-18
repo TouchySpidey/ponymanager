@@ -21,19 +21,29 @@
 	font-size: 18px;
 	top: -9px;
 	left: 32px;
+	color: #eb6534;
+	font-weight: 600;
 	line-height: 18px;
 	padding: 0 12px;
 	position: absolute;
 }
 #ingredientsContainer {
-	width: 200px;
-	min-width: 200px;
+	/* width: 120px; */
+	min-width: 140px;
+	padding-left: 7px;
+}
+#ingredientsContainer [ingredient-name]{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 140px;
+	overflow: hidden;
+	padding: 4px 0;
 }
 #addPizzaModal .w3-modal-content {
 	width: calc(100vw - 72px);
 }
 .pizza-composition:not(:last-child) {
-	border-bottom: 1px solid blue;
+	border-bottom: 1px solid #1a73e8;
 
 }
 .menu-category:not(.expanded) .category-collapser, .menu-category.expanded .category-expander {
@@ -91,8 +101,14 @@
 .categories-filter .category-option:hover, .menu-category .menu-item:hover, .menu-category .category-expander:hover, .menu-category .category-collapser:hover {
 	background-color: #d0d0d0;
 }
+#categorieIngredientiContainer {
+	max-height: 60vh;
+	overflow-x: initial;
+	overflow-y: auto;
+	min-width: 168px;
+}
 #categorieContainer, #elencoIngredienti {
-	margin-top: 12px;
+	margin-left: 4px;
 }
 #categorieContainer .categoria {
 	font-size: 20px;
@@ -100,13 +116,5 @@
 	background-color: yellow;
 	width: 160px;
 	padding: 6px 12px;
-	cursor: pointer;
-}
-#elencoIngredienti .ingrediente {
-	font-size: 16px;
-	width: 120px;
-	border: 1px solid green;
-	background-color: lime;
-	padding: 4px 8px;
 	cursor: pointer;
 }

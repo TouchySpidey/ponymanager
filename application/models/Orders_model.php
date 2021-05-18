@@ -12,17 +12,6 @@ class Orders_model extends CI_Model {
 
 	}
 
-	public function company_shifts() {
-		return $this->db
-		->where('cod_company', _GLOBAL_COMPANY['id_company'])
-		->order_by('from', 'ASC')
-		->get('open_shifts')->result_array() ?: [[
-			'cod_company' => _GLOBAL_COMPANY['id_company'],
-			'from' => '10:10',
-			'to' => '10:50',
-		]];
-	}
-
 	public function get_orders_between($from_date = false, $to_date = false) {
 		if ($from_date || $to_date) {
 			$this->db->group_start();
@@ -36,12 +25,15 @@ class Orders_model extends CI_Model {
 			$this->db->group_end();
 		}
 		$db_deliveries = $this->db
+		->select('*')
+		->select('COALESCE(delivery_time, order_time) AS delivery_time')
 		->join('order_pizzas', 'order_pizzas.cod_delivery = deliveries.id_delivery', 'LEFT')
 		->join('order_pizza_ingredients', 'deliveries.id_delivery = order_pizza_ingredients.x_cod_delivery AND order_pizzas.order_serial = order_pizza_ingredients.x_order_serial', 'LEFT')
 		->where('cod_company', _GLOBAL_COMPANY['id_company'])
 		->where('active', 1)
 		->order_by('delivery_time', 'desc')
 		->get('deliveries')->result_array();
+		// debug($this->db->last_query());exit;
 		$_rows = $deliveries = [];
 		$orders_pizzas_ingredients = [];
 		foreach ($db_deliveries as $info) {
@@ -186,15 +178,27 @@ class Orders_model extends CI_Model {
 			$sub_total += $price * doubleval($row['n']);
 		}
 		$total = $sub_total; # meno sconto
+
 		$order = [
 			'guid' => generate_guid(),
 			'cod_company' => _GLOBAL_COMPANY['id_company'],
 			'order_time' => date('Y-m-d H:i:s'),
-			'total_price' => $total,
 		];
+
+		if (isset($post['id_order'])) {
+			$old_order = $this->db
+			->where('cod_company', _GLOBAL_COMPANY['id_company'])
+			->where('id_delivery', $post['id_order'])
+			->get('deliveries')->result_array();
+			if (!empty($old_order)) {
+				$order = $old_order;
+			}
+		}
+
 		$time = isset($post['delivery_time']) ? $post['delivery_time'] : false;
 		$day = date('Y-m-d');
 
+		$order['total'] = $total;
 		$order['id_delivery'] = isset($post['id_order']) ? $post['id_order'] : null;
 		$order['is_delivery'] = isset($post['is_delivery']) ? $post['is_delivery'] : 0;
 		$order['cod_customer'] = isset($post['id_customer']) ? $post['id_customer'] : null;
@@ -214,22 +218,13 @@ class Orders_model extends CI_Model {
 			$order['address'] = $post['address'];
 			$order['city'] = $post['city'];
 			if ($order['id_delivery']) {
-				$old_order = $this->db
-				->where('cod_company', _GLOBAL_COMPANY['id_company'])
-				->where('id_delivery', $order['id_delivery'])
-				->get('deliveries')->result_array();
-				if (!empty($old_order)) {
-					$old_order = $old_order[0];
-					$order['order_time'] = $old_order['order_time']; # we don't want to keep alive the guid at every update
-					$order['guid'] = $old_order['guid']; # but it shall be persistent through updates
-					if ($old_order['north'] || $old_order['east']) {
-						# geocode già fatto
-						if ($order['city'] == $old_order['city'] && $order['address'] == $old_order['address']) {
-							# indirizzo non cambiato
-							$order['north'] = $old_order['north'];
-							$order['east'] = $old_order['east'];
-							$order['travel_duration'] = $old_order['travel_duration'];
-						}
+				if ($old_order['north'] || $old_order['east']) {
+					# geocode già fatto
+					if ($order['city'] == $old_order['city'] && $order['address'] == $old_order['address']) {
+						# indirizzo non cambiato
+						$order['north'] = $old_order['north'];
+						$order['east'] = $old_order['east'];
+						$order['travel_duration'] = $old_order['travel_duration'];
 					}
 				}
 			}
@@ -345,16 +340,36 @@ class Orders_model extends CI_Model {
 	public function get_analytics() {
 		$ordini = $this->get_orders_between();
 		$_chart_weekdays = [];
+		$_chart_months = [];
 		$_chart_delivery_type = [];
+		$_chart_payment_type = [];
+		$ordini_per_data = [];
 		foreach ($ordini as $ordine) {
+			$ordini_per_data[date('Y-m-d', strtotime($ordine['delivery_datetime']))]['list'][] = $ordine;
 			if (!isset($_chart_weekdays[date('l', strtotime($ordine['delivery_datetime']))])) {
 				$_chart_weekdays[date('l', strtotime($ordine['delivery_datetime']))] = 0;
 			}
 			$_chart_weekdays[date('l', strtotime($ordine['delivery_datetime']))] += $ordine['total_price'];
+
+			if (!isset($_chart_months[date('F', strtotime($ordine['delivery_datetime']))])) {
+				$_chart_months[date('F', strtotime($ordine['delivery_datetime']))] = 0;
+			}
+			$_chart_months[date('F', strtotime($ordine['delivery_datetime']))] += $ordine['total_price'];
+
 			if (!isset($_chart_delivery_type[$ordine['is_delivery']])) {
 				$_chart_delivery_type[$ordine['is_delivery']] = 0;
 			}
 			$_chart_delivery_type[$ordine['is_delivery']] += $ordine['total_price'];
+
+			if (!isset($_chart_payment_type[$ordine['payment_method']])) {
+				$_chart_payment_type[$ordine['payment_method']] = 0;
+			}
+			$_chart_payment_type[$ordine['payment_method']] += $ordine['total_price'];
+
+			if (!isset($ordini_per_data[date('Y-m-d', strtotime($ordine['delivery_datetime']))]['total'])) {
+				$ordini_per_data[date('Y-m-d', strtotime($ordine['delivery_datetime']))]['total'] = 0;
+			}
+			$ordini_per_data[date('Y-m-d', strtotime($ordine['delivery_datetime']))]['total'] += $ordine['total_price'];
 		}
 		$chart_weekdays = [
 			['Monday', isset($_chart_weekdays['Monday']) ? $_chart_weekdays['Monday'] : 0],
@@ -365,12 +380,38 @@ class Orders_model extends CI_Model {
 			['Saturday', isset($_chart_weekdays['Saturday']) ? $_chart_weekdays['Saturday'] : 0],
 			['Sunday', isset($_chart_weekdays['Sunday']) ? $_chart_weekdays['Sunday'] : 0],
 		];
+
+		$chart_months = [
+			['January', isset($_chart_months['January']) ? $_chart_months['January'] : 0],
+			['February', isset($_chart_months['February']) ? $_chart_months['February'] : 0],
+			['March', isset($_chart_months['March']) ? $_chart_months['March'] : 0],
+			['April', isset($_chart_months['April']) ? $_chart_months['April'] : 0],
+			['May', isset($_chart_months['May']) ? $_chart_months['May'] : 0],
+			['June', isset($_chart_months['June']) ? $_chart_months['June'] : 0],
+			['July', isset($_chart_months['July']) ? $_chart_months['July'] : 0],
+			['August', isset($_chart_months['August']) ? $_chart_months['August'] : 0],
+			['September', isset($_chart_months['September']) ? $_chart_months['September'] : 0],
+			['October', isset($_chart_months['October']) ? $_chart_months['October'] : 0],
+			['November', isset($_chart_months['November']) ? $_chart_months['November'] : 0],
+			['December', isset($_chart_months['December']) ? $_chart_months['December'] : 0],
+		];
 		$chart_delivery_type = [
 			['Delivery', $_chart_delivery_type[1]],
 			['Takeaway', $_chart_delivery_type[0]],
 		];
+		$chart_payment_type = [];
+		$_p_methods = $this->orders_model->payment_methods();
+		foreach ($_p_methods as $method) {
+			if (isset($_chart_payment_type[$method['id_payment']])) {
+				$dump = [$method['description']];
+				foreach ((array) $_chart_payment_type[$method['id_payment']] as $_t) {
+					$dump[] = $_t;
+				}
+				$chart_payment_type[] = $dump;
+			}
+		}
 
-		return compact('ordini', 'chart_weekdays', 'chart_delivery_type');
+		return compact('ordini', 'ordini_per_data', 'chart_weekdays', 'chart_months', 'chart_delivery_type', 'chart_payment_type');
 	}
 
 }

@@ -1,10 +1,11 @@
-var v = '0.0.1';
+var v = '2.2';
 var dataCacheName = 'ponymanagerData-v'+v;
 var cacheName = 'ponymanager-v'+v;
 var filesToCache = [
-	'/',
+	'/main/login',
 	'/manifest.json',
 	'/frontend/css/main.css',
+	'/frontend/css/login.css',
 	'/frontend/css/bootstrap.css',
 	'/frontend/css/normalize.css',
 ];
