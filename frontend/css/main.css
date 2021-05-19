@@ -79,6 +79,9 @@ a {
 	background-color: #fff;
 	box-shadow: 2px 2px 4px #00000066;
 }
+body {
+	min-height: 100vh;
+}
 body:not(.menu-open) #mainMenu {
 	transform: translateX(-400px);
 }

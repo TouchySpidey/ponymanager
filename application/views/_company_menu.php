@@ -10,7 +10,7 @@
 				</div>
 			</div>
 		</div>
-		<div style="max-height: calc(100vh - 177px); overflow: auto;" class="flex-1">
+		<div style="max-height: calc(100vh - 132px); overflow: auto;" class="flex-1">
 			<a href="<?= site_url() ?>main/index" class="parent-to-be-hovered main-link">
 				<div class="d-flex link-block">
 					<div><i class="mdi mdi-home"></i><span class="main-link-description">Home</span></div>

@@ -16,6 +16,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div class="spaced-cards-container flex-wrap">
 					<div class="card card-paddingless v-flex">
 						<div class="card-body v-flex flex-1">
+							<div class="card-title">Profilo</div>
+							<div>Completando le informazioni del tuo profilo avrai accesso a tutte le funzionalità di PonyManager</div>
+							<div class="custom-message mt-auto"><b>Profilo incompleto</b></div>
+						</div>
+						<div class="actionable action-list-item"><a class="bluelink">Profilo</a></div>
+					</div>
+					<div class="card card-paddingless v-flex">
+						<div class="card-body v-flex flex-1">
 							<div class="card-title">Cambio password</div>
 							<div>È consigliabile modificare la password ogni qualche mese per prevenire accessi non autorizzati</div>
 							<div class="custom-message mt-auto"><b>Ultimo cambio password: <span></span></b></div>
@@ -24,19 +32,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					</div>
 					<div class="card card-paddingless v-flex">
 						<div class="card-body v-flex flex-1">
-							<div class="card-title">Abbonamento PonyManager</div>
-							<div>Controlla il tuo metodo di pagamento per continuare a utilizzare PonyManager al termine della prova gratuita</div>
-							<div class="custom-message mt-auto"><b>Giorni di prova gratuita rimanenti: <span></span></b></div>
-						</div>
-						<div class="actionable action-list-item"><a class="bluelink">Abbonamento</a></div>
-					</div>
-					<div class="card card-paddingless v-flex">
-						<div class="card-body v-flex flex-1">
 							<div class="card-title">Assistenza</div>
 							<div>Visualizza i ticket che hai aperto per chiedere assistenza sulla piattaforma</div>
 							<div class="custom-message mt-auto"><b>Non hai nuovi messaggi</b></div>
 						</div>
 						<div class="actionable action-list-item"><a class="bluelink">Chiedi assistenza</a></div>
+					</div>
+					<div class="card card-paddingless v-flex">
+						<div class="card-body v-flex flex-1">
+							<div class="card-title">Abbonamento PonyManager</div>
+							<div>Controlla il tuo metodo di pagamento per continuare a utilizzare PonyManager al termine della prova gratuita</div>
+							<div class="custom-message mt-auto"><b>Giorni di prova gratuita rimanenti: <span></span></b></div>
+						</div>
+						<div class="actionable action-list-item"><a class="bluelink">Gestione abbonamento</a></div>
 					</div>
 				</div>
 			</div>
@@ -54,6 +62,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<?php } ?>
 				<div class="d-flex">
 					<div class="btn teal-700 ml-auto" id="newCompanyButton"><i class="mdi mdi-store"></i> Crea nuovo</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="serviceModal" class="w3-modal modal-container order-modal">
+		<div class="w3-modal modal-backdrop"></div>
+		<div class="w3-modal-content v-flex">
+			<div class="w3-container v-flex flex-1">
+				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
+				<div class="v-flex flex-1">
+					<div class="general-heading">Nuovo locale</div>
+					<div class="v-flex flex-1">
+						<div class="d-flex" style="margin: 22px auto;">
+							<div style="margin: 22px;">
+								<div><label>Nome del locale</label></div>
+								<div>
+									<input id="shopName" type="text" class="md-input" placeholder="Prezzo del delivery" />
+								</div>
+							</div>
+							<div style="margin: 22px;">
+								<div><label>Tag</label></div>
+								<!-- <div class="subtitle-sm text-center">Imposta l'opzione di default tra takeaway / delivery ed il costo base del servizio di delivery</div> -->
+								<div>
+									<input id="shopTag" type="text" class="md-input" placeholder="Prezzo del delivery" />
+								</div>
+							</div>
+						</div>
+						<div style="margin: 22px;">
+							<div>Nei prossimi update dell'applicazione sarà possibile aprire gli ordini <b>online</b> ai clienti del locale. Il tag serve a generare il link univoco al quale sarà possibile connettersi per visualizzare il menù.</div>
+							<div></div>
+						</div>
+					</div>
+					<div class="d-flex">
+						<div>
+							<button class="btn red-800" id="discardPayments" onclick="syncShifts()"><i class="mdi mdi-close"></i> Annulla</button>
+						</div>
+						<div class="ml-auto">
+							<button class="btn gblue" id="savePayments"><i class="mdi mdi-check"></i> Salva</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

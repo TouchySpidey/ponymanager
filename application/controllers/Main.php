@@ -189,6 +189,10 @@ class Main extends CI_Controller {
 		redirect('/');
 	}
 
+	public function help() {
+		echo 'no help available yet';
+	}
+
 	public function reset_password($guid = false) {
 		if ($guid) {
 			$error = false;
