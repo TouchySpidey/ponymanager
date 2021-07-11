@@ -63,7 +63,8 @@ class Orders extends CB_Controller {
 	}
 
 	public function cost() {
-		$this->load->view('notaspese');
+		$costs = $this->expenses_model->get_expenses();
+		$this->load->view('notaspese', compact('costs'));
 	}
 
 	public function preset() {

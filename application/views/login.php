@@ -20,6 +20,7 @@
 							<input type="type" name="email" id="email" value="<?= $email ?>" required="required">
 							<label for="email">Email</label>
 							<div class="bar"></div>
+
 						</div>
 						<div class="dual-vis">
 							<div id="signInContainer" class="vis">
@@ -31,7 +32,10 @@
 								<div class="forgot-password"><a class="bluelink" href="#" id="forgotPassword">Password dimenticata?</a></div>
 								<div class="d-flex">
 									<div class="new-account" id="signupButton"><a class="bluelink" href="<?= site_url() ?>main/signup">Crea un account</a></div>
-									<button type="submit" class="ml-auto btn gblue submit-login">Avanti</button>
+									<button type="submit" class="ml-auto js-rippable mdc-button mdc-button--raised gblue submit-login">
+										<div class="mdc-button__ripple"></div>
+										<div class="mdc-button__label">Avanti</div>
+									</button>
 								</div>
 							</div>
 							<div id="forgotPasswordContainer" class="vis v-flex">
@@ -41,7 +45,10 @@
 										<div><b>Email inviata.</b></div>
 										<div>Se non la trovi, controlla di aver inserito l'email corretta e prova a guardare nella cartella spam</div>
 									</div>
-									<button type="button" id="resetPassword" class="mt-auto ml-auto btn gblue submit-login">Reset</button>
+									<button type="button" id="resetPassword" class="mt-auto ml-auto js-rippable mdc-button mdc-button--raised gblue submit-login">
+										<div class="mdc-button__ripple"></div>
+										<div class="mdc-button__label">Reset</div>
+									</button>
 								</div>
 							</div>
 						</div>

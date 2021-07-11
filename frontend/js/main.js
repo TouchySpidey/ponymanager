@@ -28,7 +28,11 @@ $(function() {
 	$('.pick-one-of-these .pickable').click(function() {
 		$(this).closest('.pick-one-of-these').find('.pickable').removeClass('selected');
 		$(this).addClass('selected');
-	})
+	});
+
+	document.querySelectorAll('.js-rippable').forEach(el => mdc.ripple.MDCRipple.attachTo(el));
+	document.querySelectorAll('.js-mdcformfield').forEach(el => mdc.formField.MDCFormField.attachTo(el));
+	document.querySelectorAll('.mdc-checkbox').forEach(el => mdc.checkbox.MDCCheckbox.attachTo(el));
 
 });
 

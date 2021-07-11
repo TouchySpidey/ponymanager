@@ -66,43 +66,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</div>
 		</div>
 	</div>
-	<div id="serviceModal" class="w3-modal modal-container order-modal">
+	<div id="newCompanyModal" class="w3-modal modal-container order-modal">
 		<div class="w3-modal modal-backdrop"></div>
 		<div class="w3-modal-content v-flex">
 			<div class="w3-container v-flex flex-1">
 				<span onclick="closeModal(this)" class="w3-button w3-display-topright modal-closer">&times;</span>
-				<div class="v-flex flex-1">
+				<form class="v-flex flex-1" method="POST" action="<?= site_url() ?>main/createCompany">
 					<div class="general-heading">Nuovo locale</div>
 					<div class="v-flex flex-1">
-						<div class="d-flex" style="margin: 22px auto;">
+						<div class="flex-wrap" style="margin: 22px auto;">
 							<div style="margin: 22px;">
 								<div><label>Nome del locale</label></div>
 								<div>
-									<input id="shopName" type="text" class="md-input" placeholder="Prezzo del delivery" />
+									<input id="shopName" name="name" type="text" class="md-input" placeholder="Nome" />
 								</div>
 							</div>
 							<div style="margin: 22px;">
-								<div><label>Tag</label></div>
+								<div><label>Tag <i class="mdi mdi-spin mdi-loading" style="display: none;" id="tagLoader"></i></label></div>
 								<!-- <div class="subtitle-sm text-center">Imposta l'opzione di default tra takeaway / delivery ed il costo base del servizio di delivery</div> -->
 								<div>
-									<input id="shopTag" type="text" class="md-input" placeholder="Prezzo del delivery" />
+									<input id="shopTag" name="tag" type="text" class="md-input" placeholder="Tag" />
 								</div>
 							</div>
 						</div>
 						<div style="margin: 22px;">
-							<div>Nei prossimi update dell'applicazione sarà possibile aprire gli ordini <b>online</b> ai clienti del locale. Il tag serve a generare il link univoco al quale sarà possibile connettersi per visualizzare il menù.</div>
+							<div>Nei prossimi update di PonyManager, sarà possibile aprire gli ordini <b>online</b> ai clienti del locale. Il <b>tag</b> serve a generare un link unico al quale sarà possibile connettersi per visualizzare il menù ed effettuare ordini.</div>
 							<div></div>
 						</div>
 					</div>
 					<div class="d-flex">
-						<div>
-							<button class="btn red-800" id="discardPayments" onclick="syncShifts()"><i class="mdi mdi-close"></i> Annulla</button>
-						</div>
 						<div class="ml-auto">
-							<button class="btn gblue" id="savePayments"><i class="mdi mdi-check"></i> Salva</button>
+							<button class="btn gblue" id="makeLocal"><i class="mdi mdi-check"></i> Crea</button>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</div>

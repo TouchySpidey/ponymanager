@@ -1,3 +1,7 @@
+:root {
+	--mdc-theme-primary: #1b8fa7;
+	--mdc-typography-button-font-size: 14px;
+}
 .pac-container {
 	z-index: 1002;
 }
@@ -242,6 +246,7 @@ label {
 	font-size: 18px;
 	text-align: center;
 	font-weight: 600;
+	padding-bottom: 8px;
 }
 .input-block {
 	margin-bottom: 12px;
@@ -316,7 +321,7 @@ label {
 .input-block {
 	margin-bottom: 16px;
 }
-.btn, .fab, .fab-extended, .round-btn {
+.btn, .round-btn {
 	border: none;
 	overflow: hidden;
 	text-decoration: none;
@@ -345,19 +350,19 @@ label {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
-	border-radius: 28px;
+	/* border-radius: 28px; */
 }
-.fab-extended {
+/* .fab-extended {
 	font-size: 21px;
 	padding: 0px 16px;
 	height: 40px;
-}
-.fab {
+} */
+/* .fab {
 	height: 48px;
 	line-height: 36px;
 	font-size: 30px;
 	width: 48px;
-}
+} */
 .small-round-button {
 	border-radius: 16px;
 	cursor: pointer;

@@ -12,7 +12,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div class="subtitle">L'unico tool online per facilitare la gestione degli ordini. Ottimizzato per gli esercizi che effettuano consegne a domicilio grazie all'integrazione con Google Maps</div>
 				<div class="subtitle">Registrati ora per una prova gratuita!</div>
 				<div class="d-flex">
-					<a href="<?= site_url() ?>main/signup" class="btn teal-700 signup-button">Registrati</a>
+					<a class="mdc-button mdc-button--raised js-rippable signup-button" href="<?= site_url() ?>main/signup">
+						<span class="mdc-button__ripple"></span>
+						<span class="mdc-button__label">Registrati</span>
+					</a>
 				</div>
 			</div>
 			<div id="infographic">

@@ -120,7 +120,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 			</div>
 		</div>
-		<button onclick="promptNewOrder()" class="fab blue"><i class="mdi mdi-plus"></i></button>
+		<button onclick="promptNewOrder()" class="fab blue mdc-fab">
+			<span class="mdc-fab__ripple"></span>
+			<span class="mdc-fab__icon material-icons">add</span>
+		</button>
 	</div>
 
 
@@ -530,8 +533,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div id="printable"></div>
 	<script>
 	let geoShop = {
-		north: <?= _GLOBAL_COMPANY['north'] ?>,
-		east: <?= _GLOBAL_COMPANY['east'] ?>,
+		north: <?= _GLOBAL_COMPANY['north'] ?: 45.665949 ?>,
+		east: <?= _GLOBAL_COMPANY['east'] ?: 12.245599 ?>,
 	};
 	let ponies = JSON.parse(`<?= JSON_encode($ponies) ?>`);
 	let ingredients = JSON.parse(`<?= JSON_encode($ingredients) ?>`);

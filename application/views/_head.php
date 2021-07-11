@@ -1,5 +1,8 @@
 <head>
 	<title><?= $title ?></title>
+	<link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+	<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
 	<link rel="manifest" href="<?= site_url() ?>manifest.json?v=1">
 	<meta name="theme-color" content="#141414"/>
 	<link rel="apple-touch-startup-image" href="<?= site_url() ?>frontend/images/icons/128.png">

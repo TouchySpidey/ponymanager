@@ -185,7 +185,6 @@ class Main extends CI_Controller {
 
 	public function logout() {
 		$this->session->sess_destroy();
-		// echo 'logg out';
 		redirect('/');
 	}
 
@@ -267,6 +266,23 @@ class Main extends CI_Controller {
 				]);
 			}
 		}
+	}
+
+	public function createCompany() {
+		# AJAX
+		if ($this->input->post('tag') && $this->input->post('name')) {
+			$company = [
+				'owner' => $this->session->user['email'],
+				'name' => $this->input->post('name'),
+				'uri_name' => $this->input->post('tag'),
+				'created' => date('Y-m-d H:i:s'),
+				'north' => null,
+				'east' => null,
+			];
+			$this->db->insert('companies',  $company);
+			redirect('/orders/preset/company/'.$this->input->post('tag'), 'refresh');
+		}
+		redirect('/');
 	}
 
 }

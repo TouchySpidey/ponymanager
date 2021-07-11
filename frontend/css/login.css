@@ -40,9 +40,6 @@ body {
 	text-align: center;
 	padding-bottom: 32px;
 }
-.submit-login:hover {
-	background-color: #1b66c9;
-}
 .submit-login {
 	font-weight: 500;
 	color: white;

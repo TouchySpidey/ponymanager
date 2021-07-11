@@ -74,8 +74,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			</div>
 			<div id="addCost" class="flex-1 v-flex">
 				<div class="d-flex">
-					<div><input class="md-input" type="date" /></div>
-					<div><input class="md-input" type="text" placeholder="Titolo" /></div>
+					<div class="ml-auto mr-auto"><input class="md-input" type="text" placeholder="Titolo" /></div>
+				</div>
+				<div class="d-flex">
+					<div>
+						<i class="mdi mdi-calendar"></i>
+					</div>
+					<div id="dayScroller">
+						<div class="d-flex days-container">
+						</div>
+					</div>
+				</div>
+				<div class="d-flex">
+					<div class="radio-group">
+						<div>
+							<label>
+								<input type="radio" name="f_v" />
+								Fisso
+							</label>
+						</div>
+						<div>
+							<label>
+								<input type="radio" name="f_v" />
+								Variabile
+							</label>
+						</div>
+					</div>
+					<div class="radio-group">
+						<div>
+							<label>
+								<input type="radio" name="d_i" />
+								Diretto
+							</label>
+						</div>
+						<div>
+							<label>
+								<input type="radio" name="d_i" />
+								Indiretto
+							</label>
+						</div>
+					</div>
 					<div><input class="md-input" type="text" placeholder="Importo" /></div>
 				</div>
 				<div class="d-flex">
