@@ -1,5 +1,5 @@
 <div id="topBar" class="d-flex">
-	<?php if ($withToggler) { ?>
+	<?php if (true or $withToggler) { ?>
 		<div id="menuToggler" class="d-flex actionable">
 			<div class="mt-auto mb-auto">
 				<i class="mdi mdi-menu"></i>
@@ -17,7 +17,10 @@
 				<span class="mdc-button__label">Accedi</span>
 			</a>
 		<?php } else { ?>
-			<a href="<?= site_url() ?>" class="ml-auto mt-auto mb-auto login-button">Area riservata</a>
+			<a href="<?= site_url() ?>" class="ml-auto mt-auto mb-auto login-button mdc-button js-rippable">
+				<span class="mdc-button__ripple"></span>
+				<span class="mdc-button__label">Area riservata</span>
+			</a>
 		<?php } ?>
 	<?php } ?>
 </div>

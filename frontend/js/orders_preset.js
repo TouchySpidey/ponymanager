@@ -60,22 +60,6 @@ function updateShifts() {
 	});
 }
 
-$('#one').change(function() {
-	if (this.checked) {
-		$('#takeawayLabel').addClass('active');
-		$('#deliveryLabel').removeClass('active');
-	} else {
-		$('#deliveryLabel').addClass('active');
-		$('#takeawayLabel').removeClass('active');
-	}
-});
-$('#deliveryLabel').click(() => {
-	$('#one').prop('checked', false).trigger('change');
-});
-$('#takeawayLabel').click(() => {
-	$('#one').prop('checked', true).trigger('change');
-});
-
 let map;
 let autocomplete;
 let shopMarker;

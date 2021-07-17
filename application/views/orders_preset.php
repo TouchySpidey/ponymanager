@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
 <html lang="en">
-<?php html_head('Preset Ordini', ['orders_preset']) ?>
+<?php html_head('Preset Ordini', ['orders_preset', 'big-switch']) ?>
 <body>
 	<?php topbar() ?>
 	<?php main_menu() ?>
@@ -140,15 +140,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div class="general-heading">Configurazione Servizio</div>
 					<div class="subtitle-sm text-center">Imposta l'opzione di default tra takeaway / delivery ed il costo base del servizio di delivery</div>
 					<div class="v-flex flex-1">
-						<div class="d-flex" style="margin: 22px auto;">
-							<div class="service-option active" id="deliveryLabel">
+						<div class="d-flex big-switch" style="margin: 22px auto;">
+							<div class="service-option active leftyOption">
 								Delivery
 							</div>
-							<div class="cp-switch">
-								<input id="one" class="cp-input" type="checkbox">
+							<div class="cp-switch mt-auto mb-auto">
+								<input id="one" class="middle-switch cp-input" type="checkbox">
 								<label for="one" class="cp-slider"></label>
 							</div>
-							<div class="service-option" id="takeawayLabel">
+							<div class="service-option rightyOption">
 								Takeaway
 							</div>
 						</div>
@@ -181,7 +181,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	let staticUrlMiddle = '&zoom=14&size=1280x400&scale=2&markers=icon:<?= urlencode(site_url() . 'frontend/images/icons/blue_dot.svg') ?>|';
 	let staticUrlSuffix = '&key=<?= GOOGLE_PUBLIC_API ?>';
 	</script>
-	<?= import_js('orders_preset') ?>
+	<?= import_js('orders_preset', 'big-switch') ?>
 	<script src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_PUBLIC_API ?>&callback=initMap&libraries=places&v=weekly" async></script>
 </body>
 </html>

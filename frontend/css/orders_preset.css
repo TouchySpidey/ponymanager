@@ -8,17 +8,6 @@
 	background-repeat: no-repeat;
 	height: 40vh;
 }
-.service-option {
-	font-weight: 600;
-	font-size: 40px;
-	margin: 0 32px;
-	opacity: 0.5;
-	transition: all .2s ease;
-	cursor: pointer;
-}
-.service-option.active {
-	opacity: 1;
-}
 .maincard {
 	width: 33%;
 	min-width: 320px;

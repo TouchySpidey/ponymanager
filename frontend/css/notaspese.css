@@ -1,10 +1,75 @@
 .expense-category {
 	padding: 12px 6px 12px 6px;
 }
+.expense-category-chip.unselected {
+	opacity: .45;
+}
+.expense-category-chip {
+	height: 38px;
+	border-radius: 19px;
+}
+.expense-category-chip .mdc-chip__icon {
+	width: 30px!important;
+	height: 30px!important;
+	margin-left: -7px!important;
+	font-size: 22px!important;
+	text-align: center;
+	padding-top: 4px;
+}
+.mdc-chip__text {
+	padding-left: 2px;
+}
 #tableContainer {
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	border-radius: 4px;
 }
 #tableContainer thead tr, #tableContainer tr:not(:last-child) {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+#dayScroller {
+	height: 70px;
+	flex: 1 1 0;
+	max-width: calc(70vw - 60px);
+	overflow-x: auto;
+}
+#classicCalendarTrigger {
+	width: 60px;
+	height: 37px;
+	line-height: 37px;
+	text-align: center;
+	font-size: 24px;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	cursor: pointer;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	margin-top: auto;
+}
+#classicCalendar {
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-left: none;
+	height: 37px;
+	margin-top: auto;
+	padding-left: 8px;
+}
+.month-box {
+	border-right: 1px solid rgba(0, 0, 0, 0.2);
+	padding: 8px 0;
+}
+.month-box__label {
+	font-weight: 600;
+	font-size: 18px;
+}
+.month-box__days-container {
+	border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+.day-cell {
+	padding: 4px 6px;
+	width: 32px;
+	text-align: center;
+	font-size: 16px;
+	cursor: pointer;
+}
+.color-sample {
+	width: 64px;
+	height: 40px;
 }

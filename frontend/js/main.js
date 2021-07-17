@@ -1,7 +1,11 @@
 $(function() {
 
+	// setInterval(() => {
+	// 	if (window.innerWidth < )
+	// }, 300);
 	$('#menuToggler').click(function() {
-		$(document.body).toggleClass('menu-open');
+		// $(document.body).toggleClass('menu-open');
+		menuDrawer.open = true;
 	});
 	$('#mainMenuBackdrop').click(function(e) {
 		if ($(this).is(e.target)) {
@@ -31,8 +35,11 @@ $(function() {
 	});
 
 	document.querySelectorAll('.js-rippable').forEach(el => mdc.ripple.MDCRipple.attachTo(el));
+	document.querySelectorAll('.mdc-chip').forEach(el => $(el).data('metachip', mdc.chips.MDCChip.attachTo(el)));
 	document.querySelectorAll('.js-mdcformfield').forEach(el => mdc.formField.MDCFormField.attachTo(el));
+	document.querySelectorAll('.mdc-dialog').forEach(el => $(el).data('metadialog', mdc.dialog.MDCDialog.attachTo(el)));
 	document.querySelectorAll('.mdc-checkbox').forEach(el => mdc.checkbox.MDCCheckbox.attachTo(el));
+	document.querySelectorAll('.mdc-text-field').forEach(el => mdc.textField.MDCTextField.attachTo(el));
 
 });
 
