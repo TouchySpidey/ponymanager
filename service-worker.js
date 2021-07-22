@@ -2,6 +2,7 @@ var v = '2.3';
 var dataCacheName = 'ponymanagerData-v'+v;
 var cacheName = 'ponymanager-v'+v;
 var filesToCache = [
+	// '/ponymanager/main/login'
 ];
 
 self.addEventListener('install', function(e) {
