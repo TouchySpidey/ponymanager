@@ -38,6 +38,9 @@ $(function() {
 	document.querySelectorAll('.mdc-chip').forEach(el => $(el).data('metachip', mdc.chips.MDCChip.attachTo(el)));
 	document.querySelectorAll('.js-mdcformfield').forEach(el => mdc.formField.MDCFormField.attachTo(el));
 	document.querySelectorAll('.mdc-dialog').forEach(el => $(el).data('metadialog', mdc.dialog.MDCDialog.attachTo(el)));
+	document.querySelectorAll('.mdc-data-table').forEach(el => $(el).data('metatable', mdc.dataTable.MDCDataTable.attachTo(el)));
+	document.querySelectorAll('.mdc-tab-bar').forEach(el => $(el).data('metatabbar', mdc.tabBar.MDCTabBar.attachTo(el)));
+	document.querySelectorAll('.mdc-menu').forEach(el => $(el).data('metamenu', mdc.menu.MDCMenu.attachTo(el)));
 	document.querySelectorAll('.mdc-checkbox').forEach(el => mdc.checkbox.MDCCheckbox.attachTo(el));
 	document.querySelectorAll('.mdc-text-field').forEach(el => mdc.textField.MDCTextField.attachTo(el));
 

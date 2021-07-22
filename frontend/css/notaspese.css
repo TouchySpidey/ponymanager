@@ -1,8 +1,19 @@
+.mdc-card {
+  height: 350px;
+  width: 350px;
+}
 .expense-category {
 	padding: 12px 6px 12px 6px;
 }
-.expense-category-chip.unselected {
+.icon-container {
+	margin: 2px;
+}
+.expense-category-chip.unselected, #availableIcons .icon-container.unselected {
 	opacity: .45;
+}
+#availableIcons {
+	overflow: auto;
+	max-height: 100px;
 }
 .expense-category-chip {
 	height: 38px;
@@ -70,6 +81,15 @@
 	cursor: pointer;
 }
 .color-sample {
-	width: 64px;
+	width: 61.6px;
 	height: 40px;
+}
+.options_cell .mdc-button__icon {
+	margin: 0;
+}
+.options_cell .mdc-list-item {
+	padding: 4px 16px;
+}
+.options_cell .mdc-list-item .mdc-list-item__text {
+	margin-left: 8px;
 }
