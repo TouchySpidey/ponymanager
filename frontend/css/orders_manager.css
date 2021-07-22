@@ -324,7 +324,3 @@
 #tastiera > div:last-child [tasto]:last-child {
 	border-bottom-right-radius: 20px;
 }
-#ordersFilters {
-	max-width: 100vw;
-	overflow: auto;
-}

@@ -1,42 +1,42 @@
 <aside class="mdc-drawer mdc-drawer--modal" id="mainMenu">
 	<div class="mdc-drawer__content">
 		<nav class="mdc-list" id="drawerList">
-			<a href="<?= site_url() ?>main/index" <?php if (current_url() == site_url().'main/index') { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page" tabindex="0"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?>>
+			<a href="<?= site_url() ?>main/index" <?php if (current_url() == site_url().'main/index') { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?> tabindex="0">
 				<span class="mdc-list-item__ripple"></span>
 				<div class="link-block">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
 					<span class="mdc-list-item__text">Home</span>
 				</div>
 			</a>
-			<a href="<?= site_url() ?>orders/index/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/index/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page" tabindex="0"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?>>
+			<a href="<?= site_url() ?>orders/index/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/index/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?> tabindex="1">
 				<span class="mdc-list-item__ripple"></span>
 				<div class="link-block">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">list</i>
 					<span class="mdc-list-item__text">Gestione Ordini</span>
 				</div>
 			</a>
-			<a href="<?= site_url() ?>menu/index/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'menu/index/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page" tabindex="0"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?>>
+			<a href="<?= site_url() ?>menu/index/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'menu/index/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?> tabindex="2">
 				<span class="mdc-list-item__ripple"></span>
 				<div class="link-block">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>
 					<span class="mdc-list-item__text">Modifica menù</span>
 				</div>
 			</a>
-			<a href="<?= site_url() ?>orders/cost/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/cost/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page" tabindex="0"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?>>
+			<a href="<?= site_url() ?>expenses/index/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'expenses/index/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?> tabindex="3">
 				<span class="mdc-list-item__ripple"></span>
 				<div class="link-block">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">menu_book</i>
 					<span class="mdc-list-item__text">Nota spese</span>
 				</div>
 			</a>
-			<a href="<?= site_url() ?>orders/preset/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/preset/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page" tabindex="0"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?>>
+			<a href="<?= site_url() ?>orders/preset/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/preset/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?> tabindex="4">
 				<span class="mdc-list-item__ripple"></span>
 				<div class="link-block">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">moped</i>
 					<span class="mdc-list-item__text">Pre-set degli ordini</span>
 				</div>
 			</a>
-			<a href="<?= site_url() ?>orders/analytics/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/analytics/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page" tabindex="0"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?>>
+			<a href="<?= site_url() ?>orders/analytics/company/<?= _COMPANY_URI ?>" <?php if (current_url() == site_url().'orders/analytics/company/'._COMPANY_URI) { ?>class="js-rippable main-link mdc-list-item mdc-list-item--activated" aria-current="page"<?php } else { ?>class="js-rippable main-link mdc-list-item"<?php } ?> tabindex="5">
 				<span class="mdc-list-item__ripple"></span>
 				<div class="link-block">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">analytics</i>

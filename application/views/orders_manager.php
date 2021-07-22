@@ -7,12 +7,56 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<?php topbar() ?>
 	<?php main_menu() ?>
 	<div id="pageContainer">
-		<div>
-			<div id="ordersFilters" class="d-flex filter-orders-by-type pick-one-of-these">
-				<div class="actionable pickable filter-tab ml-auto" type="dismissed">Dimesse</div>
-				<div class="actionable pickable filter-tab" type="takeaway">TakeAway</div>
-				<div class="actionable pickable filter-tab" type="delivery">Delivery</div>
-				<div class="actionable pickable filter-tab selected" type="all">Mostra tutto</div>
+		<div class="d-flex">
+			<div class="ml-auto">
+				<div id="ordersFilters" class="mdc-tab-bar" role="tablist">
+					<div class="mdc-tab-scroller">
+						<div class="mdc-tab-scroller__scroll-area">
+							<div class="mdc-tab-scroller__scroll-content">
+								<button class="filter-tab mdc-tab" role="tab" aria-selected="true" tabindex="0" type="dismissed">
+									<span class="mdc-tab__content">
+										<span class="mdc-tab__icon material-icons" aria-hidden="true">cancel</span>
+										<span class="mdc-tab__text-label">Dimesse</span>
+									</span>
+									<span class="mdc-tab-indicator">
+										<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+									</span>
+									<span class="mdc-tab__ripple"></span>
+								</button>
+								<button class="filter-tab mdc-tab" role="tab" aria-selected="false" tabindex="-1" type="takeaway">
+									<span class="mdc-tab__content">
+										<span class="mdc-tab__icon material-icons" aria-hidden="true">store</span>
+										<span class="mdc-tab__text-label">TakeAway</span>
+									</span>
+									<span class="mdc-tab-indicator">
+										<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+									</span>
+									<span class="mdc-tab__ripple"></span>
+								</button>
+								<button class="filter-tab mdc-tab" role="tab" aria-selected="false" tabindex="-1" type="delivery">
+									<span class="mdc-tab__content">
+										<span class="mdc-tab__icon material-icons" aria-hidden="true">moped</span>
+										<span class="mdc-tab__text-label">Delivery</span>
+									</span>
+									<span class="mdc-tab-indicator">
+										<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+									</span>
+									<span class="mdc-tab__ripple"></span>
+								</button>
+								<button class="filter-tab mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="-1" type="all">
+									<span class="mdc-tab__content">
+										<span class="mdc-tab__icon material-icons" aria-hidden="true">apps</span>
+										<span class="mdc-tab__text-label">Mostra tutto</span>
+									</span>
+									<span class="mdc-tab-indicator mdc-tab-indicator--active">
+										<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+									</span>
+									<span class="mdc-tab__ripple"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div>
@@ -248,6 +292,58 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 							</div>
 							<div tab="cliente" order-component>
+								<div>
+									<div class="d-flex">
+										<div class="mr-auto">
+											<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon mt-6">
+												<i aria-hidden="true" class="material-icons mdc-text-field__icon">search</i>
+												<input id="finder" class="mdc-text-field__input" autocorrect="off" autocomplete="off" spellcheck="false" maxlength="524288">
+												<div class="mdc-notched-outline mdc-notched-outline--upgraded">
+													<div class="mdc-notched-outline__leading"></div>
+													<div class="mdc-notched-outline__notch" style="">
+														<label for="demo-mdc-text-field" class="mdc-floating-label" style="">Cerca cliente</label>
+													</div>
+													<div class="mdc-notched-outline__trailing"></div>
+												</div>
+											</div>
+											<div>
+												<table>
+													<thead>
+														<tr>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+														</tr>
+														<tr>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+														</tr>
+														<tr>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+															<td>?</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div>
+											Cliente selezionato
+										</div>
+									</div>
+								</div>
 								<div class="d-flex">
 									<div>
 										<div class="input-block" style="padding: 16px;">

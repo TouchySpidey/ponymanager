@@ -40,7 +40,7 @@ class Orders_model extends CI_Model {
 			if (!isset($deliveries[$info['id_delivery']])) {
 				$deliveries[$info['id_delivery']] = [
 					'address' => $info['address'],
-					'city' => $info['city'],
+					'city' => '',
 					'guid' => $info['guid'],
 					'dismissed' => boolval($info['dismissed']),
 					'cod_pony' => $info['cod_pony'],
@@ -198,7 +198,7 @@ class Orders_model extends CI_Model {
 		$time = isset($post['delivery_time']) ? $post['delivery_time'] : false;
 		$day = date('Y-m-d');
 
-		$order['total'] = $total;
+		$order['total_price'] = $total;
 		$order['id_delivery'] = isset($post['id_order']) ? $post['id_order'] : null;
 		$order['is_delivery'] = isset($post['is_delivery']) ? $post['is_delivery'] : 0;
 		$order['cod_customer'] = isset($post['id_customer']) ? $post['id_customer'] : null;
@@ -216,11 +216,10 @@ class Orders_model extends CI_Model {
 			$order['travel_duration'] = null;
 			$order['doorbell'] = $post['doorbell'];
 			$order['address'] = $post['address'];
-			$order['city'] = $post['city'];
 			if ($order['id_delivery']) {
 				if ($old_order['north'] || $old_order['east']) {
 					# geocode già fatto
-					if ($order['city'] == $old_order['city'] && $order['address'] == $old_order['address']) {
+					if ($order['address'] == $old_order['address']) {
 						# indirizzo non cambiato
 						$order['north'] = $old_order['north'];
 						$order['east'] = $old_order['east'];
@@ -237,7 +236,7 @@ class Orders_model extends CI_Model {
 					->get('customers')->result_array();
 					if (!empty($customer)) {
 						$customer = $customer[0];
-						if ($customer['city'] == $order['city'] && $customer['address'] == $order['address']) {
+						if ($customer['address'] == $order['address']) {
 							if ($customer['north'] || $customer['east']) {
 								$order['north'] = $customer['north'];
 								$order['east'] = $customer['east'];
@@ -248,7 +247,7 @@ class Orders_model extends CI_Model {
 				}
 			}
 			if (!$order['north'] && !$order['east']) {
-				$geo = geocode($order['city'], $order['address']);
+				$geo = geocode($order['address']);
 				if ($geo) {
 					$order['travel_duration'] = distancematrix(_GLOBAL_COMPANY, $geo);
 					$order['north'] = $geo['north'];
@@ -256,7 +255,7 @@ class Orders_model extends CI_Model {
 				}
 			}
 		} else {
-			$order['doorbell'] = $order['address'] = $order['city'] = $order['north'] = $order['east'] = $order['travel_duration'] = null;
+			$order['doorbell'] = $order['address'] = $order['north'] = $order['east'] = $order['travel_duration'] = null;
 		}
 		if ($order['id_delivery']) {
 			$id_delivery = $order['id_delivery'];
