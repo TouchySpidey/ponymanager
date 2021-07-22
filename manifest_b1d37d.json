@@ -3,37 +3,37 @@
 	"short_name": "PonyManager",
 	"icons": [
 		{
-			"src": "/frontend/images/icons/128.png",
+			"src": "/ponymanager/frontend/images/icons/128.png",
 			"sizes": "128x128",
 			"type": "image/png"
 		},
 		{
-			"src": "/frontend/images/icons/144.png",
+			"src": "/ponymanager/frontend/images/icons/144.png",
 			"sizes": "144x144",
 			"type": "image/png"
 		},
 		{
-			"src": "/frontend/images/icons/152.png",
+			"src": "/ponymanager/frontend/images/icons/152.png",
 			"sizes": "152x152",
 			"type": "image/png"
 		},
 		{
-			"src": "/frontend/images/icons/192.png",
+			"src": "/ponymanager/frontend/images/icons/192.png",
 			"sizes": "192x192",
 			"type": "image/png"
 		},
 		{
-			"src": "/frontend/images/icons/256.png",
+			"src": "/ponymanager/frontend/images/icons/256.png",
 			"sizes": "256x256",
 			"type": "image/png"
 		},
 		{
-			"src": "/frontend/images/icons/512.png",
+			"src": "/ponymanager/frontend/images/icons/512.png",
 			"sizes": "512x512",
 			"type": "image/png"
 		}
 	],
-	"start_url": "https://www.ponymanager.com",
+	"start_url": "https://www.thewebmaker.it/ponymanager/",
 	"display": "standalone",
 	"background_color": "#eb6534",
 	"theme_color": "#bbbbbb",

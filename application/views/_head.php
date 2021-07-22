@@ -3,7 +3,7 @@
 	<link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
 	<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-	<link rel="manifest" href="<?= site_url() ?>manifest.json?v=1">
+	<link rel="manifest" href="<?= site_url() ?>manifest_<?= substr(hash('sha256', site_url()), -6) ?>.json?v=1">
 	<meta name="theme-color" content="#141414"/>
 	<link rel="apple-touch-startup-image" href="<?= site_url() ?>frontend/images/icons/128.png">
 	<link rel="apple-touch-icon" href="<?= site_url() ?>frontend/images/icons/128.png">
@@ -32,5 +32,14 @@
 	<script>
 	let site_url = '<?= site_url() ?>'; // has trailing slash
 	<?php if (defined('_COMPANY_URI')) { ?>let company_url_suffix = '/company/<?= _COMPANY_URI ?>';<?php } ?>
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register(site_url + 'service-worker.js?v6', {
+			scope: '.'
+		}).then(function(registration) {
+			console.log('Service Worker Registered with scope: ' + registration.scope);
+		}, function(err) {
+			console.log('Service Worker Registration FAILED: ' + err);
+		});
+	}
 	</script>
 </head>
