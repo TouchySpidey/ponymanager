@@ -385,7 +385,6 @@ let newCustomer = {
 };
 
 function select_customer(id_customer = false) {
-	// open modal to create order
 	if (id_customer) {
 		$('#deliveryTo [name="id_customer"]').val(id_customer);
 		let customer = customers_cache[id_customer];
