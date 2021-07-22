@@ -15,7 +15,13 @@ let $ghostOrderItem = $('#ghostOrderItem').remove().removeAttr('id');
 let req_sent = 0, last_accepted = 0;
 let from = false, to = false, mode = 'all';
 
-let customer_el = $('#resultsFound .info-cliente').remove().removeAttr('hidden');
+$(function() {
+	$('#newCustomerDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
+		if (why.detail.action == 'saveCustomer') {
+			saveCustomer(true);
+		}
+	});
+});
 
 let customers_cache = {};
 
@@ -43,6 +49,7 @@ let lookupCustomers = function(search) {
 							$customer_row.find('.indirizzo-cliente').text(customer.address);
 							$customer_row.find('.telefono-cliente').text(customer.telephone);
 							$customer_row.find('.campanello-cliente').text(customer.doorbell);
+							$customer_row.find('.select_customer').click(() => select_customer(customer.id_customer));
 							$('#customersBody').append($customer_row);
 
 							customers_cache[customer.id_customer] = customer;
@@ -124,7 +131,7 @@ function order_reset() {
 	$('#listaPizze').empty();
 	orderTotalUpdate(0.);
 	calculateOrderTotal();
-	$('#deliveryToForm input').val('');
+	select_customer(false);
 	$('#timetable .timetable-row').removeClass('selected');
 	$('#pony .pickable').removeClass('selected');
 	$('#overwriteCustomer').hide();
@@ -386,59 +393,41 @@ let newCustomer = {
 
 function select_customer(id_customer = false) {
 	if (id_customer) {
-		$('#deliveryTo [name="id_customer"]').val(id_customer);
-		let customer = customers_cache[id_customer];
-		$('#deliveryTo [name="name"]').val(customer.name);
-		$('#deliveryTo [name="doorbell"]').val(customer.doorbell);
-		$('#deliveryTo [name="city"]').val(customer.city);
-		$('#deliveryTo [name="address"]').val(customer.address);
-		$('#deliveryTo [name="telephone"]').val(customer.telephone);
-
-		$('#saveNewCustomer').hide();
-		$('#deliveryTo input').off('input change');
-		$('#deliveryTo input').on('input change', function() {
-			let changed = false;
-			$('#deliveryTo input').each(function() {
-				let n = $(this).attr('name');
-				let v = $(this).val();
-				if (customer[n] != v) {
-					changed = true;
+		let on_customer_ready = (customer) => {
+			$('#deliveryTo').data('id_customer', customer.id_customer);
+			$('#deliveryTo .nome-cliente').text(customer.name);
+			$('#deliveryTo .telefono-cliente').text(customer.telephone);
+			$('#deliveryTo .indirizzo-cliente').text(customer.address);
+			$('#deliveryTo .campanello-cliente').text(customer.doorbell);
+		}
+		if (id_customer in customers_cache) {
+			on_customer_ready(customers_cache[id_customer]);
+		} else {
+			$.post(site_url + 'customers/get_customer_by_id' + company_url_suffix, {id_customer: id_customer})
+			.done((data) => {
+				let json = JSON.parse(data);
+				if (json.status) {
+					on_customer_ready(json.customer);
+					customers_cache[id_customer] = json.customer;
+				} else {
+					console.log('404 customer not found');
 				}
 			});
-			if (changed) {
-				$('#overwriteCustomer').show();
-			} else {
-				$('#overwriteCustomer').hide();
-			}
-		}).trigger('change');
-	} else {
-		$('#saveNewCustomer').hide();
-		for (let k in newCustomer) {
-			$('#deliveryTo [name="' + k + '"]').val(newCustomer[k]);
 		}
-		$('#deliveryTo input').off('input change');
-		$('#deliveryTo input').on('input change', function() {
-			let n = $(this).attr('name');
-			newCustomer[n] = $(this).val();
-			let compiled = newCustomer.name.length > 0;
-			if (compiled) {
-				$('#saveNewCustomer').show();
-			} else {
-				$('#saveNewCustomer').hide();
-			}
-		}).trigger('change');
+		$('#deliveryTo').show();
+	} else {
+		$('#deliveryTo').hide();
 	}
 }
 select_customer(false);
 
 function saveCustomer(brandNew = false) {
 	let customer = {
-		id_customer: brandNew ? $('#deliveryTo [name="id_customer"]').val() : null,
-		name: $('#deliveryTo [name="name"]').val(),
-		doorbell: $('#deliveryTo [name="doorbell"]').val(),
-		telephone: $('#deliveryTo [name="telephone"]').val(),
-		address: $('#deliveryTo [name="address"]').val(),
-		city: $('#deliveryTo [name="city"]').val(),
+		id_customer: brandNew ? null : $('#').val(),
+		name: $('#newCustomerName').val(),
+		doorbell: $('#newCustomerDoorbell').val(),
+		telephone: $('#newCustomerTelephone').val(),
+		address: $('#newCustomerAddress').val(),
 	};
 	$.post(site_url + 'customers/add_or_edit_customer' + company_url_suffix, customer).always(function(data) {
 		try {
@@ -447,7 +436,7 @@ function saveCustomer(brandNew = false) {
 				if ('errors' in response) {
 					console.log(response.errors);
 				} else {
-					$('#deliveryToForm input').val('');
+					$('#newCustomerDialog input').val('');
 					// todo
 					customers_cache[response.id_customer] = response.customer_data;
 					select_customer(response.id_customer);
@@ -457,7 +446,7 @@ function saveCustomer(brandNew = false) {
 			console.log(e);
 		}
 	});
-	$('#overwriteCustomer').hide();
+	// $('#overwriteCustomer').hide();
 }
 
 $('#overwriteCustomer').click(function() {
@@ -485,13 +474,10 @@ $('#deliveryTo input').on('input', function() {
 });
 
 function resetModalData(_draft) {
-	$('#deliveryToForm [name="id_delivery"]').val(_draft.id_order)
-	// newOrder.sconto = _draft.sconto;
-	// newOrder.notes = _draft.notes;
-	// newOrder.is_delivery = _draft.is_delivery;
-	// newOrder.cod_pony = _draft.cod_pony;
-	// newOrder.id_order = _draft.id_order;
+	$('#riepilogoOrdine').data('id_order', _draft.id_order)
+
 	newOrder = $.extend(true, {}, _draft);
+
 	if (_draft.is_delivery) {
 		$('#deliveryOrder').addClass('selected');
 		$('#takeawayOrder').removeClass('selected');
@@ -501,6 +487,8 @@ function resetModalData(_draft) {
 		$('#deliveryOrder').removeClass('selected');
 		$('.delivery-only').hide();
 	}
+
+	if ('id_customer' in newOrder) select_customer(newOrder.id_customer);
 
 	if (_draft.id_order) {
 		$('#orderTabs .tab[data-tab="stampa"]').show();
@@ -535,7 +523,7 @@ function resetModalData(_draft) {
 function patchOrder() {
 	let _draft = $.extend(true, {}, newOrder);
 	let formData = {
-		id_order: $('#deliveryToForm [name="id_delivery"]').val(),
+		id_order: $('#riepilogoOrdine').data('id_order'),
 		rows: _draft.rows,
 		sconto: _draft.sconto,
 		notes: $('#order-notes').val(),
@@ -544,11 +532,12 @@ function patchOrder() {
 		cod_pony: $('#pony .js-pony.selected').data('id_pony'),
 		delivery_time: $('#timetable .timetable-row.selected').data('time'),
 	};
-	$('#deliveryTo input').each(function(i, v) {
-		let name = $(v).attr('name');
-		let val = $(v).val();
-		formData[name] = val;
-	});
+	if (formData.is_delivery) {
+		formData.id_customer = $('#deliveryTo').data('id_customer');
+		for (let customer_attr in customers_cache[formData.id_customer]) {
+			formData[customer_attr] = customers_cache[formData.id_customer][customer_attr];
+		}
+	}
 	return formData;
 }
 
@@ -1168,8 +1157,15 @@ function delete_order() {
 		}
 	}
 }
+function openNewCustomerDialog() {
+	// edit dialog
+	// open dialog
+	$('#newCustomerDialog').data('metadialog').open();
+}
 
 let map;
+let autocomplete = [];
+const address_finder_inputs = document.querySelectorAll('.google_address_finder');
 
 function initMap() {
 	let markerGeo = new google.maps.LatLng(geoShop.north, geoShop.east);
@@ -1191,7 +1187,6 @@ function initMap() {
 
 	let acBound = new google.maps.LatLngBounds(swBound, neBound);
 
-	const input = document.getElementById('gfinder');
 	const options = {
 		bounds: acBound,
 		// componentRestrictions: { country: 'it' },
@@ -1200,11 +1195,11 @@ function initMap() {
 		strictBounds: false,
 		types: ['address'],
 	};
-	const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+	address_finder_inputs.forEach(input => autocomplete.push(new google.maps.places.Autocomplete(input, options)));
 
 	$(function() {
 		order_reset();
 		ordersFromDb();
-		setTimeout(() => selectOrder(52), 100);
 	});
 }

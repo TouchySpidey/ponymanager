@@ -34,8 +34,7 @@ $(function() {
 		$(this).addClass('selected');
 	});
 
-	document.querySelectorAll('.js-rippable').forEach(el => mdc.ripple.MDCRipple.attachTo(el));
-	document.querySelectorAll('.mdc-ripple-surface').forEach(el => $(el).data('metaripple', mdc.ripple.MDCRipple.attachTo(el)));
+	document.querySelectorAll('.mdc-ripple-surface,.js-rippable').forEach(el => $(el).data('metaripple', mdc.ripple.MDCRipple.attachTo(el)));
 	document.querySelectorAll('.mdc-chip').forEach(el => $(el).data('metachip', mdc.chips.MDCChip.attachTo(el)));
 	document.querySelectorAll('.js-mdcformfield').forEach(el => mdc.formField.MDCFormField.attachTo(el));
 	document.querySelectorAll('.mdc-dialog').forEach(el => $(el).data('metadialog', mdc.dialog.MDCDialog.attachTo(el)));

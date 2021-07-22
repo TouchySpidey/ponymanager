@@ -6,10 +6,6 @@
 	max-height: calc(100vh - 110px);
 	overflow-y: auto;
 }
-#deliveryToForm {
-	max-height: calc(100vh - 140px);
-	overflow-y: auto;
-}
 #finder {
 	/* font-size: 20px; */
 }
@@ -233,10 +229,8 @@
 	max-height: calc(100vh - 220px);
 	overflow-y: auto;
 }
-#deliveryTo {
-	border: 1px solid #888;
-	border-radius: 16px;
-	padding: 16px;
+#addOrderModal {
+	z-index: 7;
 }
 #addOrderModal .order-modal-content {
 	width: 100vw;
@@ -327,4 +321,13 @@
 #clientiTrovatiDT {
 	width: 100%;
 	max-width: 800px;
+}
+#deliveryTo {
+	width: 400px;
+}
+.card__subhead.text-right {
+	padding-left: 32px;
+}
+.card__subhead.text-left {
+	padding-right: 32px;
 }

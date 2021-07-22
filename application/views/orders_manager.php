@@ -336,12 +336,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																		</div>
 																	</td>
 																	<td class="mdc-data-table__cell" col_name="option" scope="row">
-																		<div class="material-icons mdc-icon-button edit_customer mdc-ripple-surface">chevron_right</div>
+																		<div class="material-icons mdc-icon-button select_customer">chevron_right</div>
 																	</td>
 																</tr>
 																<tr class="mdc-data-table__row" id="newCustomerRow">
-																	<td colspan="4" class="mdc-ripple-surface mdc-data-table__cell new_customer text-center" col_name="option" scope="row">
-																		<div class="material-icons">person_add</div>
+																	<td colspan="4" class="mdc-data-table__cell new_customer text-center" col_name="option" scope="row">
+																		<button class="js-rippable mdc-button" onclick="openNewCustomerDialog()">
+																			<div class="mdc-button__ripple"></div>
+																			<i class="material-icons mdc-button__icon" aria-hidden="true">person_add</i>
+																			<span class="mdc-button__label">Nuovo Cliente</span>
+																		</button>
 																	</td>
 																</tr>
 															</tbody>
@@ -366,105 +370,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</div>
 											</div>
 										</div>
-										<div>
-											<div class="mdc-card">
-												<div class="mdc-card__primary-action">
-													<div class="mdc-card__media mdc-card__media--square">
-														<div class="mdc-card__media-content">Title</div>
-													</div>
-													<!-- ... additional primary action content ... -->
+										<div style="margin-right: 16px;">
+											<div class="mdc-card mdc-card--outlined" id="deliveryTo">
+												<div class="mdc-card-wrapper__text-section">
+													<div class="text-center card__title">Cliente selezionato</div>
+													<div class="nome-cliente card__subhead">Nome</div>
+													<div class="telefono-cliente text-right card__subhead">Telefono</div>
+												</div>
+												<div class="mdc-card-wrapper__text-section">
+													<div class="indirizzo-cliente card__subhead">Indirizzo</div>
+													<div class="campanello-cliente text-right card__subhead">Campanello</div>
 												</div>
 												<div class="mdc-card__actions">
 													<div class="mdc-card__action-buttons">
-														<button class="mdc-ripple-surface mdc-button mdc-card__action mdc-card__action--button">
+														<button class="js-rippable mdc-button mdc-card__action mdc-card__action--button">
 															<div class="mdc-button__ripple"></div>
+															<i class="material-icons mdc-button__icon" aria-hidden="true">edit</i>
 															<span class="mdc-button__label">Modifica</span>
-														</button>
-														<button class="mdc-button mdc-card__action mdc-card__action--button">
-															<div class="mdc-button__ripple"></div>
-															<span class="mdc-button__label">Action 2</span>
 														</button>
 													</div>
 													<div class="mdc-card__action-icons">
-														<button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="Share">share</button>
-														<button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">more_vert</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="d-flex">
-									<div>
-										<div class="input-block" style="padding: 16px;">
-											<input class="md-input" id="finder" type="text" placeholder="Cerca">
-										</div>
-										<form id="deliveryToForm">
-											<input type="hidden" name="id_delivery" />
-											<div id="deliveryTo">
-												<input type="hidden" name="id_customer" />
-												<input type="hidden" name="total_price" />
-												<input type="hidden" name="delivery_date" />
-												<div class="input-block">
-													<div><label>Nome e cognome</label></div>
-													<input class="md-input" type="text" name="name" placeholder="Nome e cognome" />
-												</div>
-												<div class="delivery-only">
-													<div class="input-block">
-														<div><label>Indirizzo</label></div>
-														<div><input class="md-input" id="gfinder" name="address" type="text" placeholder="Indirizzo"></div>
-													</div>
-													<!-- <div class="input-block">
-														<div><label>Città</label></div>
-														<div><input class="md-input" type="text" name="city" placeholder="Città"></div>
-													</div> -->
-													<div class="input-block">
-														<div><label>Nome sul campanello</label></div>
-														<div><input class="md-input" type="text" name="doorbell" placeholder="Nome sul campanello"></div>
-													</div>
-												</div>
-												<div class="input-block">
-													<div><label>Telefono</label></div>
-													<div><input class="md-input" type="text" name="telephone" placeholder="Telefono"></div>
-												</div>
-												<div class="d-flex">
-													<div id="overwriteCustomer" class="btn ml-auto orange"><i class="mdi mdi-pencil"></i> Aggiorna</div>
-													<div id="saveNewCustomer" class="btn ml-auto green"><i class="mdi mdi-plus"></i> Nuovo</div>
-												</div>
-											</div>
-										</form>
-									</div>
-									<div id="customersBox" class="mr-auto">
-										<div>
-											<div class="info-cliente parent-to-be-hovered" onclick="select_customer(false)">
-												<div class="d-flex">
-													<div class="show-on-parent-hover">
-														<div class="open-customer-container d-flex">
-															<div class="open-customer mt-auto mb-auto">
-																<i class="mdi mdi-chevron-left"></i>
-															</div>
-														</div>
-													</div>
-													<div class="info-container ml-auto text-right">
-														<div class="nome-cliente">Nuovo Cliente</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div id="resultsFound">
-											<div class="info-cliente parent-to-be-hovered" hidden onclick="select_customer(this.getAttribute('data-id'))">
-												<div class="d-flex">
-													<div class="show-on-parent-hover">
-														<div class="open-customer-container d-flex">
-															<div class="open-customer mt-auto mb-auto">
-																<i class="mdi mdi-chevron-left"></i>
-															</div>
-														</div>
-													</div>
-													<div class="info-container ml-auto text-right">
-														<div class="nome-cliente"></div>
-														<div class="indirizzo-cliente"></div>
-														<div class="telefono-cliente"></div>
+														<button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">close</button>
 													</div>
 												</div>
 											</div>
@@ -577,6 +503,80 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div class="mdc-dialog" id="newCustomerDialog">
+		<div class="mdc-dialog__container">
+			<div class="mdc-dialog__surface" role="alertdialog" style="width: 668px;">
+				<div class="mdc-dialog__content">
+					<div>
+						<div class="d-flex">
+							<div class="mr-auto">
+								<label class="mdc-text-field mdc-text-field--outlined">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Nome</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="newCustomerName" />
+								</label>
+							</div>
+							<div class="ml-auto">
+								<label class="mdc-text-field mdc-text-field--outlined">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Telefono</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="newCustomerTelephone" />
+								</label>
+							</div>
+						</div>
+						<div class="d-flex" style="margin-top: 16px;">
+							<div class="mr-auto">
+								<label class="mdc-text-field mdc-text-field--outlined">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Indirizzo</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input google_address_finder" id="newCustomerAddress" />
+								</label>
+							</div>
+							<div class="ml-auto">
+								<label class="mdc-text-field mdc-text-field--outlined">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Campanello</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="newCustomerDoorbell" />
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mdc-dialog__actions">
+					<button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">
+						<div class="mdc-button__ripple"></div>
+						<span class="mdc-button__label">Annulla</span>
+					</button>
+					<button type="button" class="mdc-button mdc-button--raised mdc-dialog__button" data-mdc-dialog-action="saveCustomer">
+						<div class="mdc-button__ripple"></div>
+						<span class="mdc-button__label">Salva</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="mdc-dialog__scrim"></div>
 	</div>
 
 

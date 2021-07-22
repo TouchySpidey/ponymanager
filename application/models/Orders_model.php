@@ -191,7 +191,7 @@ class Orders_model extends CI_Model {
 			->where('id_delivery', $post['id_order'])
 			->get('deliveries')->result_array();
 			if (!empty($old_order)) {
-				$order = $old_order;
+				$order = $old_order = $old_order[0];
 			}
 		}
 

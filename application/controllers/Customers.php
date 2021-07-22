@@ -9,6 +9,18 @@ class Customers extends CB_Controller {
 
 	}
 
+	public function get_customer_by_id() {
+		$id_customer = $this->input->post('id_customer') ?: false;
+		$customer = $this->db
+		->where('id_customer', $id_customer)
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->get('customers')->result_array();
+		echo JSON_encode([
+			'status' => !empty($customer),
+			'customer' => !empty($customer) ? $customer[0] : false,
+		]);
+	}
+
 	public function add_or_edit_customer() {
 		$id_customer = $this->input->post('id_customer') ?: false;
 		$name = $this->input->post('name');
