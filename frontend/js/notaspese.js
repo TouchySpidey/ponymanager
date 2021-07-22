@@ -12,7 +12,7 @@ $(function() {
 		if (why.detail.action == 'saveExpense') {
 			let expense = validateNewExpense();
 			if (expense) {
-				$('#myDT').data('metatable').showProgress();
+				$('#speseDT').data('metatable').showProgress();
 				$.post(site_url + 'expenses/addCost' + company_url_suffix, expense).done((data) => {
 					let json = JSON.parse(data);
 					if (json._status) {
@@ -22,7 +22,7 @@ $(function() {
 						reloadCategories();
 					}
 				}).always(() => {
-					$('#myDT').data('metatable').hideProgress();
+					$('#speseDT').data('metatable').hideProgress();
 				});
 			} else {
 				// reset dialog, big error?!
@@ -62,13 +62,13 @@ function promptNewCategory() {
 }
 
 function reloadExpensesFromDB() {
-	$('#myDT').data('metatable').showProgress();
+	$('#speseDT').data('metatable').showProgress();
 	$.get(site_url + 'expenses/getExpenses' + company_url_suffix).done(data => {
 		let json = JSON.parse(data);
 		php_expenses = json;
 		reloadExpenses();
 	}).always((data) => {
-		$('#myDT').data('metatable').hideProgress();
+		$('#speseDT').data('metatable').hideProgress();
 	});
 }
 

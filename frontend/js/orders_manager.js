@@ -31,7 +31,7 @@ let lookupCustomers = function(search) {
 				if (last_accepted < response.uid) {
 					last_accepted = response.uid;
 
-					$('#customersBody').remove('.customer-row');
+					$('#customersBody .customer-row').remove();
 					customers_cache = {};
 
 					if (response.results.length) {
@@ -54,12 +54,15 @@ let lookupCustomers = function(search) {
 		} catch(e) {
 			console.log(e);
 		}
+	}).always(() => {
+		$('#clientiTrovatiDT').data('metatable').hideProgress();
 	});
 };
 let existing_timeout = false;
 $('#finder').on('input', function() {
 	let str_search = $(this).val();
 	clearTimeout(existing_timeout);
+	$('#clientiTrovatiDT').data('metatable').showProgress();
 	existing_timeout = setTimeout(function() {
 		lookupCustomers(str_search);
 	}, 230);
@@ -1203,5 +1206,6 @@ function initMap() {
 	$(function() {
 		order_reset();
 		ordersFromDb();
+		setTimeout(() => selectOrder(52), 100);
 	});
 }

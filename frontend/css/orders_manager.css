@@ -324,3 +324,7 @@
 #tastiera > div:last-child [tasto]:last-child {
 	border-bottom-right-radius: 20px;
 }
+#clientiTrovatiDT {
+	width: 100%;
+	max-width: 800px;
+}

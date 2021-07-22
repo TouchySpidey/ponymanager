@@ -294,7 +294,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							<div tab="cliente" order-component>
 								<div>
 									<div class="d-flex">
-										<div class="mr-auto">
+										<div class="flex-1">
 											<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon mt-6">
 												<i aria-hidden="true" class="material-icons mdc-text-field__icon">search</i>
 												<input id="finder" class="mdc-text-field__input" autocorrect="off" autocomplete="off" spellcheck="false" maxlength="524288">
@@ -331,17 +331,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																	</td>
 																	<td class="mdc-data-table__cell" col_name="title">
 																		<div>
-																			<div class="campanello-cliente">Campanello</div>
 																			<div class="indirizzo-cliente">Indirizzo</div>
+																			<div class="campanello-cliente">Campanello</div>
 																		</div>
 																	</td>
 																	<td class="mdc-data-table__cell" col_name="option" scope="row">
-																		<div class="material-icons mdc-icon-button edit_customer">chevron_right</div>
+																		<div class="material-icons mdc-icon-button edit_customer mdc-ripple-surface">chevron_right</div>
 																	</td>
 																</tr>
-																<tr class="mdc-data-table__row customer-row" id="newCustomerRow">
-																	<td colspan="4" class="mdc-data-table__cell" col_name="option" scope="row">
-																		<div class="material-icons mdc-icon-button new_customer">person_add</div>
+																<tr class="mdc-data-table__row" id="newCustomerRow">
+																	<td colspan="4" class="mdc-ripple-surface mdc-data-table__cell new_customer text-center" col_name="option" scope="row">
+																		<div class="material-icons">person_add</div>
 																	</td>
 																</tr>
 															</tbody>
@@ -367,7 +367,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 											</div>
 										</div>
 										<div>
-											Cliente selezionato
+											<div class="mdc-card">
+												<div class="mdc-card__primary-action">
+													<div class="mdc-card__media mdc-card__media--square">
+														<div class="mdc-card__media-content">Title</div>
+													</div>
+													<!-- ... additional primary action content ... -->
+												</div>
+												<div class="mdc-card__actions">
+													<div class="mdc-card__action-buttons">
+														<button class="mdc-ripple-surface mdc-button mdc-card__action mdc-card__action--button">
+															<div class="mdc-button__ripple"></div>
+															<span class="mdc-button__label">Modifica</span>
+														</button>
+														<button class="mdc-button mdc-card__action mdc-card__action--button">
+															<div class="mdc-button__ripple"></div>
+															<span class="mdc-button__label">Action 2</span>
+														</button>
+													</div>
+													<div class="mdc-card__action-icons">
+														<button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="Share">share</button>
+														<button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">more_vert</button>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>

@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="general-heading">Le tue spese</div>
 		<div class="d-flex">
 			<div class="ml-auto mr-auto">
-				<div class="mdc-data-table" id="myDT">
+				<div class="mdc-data-table" id="speseDT">
 					<div class="mdc-data-table__table-container">
 						<table class="mdc-data-table__table" aria-label="Dessert calories">
 							<thead>
@@ -228,16 +228,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div style="margin-top: 16px;">
 						<b class="section-label">Schema di colori</b>
 						<div class="flex-wrap">
-							<div class="mdc-button schema-sample js-rippable" data-schema="original">
-								<div class="mdc-button__ripple"></div>
+							<div class="mdc-button schema-sample mdc-ripple-surface" data-schema="original">
 								<span class="mdc-button__label">Original</span>
 							</div>
-							<div class="mdc-button schema-sample js-rippable" data-schema="reverse">
-								<div class="mdc-button__ripple"></div>
+							<div class="mdc-button schema-sample mdc-ripple-surface" data-schema="reverse">
 								<span class="mdc-button__label">Reverse</span>
 							</div>
-							<div class="mdc-button schema-sample js-rippable" data-schema="plain">
-								<div class="mdc-button__ripple"></div>
+							<div class="mdc-button schema-sample mdc-ripple-surface" data-schema="plain">
 								<span class="mdc-button__label">Plain</span>
 							</div>
 						</div>

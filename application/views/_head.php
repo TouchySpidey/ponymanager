@@ -18,8 +18,8 @@
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/normalize.css" />
 	<link rel="stylesheet" href="//cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/material-colors.css" />
-	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/main.css?v=<?= VERSION ?>" />
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/material-fix.css?v=<?= VERSION ?>" />
+	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/main.css?v=<?= VERSION ?>" />
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/global_mobile.css?v=<?= VERSION ?>" />
 	<link rel="stylesheet" media="screen" href="<?= site_url() ?>frontend/css/global_desktop.css?v=<?= VERSION ?>" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />

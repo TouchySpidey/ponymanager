@@ -51,7 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="companies-list flex-1">
 				<div class="general-heading">I tuoi locali</div>
 				<?php foreach ($privileges as $privilege) { ?>
-					<a class="card actionable" href="<?= site_url() ?>orders/index/company/<?= $privilege['uri_name'] ?>" style="color: black;">
+					<a class="card actionable mdc-ripple-surface" href="<?= site_url() ?>orders/index/company/<?= $privilege['uri_name'] ?>" style="color: black;">
 						<div class="card-title"> <?= $privilege['name'] ?> </div>
 						<?php if (_GLOBAL_USER['email'] == $privilege['owner']) { ?>
 							<div class="text-center"><i class="mdi mdi-star-outline"></i> Privilegi da proprietario</div>
