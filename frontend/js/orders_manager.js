@@ -1,3 +1,4 @@
+let $ghostTableRow = $('#ghostTableRow').remove().removeAttr('id');
 let $kitchenAddition = $('#kitchenAddition').remove().removeAttr('id');
 let $kitchenWithout = $('#kitchenWithout').remove().removeAttr('id');
 let $kitchenIngredient = $('#kitchenIngredient').remove().removeAttr('id');
@@ -18,7 +19,7 @@ let customer_el = $('#resultsFound .info-cliente').remove().removeAttr('hidden')
 
 let customers_cache = {};
 
-let sendRequest = function(search) {
+let lookupCustomers = function(search) {
 	req_sent++;
 	$.post(site_url + 'customers/find' + company_url_suffix, {
 		string: search,
@@ -30,23 +31,24 @@ let sendRequest = function(search) {
 				if (last_accepted < response.uid) {
 					last_accepted = response.uid;
 
-					$('#resultsFound').empty();
-
+					$('#customersBody').remove('.customer-row');
 					customers_cache = {};
 
 					if (response.results.length) {
-
 						for (let i in response.results) {
-							customer_found = customer_el.clone();
-							customer_found.attr('data-id', response.results[i].id_customer);
-							customer_found.find('.nome-cliente').text(response.results[i].name);
-							customer_found.find('.indirizzo-cliente').text(response.results[i].address);
-							customer_found.find('.telefono-cliente').text(response.results[i].telephone);
-							$('#resultsFound').append(customer_found);
-							customers_cache[response.results[i].id_customer] = response.results[i];
-						}
+							let customer = response.results[i];
+							$customer_row = $ghostTableRow.clone();
+							$customer_row.attr('data-id', customer.id_customer)
+							$customer_row.find('.nome-cliente').text(customer.name);
+							$customer_row.find('.indirizzo-cliente').text(customer.address);
+							$customer_row.find('.telefono-cliente').text(customer.telephone);
+							$customer_row.find('.campanello-cliente').text(customer.doorbell);
+							$('#customersBody').append($customer_row);
 
+							customers_cache[customer.id_customer] = customer;
+						}
 					}
+					$('#customersBody').append($('#newCustomerRow')); // [Nuovo Cliente] sempre in fondo al risultato
 				}
 			}
 		} catch(e) {
@@ -59,8 +61,8 @@ $('#finder').on('input', function() {
 	let str_search = $(this).val();
 	clearTimeout(existing_timeout);
 	existing_timeout = setTimeout(function() {
-		sendRequest(str_search);
-	}, 40);
+		lookupCustomers(str_search);
+	}, 230);
 });
 
 function editPizzaModal() {

@@ -307,36 +307,63 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</div>
 											</div>
 											<div>
-												<table>
-													<thead>
-														<tr>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-														</tr>
-														<tr>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-														</tr>
-														<tr>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-															<td>?</td>
-														</tr>
-													</tbody>
-												</table>
+												<div class="mdc-data-table" id="clientiTrovatiDT">
+													<div class="mdc-data-table__table-container">
+														<table class="mdc-data-table__table" aria-label="Dessert calories">
+															<thead>
+																<tr class="mdc-data-table__header-row">
+																	<th class="options_cell mdc-data-table__header-cell" role="columnheader" scope="col"></th>
+																	<th class="mdc-data-table__header-cell" role="columnheader" scope="col">Cliente</th>
+																	<th class="mdc-data-table__header-cell" role="columnheader" scope="col">Indirizzo</th>
+																	<th class="options_cell mdc-data-table__header-cell" role="columnheader" scope="col"></th>
+																</tr>
+															</thead>
+															<tbody class="mdc-data-table__content" id="customersBody">
+																<tr class="mdc-data-table__row customer-row" id="ghostTableRow">
+																	<td class="mdc-data-table__cell" col_name="option" scope="row">
+																		<div class="material-icons mdc-icon-button edit_customer">edit</div>
+																	</td>
+																	<td class="mdc-data-table__cell" col_name="date">
+																		<div>
+																			<div class="nome-cliente">Nome</div>
+																			<div class="telefono-cliente">Telefono</div>
+																		</div>
+																	</td>
+																	<td class="mdc-data-table__cell" col_name="title">
+																		<div>
+																			<div class="campanello-cliente">Campanello</div>
+																			<div class="indirizzo-cliente">Indirizzo</div>
+																		</div>
+																	</td>
+																	<td class="mdc-data-table__cell" col_name="option" scope="row">
+																		<div class="material-icons mdc-icon-button edit_customer">chevron_right</div>
+																	</td>
+																</tr>
+																<tr class="mdc-data-table__row customer-row" id="newCustomerRow">
+																	<td colspan="4" class="mdc-data-table__cell" col_name="option" scope="row">
+																		<div class="material-icons mdc-icon-button new_customer">person_add</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+
+													<div class="mdc-data-table__progress-indicator">
+														<div class="mdc-data-table__scrim"></div>
+														<div class="mdc-linear-progress mdc-linear-progress--indeterminate mdc-data-table__linear-progress" role="progressbar" aria-label="Data is being loaded...">
+															<div class="mdc-linear-progress__buffer">
+																<div class="mdc-linear-progress__buffer-bar"></div>
+																<div class="mdc-linear-progress__buffer-dots"></div>
+															</div>
+															<div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+																<span class="mdc-linear-progress__bar-inner"></span>
+															</div>
+															<div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+																<span class="mdc-linear-progress__bar-inner"></span>
+															</div>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
 										<div>
