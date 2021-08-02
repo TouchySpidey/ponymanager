@@ -1,5 +1,5 @@
 <div id="topBar" class="d-flex">
-	<?php if (true or $withToggler) { ?>
+	<?php if ($withToggler) { ?>
 		<div id="menuToggler" class="d-flex actionable">
 			<div class="mt-auto mb-auto">
 				<i class="mdi mdi-menu"></i>

@@ -42,7 +42,7 @@ $(function() {
 	document.querySelectorAll('.mdc-tab-bar').forEach(el => $(el).data('metatabbar', mdc.tabBar.MDCTabBar.attachTo(el)));
 	document.querySelectorAll('.mdc-menu').forEach(el => $(el).data('metamenu', mdc.menu.MDCMenu.attachTo(el)));
 	document.querySelectorAll('.mdc-checkbox').forEach(el => mdc.checkbox.MDCCheckbox.attachTo(el));
-	document.querySelectorAll('.mdc-text-field').forEach(el => mdc.textField.MDCTextField.attachTo(el));
+	document.querySelectorAll('.mdc-text-field').forEach(el => $(el).data('metatextfield', mdc.textField.MDCTextField.attachTo(el)));
 
 });
 

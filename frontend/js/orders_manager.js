@@ -16,11 +16,33 @@ let req_sent = 0, last_accepted = 0;
 let from = false, to = false, mode = 'all';
 
 $(function() {
+
 	$('#newCustomerDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
 		if (why.detail.action == 'saveCustomer') {
 			saveCustomer(true);
 		}
 	});
+
+	$('#editCustomerDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
+		if (why.detail.action == 'saveCustomer') {
+			saveCustomer(false);
+		}
+	});
+
+	$('#editDeliveryInfoDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
+		// ho modificato le info di delivery
+		// QUINDI POTREBBERO NON COMBACIARE CON I DATI DEL CLIENTE
+		// ad esempio un cliente pre-salvato chiede la consegna ad un indirizzo diverso
+		if (why.detail.action == 'editDeliveryInfo') {
+			// prendo le info date in input nelle textfield
+			// e le metto nei data-value che leggo quando faccio patchOrder
+			$('#deliveryInfoNameLabel').data('value', $('#deliveryInfoNameLabel').data('metatextfield').value);
+			$('#deliveryInfoAddressLabel').data('value', $('#deliveryInfoAddressLabel').data('metatextfield').value);
+			$('#deliveryInfoDoorbellLabel').data('value', $('#deliveryInfoDoorbellLabel').data('metatextfield').value);
+			$('#deliveryInfoTelephoneLabel').data('value', $('#deliveryInfoTelephoneLabel').data('metatextfield').value);
+		}
+	});
+
 });
 
 let customers_cache = {};
@@ -50,6 +72,7 @@ let lookupCustomers = function(search) {
 							$customer_row.find('.telefono-cliente').text(customer.telephone);
 							$customer_row.find('.campanello-cliente').text(customer.doorbell);
 							$customer_row.find('.select_customer').click(() => select_customer(customer.id_customer));
+							$customer_row.find('.edit_customer').click(() => openEditCustomerDialog(customer));
 							$('#customersBody').append($customer_row);
 
 							customers_cache[customer.id_customer] = customer;
@@ -88,11 +111,13 @@ let newOrder, last_row = 0, viewOrder;
 
 $('#takeawayOrder').click(function() {
 	$('.delivery-only').hide();
+	$('.takeaway-only').show();
 	newOrder.is_delivery = 0;
 	calculateOrderTotal();
 });
 $('#deliveryOrder').click(function() {
 	$('.delivery-only').show();
+	$('.takeaway-only').hide();
 	newOrder.is_delivery = 1;
 	calculateOrderTotal();
 });
@@ -386,19 +411,26 @@ $('#pizzeContext [data-function="elimina"]').click(function() {
 let newCustomer = {
 	name: '',
 	doorbell: '',
-	city: '',
 	address: '',
 	telephone: '',
 };
 
-function select_customer(id_customer = false) {
+function select_customer(id_customer = false, preventDisruption = false) {
 	if (id_customer) {
 		let on_customer_ready = (customer) => {
 			$('#deliveryTo').data('id_customer', customer.id_customer);
-			$('#deliveryTo .nome-cliente').text(customer.name);
-			$('#deliveryTo .telefono-cliente').text(customer.telephone);
-			$('#deliveryTo .indirizzo-cliente').text(customer.address);
-			$('#deliveryTo .campanello-cliente').text(customer.doorbell);
+			if (!preventDisruption) {
+				// aggiorno la card, puramente grafica
+				$('#deliveryTo .nome-cliente').text(customer.name);
+				$('#deliveryTo .indirizzo-cliente').text(customer.address);
+				$('#deliveryTo .telefono-cliente').text(customer.telephone);
+				$('#deliveryTo .campanello-cliente').text(customer.doorbell);
+				// aggiorno i dati che vengono pescati dal patchOrder
+				$('#deliveryInfoNameLabel').data('value', customer.name);
+				$('#deliveryInfoAddressLabel').data('value', customer.address);
+				$('#deliveryInfoDoorbellLabel').data('value', customer.doorbell);
+				$('#deliveryInfoTelephoneLabel').data('value', customer.telephone);
+			}
 		}
 		if (id_customer in customers_cache) {
 			on_customer_ready(customers_cache[id_customer]);
@@ -416,6 +448,7 @@ function select_customer(id_customer = false) {
 		}
 		$('#deliveryTo').show();
 	} else {
+		$('#deliveryTo').data('id_customer', null);
 		$('#deliveryTo').hide();
 	}
 }
@@ -423,11 +456,11 @@ select_customer(false);
 
 function saveCustomer(brandNew = false) {
 	let customer = {
-		id_customer: brandNew ? null : $('#').val(),
-		name: $('#newCustomerName').val(),
-		doorbell: $('#newCustomerDoorbell').val(),
-		telephone: $('#newCustomerTelephone').val(),
-		address: $('#newCustomerAddress').val(),
+		id_customer: brandNew ? null : $('#editCustomerDialog').data('customer-id'),
+		name: brandNew ? $('#newCustomerNameLabel').data('metatextfield').value : $('#editCustomerNameLabel').data('metatextfield').value,
+		doorbell: brandNew ? $('#newCustomerDoorbellLabel').data('metatextfield').value : $('#editCustomerDoorbellLabel').data('metatextfield').value,
+		telephone: brandNew ? $('#newCustomerTelephoneLabel').data('metatextfield').value : $('#editCustomerTelephoneLabel').data('metatextfield').value,
+		address: brandNew ? $('#newCustomerAddressLabel').data('metatextfield').value : $('#editCustomerAddressLabel').data('metatextfield').value,
 	};
 	$.post(site_url + 'customers/add_or_edit_customer' + company_url_suffix, customer).always(function(data) {
 		try {
@@ -440,6 +473,7 @@ function saveCustomer(brandNew = false) {
 					// todo
 					customers_cache[response.id_customer] = response.customer_data;
 					select_customer(response.id_customer);
+					$('#finder').trigger('input');
 				}
 			}
 		} catch(e) {
@@ -474,21 +508,35 @@ $('#deliveryTo input').on('input', function() {
 });
 
 function resetModalData(_draft) {
-	$('#riepilogoOrdine').data('id_order', _draft.id_order)
+	$('#riepilogoOrdine').data('id_order', (('id_order' in _draft) ? _draft.id_order : false));
 
 	newOrder = $.extend(true, {}, _draft);
+
+	if ('id_customer' in newOrder) select_customer(newOrder.id_customer, true);
 
 	if (_draft.is_delivery) {
 		$('#deliveryOrder').addClass('selected');
 		$('#takeawayOrder').removeClass('selected');
 		$('.delivery-only').show();
+		$('.takeaway-only').hide();
+
+		$('#deliveryTo .nome-cliente').text(newOrder.name);
+		$('#deliveryTo .indirizzo-cliente').text(newOrder.address);
+		$('#deliveryTo .campanello-cliente').text(newOrder.doorbell);
+		$('#deliveryTo .telefono-cliente').text(newOrder.telephone);
+		$('#deliveryInfoNameLabel').data('value', newOrder.name);
+		$('#deliveryInfoAddressLabel').data('value', newOrder.address);
+		$('#deliveryInfoDoorbellLabel').data('value', newOrder.doorbell);
+		$('#deliveryInfoTelephoneLabel').data('value', newOrder.telephone);
 	} else {
 		$('#takeawayOrder').addClass('selected');
 		$('#deliveryOrder').removeClass('selected');
 		$('.delivery-only').hide();
-	}
+		$('.takeaway-only').show();
 
-	if ('id_customer' in newOrder) select_customer(newOrder.id_customer);
+		$('#takeawayInfoName').data('metatextfield').value = newOrder.name;
+		$('#takeawayInfoPhone').data('metatextfield').value = newOrder.telephone;
+	}
 
 	if (_draft.id_order) {
 		$('#orderTabs .tab[data-tab="stampa"]').show();
@@ -520,10 +568,14 @@ function resetModalData(_draft) {
 
 	calculateOrderTotal();
 }
+
 function patchOrder() {
+	// le info contenute nella schermata vanno messe in un oggetto formData
+	// che è un json-like che verrà mandato al server
 	let _draft = $.extend(true, {}, newOrder);
+	// newOrder è l'oggetto magico che deve venir aggiornato ogni volta che viene modificato qualcosa array-like
+	// cioè che sarebbe scomodo da scrivere in un attributo html
 	let formData = {
-		id_order: $('#riepilogoOrdine').data('id_order'),
 		rows: _draft.rows,
 		sconto: _draft.sconto,
 		notes: $('#order-notes').val(),
@@ -532,17 +584,29 @@ function patchOrder() {
 		cod_pony: $('#pony .js-pony.selected').data('id_pony'),
 		delivery_time: $('#timetable .timetable-row.selected').data('time'),
 	};
+	let id_order = $('#riepilogoOrdine').data('id_order');
+	if (id_order) {
+		formData.id_order = id_order;
+	}
 	if (formData.is_delivery) {
 		formData.id_customer = $('#deliveryTo').data('id_customer');
-		for (let customer_attr in customers_cache[formData.id_customer]) {
-			formData[customer_attr] = customers_cache[formData.id_customer][customer_attr];
-		}
+		formData.name = $('#deliveryInfoNameLabel').data('value');
+		formData.address = $('#deliveryInfoAddressLabel').data('value');
+		formData.doorbell = $('#deliveryInfoDoorbellLabel').data('value');
+		formData.telephone = $('#deliveryInfoTelephoneLabel').data('value');
+	} else {
+		formData.name = $('#takeawayInfoName').data('metatextfield').value;
+		formData.telephone = $('#takeawayInfoPhone').data('metatextfield').value;
 	}
 	return formData;
 }
 
 $('#sendOrder').click(function() {
 	let formData = patchOrder();
+	kitchenPrint(formData);
+	if (formData.is_delivery) {
+		ponyPrint(formData);
+	}
 	$.post(site_url + 'orders/add_or_edit_order' + company_url_suffix, formData).always(function(data) {
 		ordersFromDb();
 		order_reset();
@@ -704,7 +768,7 @@ function ordersFromDb() {
 					all: true,
 				});
 				if (deliveries[i].is_delivery) {
-					$delivery.find('.indirizzo-cliente').text((deliveries[i].city ? deliveries[i].city + ', ' : '') + deliveries[i].address);
+					$delivery.find('.indirizzo-cliente').text(deliveries[i].address);
 
 					$delivery.find('.panner').click(() => {
 						map.panTo(marker.getPosition());
@@ -986,13 +1050,12 @@ function ponyPrint(_order = false) {
 	}
 	$ponyPrint.find('[time]').text(_order.delivery_time);
 	$ponyPrint.find('[totale-ordine]').text(_order.total_price);
-	$ponyPrint.find('[address]').text((_order.city ? _order.city + ', ' : '') + _order.address);
+	$ponyPrint.find('[address]').text(_order.address);
 	$ponyPrint.find('[doorbell]').text(_order.doorbell);
 	$ponyPrint.find('[customer]').text(_order.name);
 	$ponyPrint.find('[telephone]').text(_order.telephone);
 
 	if (_order.notes) {
-		console.log(_order.notes);
 		$ponyPrint.find('[text-notes]').text(_order.notes);
 	} else {
 		$ponyPrint.find('.notes').remove();
@@ -1049,7 +1112,6 @@ function kitchenPrintSelected() {
 		if (meta_deliveries[i][mode] && (!from && !to || t >= from && t <= to)) {
 			let chk = meta_deliveries[i].listItem.find('.js-deliverable').prop('checked');
 			if (chk) {
-				console.log(meta_deliveries[i].order_data);
 				kitchenPrint(meta_deliveries[i].order_data);
 			}
 		}
@@ -1157,10 +1219,30 @@ function delete_order() {
 		}
 	}
 }
+
+function openDeliveryInfoDialog() {
+	// aggiorno i dati che stanno per venire modificati
+	$('#deliveryInfoNameLabel').data('metatextfield').value = $('#deliveryInfoNameLabel').data('value');
+	$('#deliveryInfoAddressLabel').data('metatextfield').value = $('#deliveryInfoAddressLabel').data('value');
+	$('#deliveryInfoDoorbellLabel').data('metatextfield').value = $('#deliveryInfoDoorbellLabel').data('value');
+	$('#deliveryInfoTelephoneLabel').data('metatextfield').value = $('#deliveryInfoTelephoneLabel').data('value');
+	// e apro il dialog
+	$('#editDeliveryInfoDialog').data('metadialog').open();
+}
+
 function openNewCustomerDialog() {
-	// edit dialog
-	// open dialog
 	$('#newCustomerDialog').data('metadialog').open();
+}
+
+function openEditCustomerDialog(customer) {
+	// fill
+	$('#editCustomerNameLabel').data('metatextfield').value = customer.name;
+	$('#editCustomerAddressLabel').data('metatextfield').value = customer.address;
+	$('#editCustomerDoorbellLabel').data('metatextfield').value = customer.doorbell;
+	$('#editCustomerTelephoneLabel').data('metatextfield').value = customer.telephone;
+	$('#editCustomerDialog').data('customer-id', customer.id_customer);
+	// open
+	$('#editCustomerDialog').data('metadialog').open();
 }
 
 let map;

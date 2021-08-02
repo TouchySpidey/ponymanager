@@ -40,7 +40,6 @@ class Orders_model extends CI_Model {
 			if (!isset($deliveries[$info['id_delivery']])) {
 				$deliveries[$info['id_delivery']] = [
 					'address' => $info['address'],
-					'city' => '',
 					'guid' => $info['guid'],
 					'dismissed' => boolval($info['dismissed']),
 					'cod_pony' => $info['cod_pony'],
@@ -185,7 +184,7 @@ class Orders_model extends CI_Model {
 			'order_time' => date('Y-m-d H:i:s'),
 		];
 
-		if (isset($post['id_order'])) {
+		if (isset($post['id_order']) && $post['id_order']) {
 			$old_order = $this->db
 			->where('cod_company', _GLOBAL_COMPANY['id_company'])
 			->where('id_delivery', $post['id_order'])
@@ -199,7 +198,7 @@ class Orders_model extends CI_Model {
 		$day = date('Y-m-d');
 
 		$order['total_price'] = $total;
-		$order['id_delivery'] = isset($post['id_order']) ? $post['id_order'] : null;
+		$order['id_delivery'] = isset($post['id_order']) && $post['id_order'] ? $post['id_order'] : null;
 		$order['is_delivery'] = isset($post['is_delivery']) ? $post['is_delivery'] : 0;
 		$order['cod_customer'] = isset($post['id_customer']) ? $post['id_customer'] : null;
 		$order['cod_payment'] = isset($post['payment_method']) ? $post['payment_method'] : null;
@@ -216,7 +215,7 @@ class Orders_model extends CI_Model {
 			$order['travel_duration'] = null;
 			$order['doorbell'] = $post['doorbell'];
 			$order['address'] = $post['address'];
-			if ($order['id_delivery']) {
+			if ($order['id_delivery'] && isset($old_order['north']) && isset($old_order['east']) && isset($old_order['address']) && isset($old_order['travel_duration'])) {
 				if ($old_order['north'] || $old_order['east']) {
 					# geocode già fatto
 					if ($order['address'] == $old_order['address']) {

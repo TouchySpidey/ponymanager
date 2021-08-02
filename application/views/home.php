@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <html lang="en">
 <?php html_head('Home', ['home']) ?>
 <body>
-	<?php topbar(false) ?>
+	<?php topbar() ?>
 	<?php main_menu() ?>
 	<div id="pageContainer">
 		<div class="landing-link">

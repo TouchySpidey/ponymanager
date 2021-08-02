@@ -76,7 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							?>
 							<?php while ($ora_apertura < $ora_chiusura || ($ora_apertura == $ora_chiusura && $minuto_apertura <= $minuto_chiusura)) { ?>
 								<div class="timetable-row d-flex pickable" data-time="<?= $ora_apertura ?>:<?= $minuto_apertura ?>">
-									<div class="order-n delivery n-consegne delivery-only"></div>
+									<div class="order-n delivery n-consegne"></div>
 									<div class="order-n delivery n-pizze"></div>
 									<div class="time"><?= $ora_apertura ?>:<?= $minuto_apertura ?></div>
 								</div>
@@ -266,7 +266,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												?>
 												<?php while ($ora_apertura < $ora_chiusura || ($ora_apertura == $ora_chiusura && $minuto_apertura <= $minuto_chiusura)) { ?>
 													<div class="timetable-row d-flex pickable" data-time="<?= $ora_apertura ?>:<?= $minuto_apertura ?>">
-														<div class="order-n delivery n-consegne delivery-only"></div>
+														<div class="order-n delivery n-consegne"></div>
 														<div class="order-n delivery n-pizze"></div>
 														<div class="order-n takeaway n-pizze"></div>
 														<div class="time"><?= $ora_apertura ?>:<?= $minuto_apertura ?></div>
@@ -292,7 +292,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</div>
 							</div>
 							<div tab="cliente" order-component>
-								<div>
+								<div class="delivery-only">
 									<div class="d-flex">
 										<div class="flex-1">
 											<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon mt-6">
@@ -335,7 +335,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																			<div class="campanello-cliente">Campanello</div>
 																		</div>
 																	</td>
-																	<td class="mdc-data-table__cell" col_name="option" scope="row">
+																	<td class="mdc-data-table__cell text-right" col_name="option" scope="row">
 																		<div class="material-icons mdc-icon-button select_customer">chevron_right</div>
 																	</td>
 																</tr>
@@ -383,17 +383,45 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</div>
 												<div class="mdc-card__actions">
 													<div class="mdc-card__action-buttons">
-														<button class="js-rippable mdc-button mdc-card__action mdc-card__action--button">
+														<button onclick="openDeliveryInfoDialog()" class="js-rippable mdc-button mdc-card__action mdc-card__action--button">
 															<div class="mdc-button__ripple"></div>
 															<i class="material-icons mdc-button__icon" aria-hidden="true">edit</i>
 															<span class="mdc-button__label">Modifica</span>
 														</button>
 													</div>
 													<div class="mdc-card__action-icons">
-														<button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">close</button>
+														<button onclick="select_customer(false)" class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon" title="More options">close</button>
 													</div>
 												</div>
 											</div>
+										</div>
+									</div>
+								</div>
+								<div class="takeaway-only">
+									<div class="d-flex" style="margin-top: 24px;">
+										<div style="padding: 12px">
+											<label class="mdc-text-field mdc-text-field--outlined" id="takeawayInfoName">
+												<span class="mdc-notched-outline">
+													<span class="mdc-notched-outline__leading"></span>
+													<span class="mdc-notched-outline__notch">
+														<span class="mdc-floating-label">Nome</span>
+													</span>
+													<span class="mdc-notched-outline__trailing"></span>
+												</span>
+												<input type="text" class="mdc-text-field__input" />
+											</label>
+										</div>
+										<div style="padding: 12px">
+											<label class="mdc-text-field mdc-text-field--outlined" id="takeawayInfoPhone">
+												<span class="mdc-notched-outline">
+													<span class="mdc-notched-outline__leading"></span>
+													<span class="mdc-notched-outline__notch">
+														<span class="mdc-floating-label">Telefono</span>
+													</span>
+													<span class="mdc-notched-outline__trailing"></span>
+												</span>
+												<input type="text" class="mdc-text-field__input" />
+											</label>
 										</div>
 									</div>
 								</div>
@@ -402,8 +430,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<div class="d-flex">
 									<div id="categorieContainer">
 										<div class="categoria finder-container">
-											<i class="mdi mdi-magnify finder-icon"></i>
-											<input class="md-input finder-input" type="search" id="pizzaFinder" placeholder="Cerca" />
+											<div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-trailing-icon mt-6">
+												<i aria-hidden="true" class="material-icons mdc-text-field__icon">search</i>
+												<input id="pizzaFinder" class="mdc-text-field__input" autocorrect="off" autocomplete="off" spellcheck="false" maxlength="524288">
+												<div class="mdc-notched-outline mdc-notched-outline--upgraded">
+													<div class="mdc-notched-outline__leading"></div>
+													<div class="mdc-notched-outline__notch" style="">
+														<label for="demo-mdc-text-field" class="mdc-floating-label" style="">Cerca</label>
+													</div>
+													<div class="mdc-notched-outline__trailing"></div>
+												</div>
+											</div>
 										</div>
 										<?php foreach ($pizzas_categories as $category) { ?>
 											<div class="categoria" data-category="<?= $category ?>" onclick="select_category('<?= addslashes($category) ?>')"><?= $category ?></div>
@@ -497,7 +534,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							</div>
 						</div>
 						<div class="d-flex">
-							<button class="ml-auto btn blue" id="sendOrder"><i class="mdi mdi-check"></i> Salva</button>
+							<button class="ml-auto mdc-button mdc-button--raised blue" id="sendOrder">
+								<i class="material-icons">done</i>
+								<span class="mdc-button__label">Salva</span>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -510,9 +550,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			<div class="mdc-dialog__surface" role="alertdialog" style="width: 668px;">
 				<div class="mdc-dialog__content">
 					<div>
-						<div class="d-flex">
+						<div class="flex-wrap">
 							<div class="mr-auto">
-								<label class="mdc-text-field mdc-text-field--outlined">
+								<label class="mdc-text-field mdc-text-field--outlined" id="newCustomerNameLabel">
 									<span class="mdc-notched-outline">
 										<span class="mdc-notched-outline__leading"></span>
 										<span class="mdc-notched-outline__notch">
@@ -524,7 +564,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</label>
 							</div>
 							<div class="ml-auto">
-								<label class="mdc-text-field mdc-text-field--outlined">
+								<label class="mdc-text-field mdc-text-field--outlined" id="newCustomerTelephoneLabel">
 									<span class="mdc-notched-outline">
 										<span class="mdc-notched-outline__leading"></span>
 										<span class="mdc-notched-outline__notch">
@@ -536,9 +576,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								</label>
 							</div>
 						</div>
-						<div class="d-flex" style="margin-top: 16px;">
+						<div class="flex-wrap" style="margin-top: 16px;">
 							<div class="mr-auto">
-								<label class="mdc-text-field mdc-text-field--outlined">
+								<label class="mdc-text-field mdc-text-field--outlined" id="newCustomerAddressLabel">
 									<span class="mdc-notched-outline">
 										<span class="mdc-notched-outline__leading"></span>
 										<span class="mdc-notched-outline__notch">
@@ -546,11 +586,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 										</span>
 										<span class="mdc-notched-outline__trailing"></span>
 									</span>
-									<input type="text" class="mdc-text-field__input google_address_finder" id="newCustomerAddress" />
+									<input type="text" class="mdc-text-field__input google_address_finder" placeholder="" id="newCustomerAddress" />
 								</label>
 							</div>
 							<div class="ml-auto">
-								<label class="mdc-text-field mdc-text-field--outlined">
+								<label class="mdc-text-field mdc-text-field--outlined" id="newCustomerDoorbellLabel">
 									<span class="mdc-notched-outline">
 										<span class="mdc-notched-outline__leading"></span>
 										<span class="mdc-notched-outline__notch">
@@ -579,6 +619,153 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<div class="mdc-dialog__scrim"></div>
 	</div>
 
+	<div class="mdc-dialog" id="editCustomerDialog">
+		<div class="mdc-dialog__container">
+			<div class="mdc-dialog__surface" role="alertdialog" style="width: 668px;">
+				<div class="mdc-dialog__content">
+					<div>
+						<div class="flex-wrap">
+							<div class="mr-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="editCustomerNameLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Nome</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="editCustomerName" />
+								</label>
+							</div>
+							<div class="ml-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="editCustomerTelephoneLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Telefono</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="editCustomerTelephone" />
+								</label>
+							</div>
+						</div>
+						<div class="flex-wrap" style="margin-top: 16px;">
+							<div class="mr-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="editCustomerAddressLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Indirizzo</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input google_address_finder" placeholder="" id="editCustomerAddress" />
+								</label>
+							</div>
+							<div class="ml-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="editCustomerDoorbellLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Campanello</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="editCustomerDoorbell" />
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mdc-dialog__actions">
+					<button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">
+						<div class="mdc-button__ripple"></div>
+						<span class="mdc-button__label">Annulla</span>
+					</button>
+					<button type="button" class="mdc-button mdc-button--raised mdc-dialog__button" data-mdc-dialog-action="saveCustomer">
+						<div class="mdc-button__ripple"></div>
+						<span class="mdc-button__label">Salva</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="mdc-dialog__scrim"></div>
+	</div>
+
+	<div class="mdc-dialog" id="editDeliveryInfoDialog">
+		<div class="mdc-dialog__container">
+			<div class="mdc-dialog__surface" role="alertdialog" style="width: 668px;">
+				<div class="mdc-dialog__content">
+					<div id="deliveryInfo">
+						<div class="flex-wrap">
+							<div class="mr-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="deliveryInfoNameLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Nome</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="deliveryInfoName" />
+								</label>
+							</div>
+							<div class="ml-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="deliveryInfoTelephoneLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Telefono</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="deliveryInfoTelephone" />
+								</label>
+							</div>
+						</div>
+						<div class="flex-wrap" style="margin-top: 16px;">
+							<div class="mr-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="deliveryInfoAddressLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Indirizzo</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input google_address_finder" placeholder="" id="deliveryInfoAddress" />
+								</label>
+							</div>
+							<div class="ml-auto">
+								<label class="mdc-text-field mdc-text-field--outlined" id="deliveryInfoDoorbellLabel">
+									<span class="mdc-notched-outline">
+										<span class="mdc-notched-outline__leading"></span>
+										<span class="mdc-notched-outline__notch">
+											<span class="mdc-floating-label">Campanello</span>
+										</span>
+										<span class="mdc-notched-outline__trailing"></span>
+									</span>
+									<input type="text" class="mdc-text-field__input" id="deliveryInfoDoorbell" />
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mdc-dialog__actions">
+					<button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">
+						<div class="mdc-button__ripple"></div>
+						<span class="mdc-button__label">Annulla</span>
+					</button>
+					<button type="button" class="mdc-button mdc-button--raised mdc-dialog__button" data-mdc-dialog-action="editDeliveryInfo">
+						<div class="mdc-button__ripple"></div>
+						<span class="mdc-button__label">Salva</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="mdc-dialog__scrim"></div>
+	</div>
 
 	<div id="editPizzaComposition" class="w3-modal modal-container order-modal">
 		<div class="w3-modal modal-backdrop"></div>
