@@ -188,6 +188,41 @@ class Main extends CI_Controller {
 		redirect('/');
 	}
 
+	public function change_password() {
+
+		$old = $this->input->post('old');
+		$new = $this->input->post('new');
+		$confirm = $this->input->post('confirm');
+
+		$user = $this->db->where('email', $this->session->user['email'])->get('users')->result_array();
+
+		if ($user) {
+			$user = $user[0];
+			$salted = $old . LOGIN_SALT;
+			$hash = hash('sha256', $salted);
+			if ($user['password'] != $hash) {
+				# vecchia password sbagliata
+			}
+			if ($new != $confirm) {
+				# le password devono coincidere
+			}
+			if ($new == $confirm && $user['password'] == $hash) {
+				$salted = $new . LOGIN_SALT;
+				$hash = hash('sha256', $salted);
+				$user['password'] = $hash;
+				$this->db->replace('users', $user);
+				$this->logout();
+			}
+
+			// TODO toast con gli errori o con il messaggio di successo
+
+		} else {
+			die('500 - db died');
+		}
+
+		echo JSON_encode([$old, $new, $confirm]);
+	}
+
 	public function help() {
 		echo 'no help available yet';
 	}
