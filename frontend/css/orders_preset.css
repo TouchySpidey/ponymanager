@@ -17,3 +17,6 @@
 .card {
 	margin: 0;
 }
+.chips-container {
+	padding: 16px 16px 8px 16px;
+}

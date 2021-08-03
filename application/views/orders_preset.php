@@ -9,36 +9,84 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<div id="pageContainer">
 		<div class="flex-wrap">
 			<div class="maincard">
-				<div class="card parent-to-be-hovered p-relative">
-					<div class="general-heading">Configurazione Servizio</div>
-					<div class="ml-auto show-on-parent-hover actionable round-btn top-right-corner" id="editService"><i class="mdi mdi-pencil"></i></div>
-					<div class="subtitle-sm text-center">Imposta l'opzione di default tra takeaway / delivery ed il costo base del servizio di delivery</div>
-					<div class="d-flex">
-						<div>Opzione di default: <div><b>Delivery</b></div></div>
-						<div class="ml-auto">Costo della delivery: <div><b>2.50</b></div></div>
-					</div>
-				</div>
-			</div>
-			<div class="maincard">
-				<div class="card parent-to-be-hovered p-relative">
-					<div class="general-heading">Orari di apertura</div>
-					<div class="ml-auto show-on-parent-hover actionable round-btn top-right-corner" id="editShifts"><i class="mdi mdi-pencil"></i></div>
-					<div class="subtitle-sm text-center">Imposta gli orari in cui il tuo locale è aperto al pubblico, delimitando così il range di orari in cui è possibile eseguire ordini</div>
-					<div class="d-flex" id="shiftList">
-						<div id="ghostCardShift">
-							<b>Dalle</b> <span class="js-from"></span> <b>alle</b> <span class="js-to"></span>
+				<div class="mdc-card mdc-card--outlined parent-to-be-hovered p-relative">
+					<div class="mdc-card-wrapper__text-section general-heading">Configurazione Servizio</div>
+					<div class="mdc-card-wrapper__text-section subtitle-sm text-center">Imposta l'opzione di default tra takeaway / delivery ed il costo base del servizio di delivery</div>
+					<div class="flex-wrap chips-container">
+						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+							<div class="mdc-chip__ripple"></div>
+							<span role="gridcell">
+								<span role="button" tabindex="0" class="mdc-chip__primary-action">
+									<span class="mdc-chip__text">Contanti</span>
+								</span>
+							</span>
+						</div>
+						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+							<div class="mdc-chip__ripple"></div>
+							<span role="gridcell">
+								<span role="button" tabindex="0" class="mdc-chip__primary-action">
+									<span class="mdc-chip__text">Bancomat</span>
+								</span>
+							</span>
 						</div>
 					</div>
+					<div class="mdc-card__actions">
+						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" id="editService">
+							<div class="mdc-button__ripple"></div>
+							<i class="material-icons mdc-button__icon">edit</i> <span class="mdc-button__label">Modifica</span>
+						</button>
+					</div>
 				</div>
 			</div>
 			<div class="maincard">
-				<div class="card parent-to-be-hovered p-relative">
-					<div class="general-heading">Metodi di pagamento</div>
-					<div class="ml-auto show-on-parent-hover actionable round-btn top-right-corner" id="editPayments"><i class="mdi mdi-pencil"></i></div>
-					<div class="subtitle-sm text-center">Definisci quali metodi di pagamento accetti in questo locale</div>
-					<div class="flex-wrap">
-						<div class="card">Contanti</div>
-						<div class="card">Bancomat</div>
+				<div class="mdc-card mdc-card--outlined parent-to-be-hovered p-relative">
+					<div class="mdc-card-wrapper__text-section general-heading">Orari di apertura</div>
+					<div class="mdc-card-wrapper__text-section subtitle-sm text-center">Imposta gli orari in cui il tuo locale è aperto al pubblico, delimitando così il range di orari in cui è possibile eseguire ordini</div>
+					<div class="flex-wrap chips-container" id="shiftList">
+						<div class="ml-auto mr-auto mdc-chip gblue" role="row" id="ghostCardShift">
+							<div class="mdc-chip__ripple"></div>
+							<span role="gridcell">
+								<span role="button" tabindex="0" class="mdc-chip__primary-action">
+									<span class="mdc-chip__text">Dalle <span class="js-from"></span> alle <span class="js-to"></span></span>
+								</span>
+							</span>
+						</div>
+					</div>
+					<div class="mdc-card__actions">
+						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" id="editShifts">
+							<div class="mdc-button__ripple"></div>
+							<i class="material-icons mdc-button__icon">edit</i> <span class="mdc-button__label">Modifica</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="maincard">
+				<div class="mdc-card mdc-card--outlined parent-to-be-hovered p-relative">
+					<div class="mdc-card-wrapper__text-section general-heading">Metodi di pagamento</div>
+					<div class="mdc-card-wrapper__text-section subtitle-sm text-center">Definisci quali metodi di pagamento accetti in questo locale</div>
+					<div class="flex-wrap chips-container">
+						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+							<div class="mdc-chip__ripple"></div>
+							<span role="gridcell">
+								<span role="button" tabindex="0" class="mdc-chip__primary-action">
+									<span class="mdc-chip__text">Contanti</span>
+								</span>
+							</span>
+						</div>
+						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+							<div class="mdc-chip__ripple"></div>
+							<span role="gridcell">
+								<span role="button" tabindex="0" class="mdc-chip__primary-action">
+									<span class="mdc-chip__text">Bancomat</span>
+								</span>
+							</span>
+						</div>
+					</div>
+					<div class="mdc-card__actions">
+						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" id="editPayments">
+							<div class="mdc-button__ripple"></div>
+							<i class="material-icons mdc-button__icon">edit</i> <span class="mdc-button__label">Modifica</span>
+						</button>
 					</div>
 				</div>
 			</div>
