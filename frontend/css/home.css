@@ -93,3 +93,6 @@
 .landing-link {
 	padding: 16px 16px 0 16px;
 }
+.spaced-inputs .mdc-text-field {
+	margin-top: 12px;
+}
