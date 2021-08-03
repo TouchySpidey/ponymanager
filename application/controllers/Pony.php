@@ -19,7 +19,7 @@ class Pony extends CI_Controller {
 		->where('guid', $guid)
 		->get('deliveries')->result_array();
 		if (empty($delivery)) {
-			echo 'Per motivi di sicurezza, questo QR è scaduto';
+			echo 'Per motivi di sicurezza questo QR è scaduto';
 		} else {
 			echo '<script>window.open(\'https://www.google.com/maps/search/?api=1&query='.$delivery[0]['north'].','.$delivery[0]['east'].'\')</script>';
 		}
