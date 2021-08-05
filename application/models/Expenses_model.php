@@ -15,9 +15,8 @@ class Expenses_model extends CI_Model {
 		# che sarebbero i cdc / centri di costo
 		$categories_db = $this->db
 		->select(['expense_categories.*', 'expense_title'])
-		->join('expenses', 'id_category = cod_category', 'LEFT')
+		->join('expenses', 'id_category = cod_category AND expenses.active = 1', 'LEFT')
 		->where('expense_categories.active', 1)
-		->where('expenses.active', 1)
 		->where('expense_categories.cod_company', _GLOBAL_COMPANY['id_company'])
 		->group_by(['id_category', 'expense_title'])
 		->get('expense_categories')->result_array();
