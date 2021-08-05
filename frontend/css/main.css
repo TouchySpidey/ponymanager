@@ -462,6 +462,7 @@ width: 48px;
 .subtitle, .subtitle-sm {
 	color: #5f6368;
 	line-height: 24px;
+	padding: 16px;
 }
 .subtitle {
 	font-size: 18px;

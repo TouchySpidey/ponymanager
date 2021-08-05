@@ -20,3 +20,6 @@
 .chips-container {
 	padding: 16px 16px 8px 16px;
 }
+.shift-box:not(:first-child) {
+	padding-top: 12px;
+}

@@ -111,3 +111,23 @@ function string_similarity($str1, $str2) {
 
 	return 2 * $intersection / $union;
 }
+function sanifica_orario($str) {
+	$_exp = explode(':', $str);
+	$hh = intval($_exp[0]);
+	$mm = 0;
+	if (isset($_exp[1])) {
+		$mm = intval($_exp[1]);
+	}
+	# $hh e $mm sono integers
+	if ($hh < 0 || $hh > 24) {
+		return false;
+	}
+	if ($mm < 0 || $mm > 59) {
+		return false;
+	}
+	# $hh e $mm sono validati
+	$hh = str_pad($hh, 2, '00', STR_PAD_LEFT);
+	$mm = str_pad($mm, 2, '00', STR_PAD_LEFT);
+	# $hh e $mm sono strings
+	return $hh.':'.$mm;
+}

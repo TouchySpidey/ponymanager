@@ -14,4 +14,15 @@ class Company_model extends CI_Model {
 
 	}
 
+	public function set_shifts($_shifts) {
+		$this->db
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->delete('open_shifts');
+		foreach ($_shifts as $i => $dump) {
+			$_shifts[$i]['cod_company'] = _GLOBAL_COMPANY['id_company'];
+		}
+		$this->db->insert_batch('open_shifts', $_shifts);
+		return $_shifts;
+	}
+
 }

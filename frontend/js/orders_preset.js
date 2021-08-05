@@ -1,6 +1,68 @@
 let $ghostCardShift = $('#ghostCardShift').remove().removeAttr('id');
 let $ghostShiftBox = $('#ghostShiftBox').remove().removeAttr('id');
+let $ghostPaymentBox = $('#ghostPaymentBox').remove().removeAttr('id');
 syncShifts();
+
+$(function() {
+	$('#shiftsDialog').data('saveShift', () => {
+		let _shifts = [];
+		$('#modalShiftList .shift-box').each(function(i, v) {
+			_shifts.push({
+				from: $(v).find('.js-from').data('metatextfield').value,
+				to: $(v).find('.js-to').data('metatextfield').value,
+			})
+		});
+		$.post(site_url + 'orders/shifts' + company_url_suffix, {newShifts: _shifts}).always(function(res) {
+			try {
+				let json = JSON.parse(res);
+				shifts = json;
+				syncShifts();
+			} catch(e) {
+				console.error(e);
+			}
+		});
+	});
+});
+
+function syncService() {
+	$('#deliveryPrice').data('metatextfield').value = deliveryPrice;
+	$('#one').prop('checked', serviceTakeAway).trigger('change');
+}
+
+function addPayment() {
+	let $paymentBox = $ghostPaymentBox.clone();
+	$paymentBox.find('.mdc-text-field').each((i, el) => $(el).data('metatextfield', mdc.textField.MDCTextField.attachTo(el)));
+	$paymentBox.find('.js-remove-payment').click(() => {
+		$paymentBox.remove();
+	});
+	$('#modalPaymentList').append($paymentBox);
+	return $paymentBox;
+}
+
+function addShift() {
+	let $shiftBox = $ghostShiftBox.clone();
+	$shiftBox.find('.mdc-text-field').each((i, el) => $(el).data('metatextfield', mdc.textField.MDCTextField.attachTo(el)));
+	$shiftBox.find('.js-remove-range').click(() => {
+		$shiftBox.remove();
+	});
+	$('#modalShiftList').append($shiftBox);
+	return $shiftBox;
+}
+function syncShifts() {
+	$('#shiftList').empty();
+	$('#modalShiftList').empty();
+	for (let i in shifts) {
+		let shift = shifts[i];
+		let $shift = $ghostCardShift.clone();
+		$shift.find('.js-from').text(shift.from);
+		$shift.find('.js-to').text(shift.to);
+		$('#shiftList').append($shift);
+		let $shiftBox = addShift();
+		$shiftBox.find('.js-from').data('metatextfield').value = shift.from;
+		$shiftBox.find('.js-to').data('metatextfield').value = shift.to;
+		$('#modalShiftList').append($shiftBox);
+	}
+}
 
 function syncGeo() {
 	let resetMapMarker = new google.maps.LatLng(geoShop.north, geoShop.east);
@@ -21,43 +83,6 @@ function updateGeo() {
 		$('#staticMap').css('background-image', 'url(' + newStaticUrl + ')');
 		syncGeo();
 	})
-}
-function addShift() {
-	let $shiftBox = $ghostShiftBox.clone();
-	$('#modalShiftList').append($shiftBox);
-}
-function syncShifts() {
-	$('#shiftList').empty();
-	$('#modalShiftList').empty();
-	for (let i in shifts) {
-		let shift = shifts[i];
-		let $shift = $ghostCardShift.clone();
-		$shift.find('.js-from').text(shift.from);
-		$shift.find('.js-to').text(shift.to);
-		$('#shiftList').append($shift);
-		let $shiftBox = $ghostShiftBox.clone();
-		$shiftBox.find('.js-from').val(shift.from);
-		$shiftBox.find('.js-to').val(shift.to);
-		$('#modalShiftList').append($shiftBox);
-	}
-}
-function updateShifts() {
-	let _shifts = [];
-	$('#modalShiftList .shift-box').each(function(i, v) {
-		_shifts.push({
-			from: $(v).find('.js-from').val(),
-			to: $(v).find('.js-to').val(),
-		})
-	});
-	$.post('', {newShifts: _shifts}).always(function(res) {
-		try {
-			let json = JSON.parse(res);
-			shifts = json;
-			syncShifts();
-		} catch(e) {
-
-		}
-	});
 }
 
 let map;
@@ -106,10 +131,4 @@ $('#editMap').click(() => {
 });
 $('#editPayments').click(() => {
 	$('#paymentsModal').css('display', 'flex');
-});
-$('#editShifts').click(() => {
-	$('#shiftsModal').css('display', 'flex');
-});
-$('#editService').click(() => {
-	$('#serviceModal').css('display', 'flex');
 });
