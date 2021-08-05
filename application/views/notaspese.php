@@ -75,7 +75,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				</div>
 			</div>
 		</div>
-		<button onclick="promptNewCost()" class="fab blue mdc-fab">
+		<button __open_dialog="#addCostDialog" class="fab blue mdc-fab">
 			<i class="material-icons mdc-fab__icon">add</i>
 		</button>
 	</div>
@@ -119,7 +119,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							</div>
 						</div>
 						<div class="expense-category ml-auto">
-							<div class="mdc-fab mdc-fab--mini" onclick="promptNewCategory()">
+							<div class="mdc-fab mdc-fab--mini" __open_dialog="#newCategoryDialog">
 								<div class="mdc-fab__ripple"></div>
 								<div class="mdc-fab__icon material-icons">add</div>
 							</div>

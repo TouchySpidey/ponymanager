@@ -13,24 +13,21 @@ $('#shopTag').on('input change', () => {
 	$('#shopTag').off('input change');
 });
 $(function() {
-	$('#changePasswordDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
-		if (why.detail.action == 'savePassword') {
-			$.post(site_url + 'main/change_password', {
-				old: $('#changePasswordOld').data('metatextfield').value,
-				new: $('#changePasswordNew').data('metatextfield').value,
-				confirm: $('#changePasswordConfirm').data('metatextfield').value,
-			}).done(data => {
-				console.log(data);
-				console.log('Login riuscito, verrai reindirizzato al login entro qualche secondo');
-				setTimeout(() => {location.href = site_url + 'main/login'}, 3500);
-			}).always(() => {
+	$('#changePasswordDialog').data('savePassword', () => {
+		$.post(site_url + 'main/change_password', {
+			old: $('#changePasswordOld').data('metatextfield').value,
+			new: $('#changePasswordNew').data('metatextfield').value,
+			confirm: $('#changePasswordConfirm').data('metatextfield').value,
+		}).done(data => {
+			console.log(data);
+			console.log('Login riuscito, verrai reindirizzato al login entro qualche secondo');
+			setTimeout(() => {location.href = site_url + 'main/login'}, 3500);
+		}).always(() => {
 
-			});
-		}
-		if (why.detail.action == 'cancel') {
-			// premuto "annulla", svuoto campi
-			$('#changePasswordDialog .mdc-text-field').each((i, el) => $(el).data('metatextfield').value = '');
-		}
+		});
+	});
+	$('#changePasswordDialog').data('cancel', () => {
+		$('#changePasswordDialog .mdc-text-field').each((i, el) => $(el).data('metatextfield').value = '');
 	});
 });
 let openPasswordDialog = () => {

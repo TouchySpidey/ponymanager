@@ -37,12 +37,31 @@ $(function() {
 	document.querySelectorAll('.mdc-ripple-surface,.js-rippable').forEach(el => $(el).data('metaripple', mdc.ripple.MDCRipple.attachTo(el)));
 	document.querySelectorAll('.mdc-chip').forEach(el => $(el).data('metachip', mdc.chips.MDCChip.attachTo(el)));
 	document.querySelectorAll('.js-mdcformfield').forEach(el => mdc.formField.MDCFormField.attachTo(el));
-	document.querySelectorAll('.mdc-dialog').forEach(el => $(el).data('metadialog', mdc.dialog.MDCDialog.attachTo(el)));
 	document.querySelectorAll('.mdc-data-table').forEach(el => $(el).data('metatable', mdc.dataTable.MDCDataTable.attachTo(el)));
 	document.querySelectorAll('.mdc-tab-bar').forEach(el => $(el).data('metatabbar', mdc.tabBar.MDCTabBar.attachTo(el)));
 	document.querySelectorAll('.mdc-menu').forEach(el => $(el).data('metamenu', mdc.menu.MDCMenu.attachTo(el)));
 	document.querySelectorAll('.mdc-checkbox').forEach(el => mdc.checkbox.MDCCheckbox.attachTo(el));
 	document.querySelectorAll('.mdc-text-field').forEach(el => $(el).data('metatextfield', mdc.textField.MDCTextField.attachTo(el)));
+	document.querySelectorAll('.mdc-dialog').forEach(el => {
+		$(el).data('metadialog', mdc.dialog.MDCDialog.attachTo(el));
+		$(el).data('metadialog').listen('MDCDialog:closing', (why) => {
+			console.log(why.detail.action);
+			let callBack = $(el).data(why.detail.action);
+			console.log(callBack);
+			if (typeof callBack == 'function') {
+				callBack();
+			} else {
+				console.log(callBack);
+				console.log(why.detail.action);
+				console.log(el);
+				console.log($(el));
+				console.log($(el).data('metadialog'));
+			}
+		});
+	});
+	$('[__open_dialog]').click(function() {
+		$($(this).attr('__open_dialog')).data('metadialog').open();
+	});
 
 });
 

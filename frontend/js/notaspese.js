@@ -8,58 +8,46 @@ let dayScroller = $('#dayScroller').get(0);
 
 $(function() {
 
-	$('#addCostDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
-		if (why.detail.action == 'saveExpense') {
-			let expense = validateNewExpense();
-			if (expense) {
-				$('#speseDT').data('metatable').showProgress();
-				$.post(site_url + 'expenses/addCost' + company_url_suffix, expense).done((data) => {
-					let json = JSON.parse(data);
-					if (json._status) {
-						php_expenses = json.costs;
-						reloadExpenses();
-						php_categories = json.cost_categories;
-						reloadCategories();
-					}
-				}).always(() => {
-					$('#speseDT').data('metatable').hideProgress();
-				});
-			} else {
-				// reset dialog, big error?!
-			}
-		}
-	});
-
-	$('#newCategoryDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
-		if (why.detail.action == 'saveCategory') {
-			color_icon = colorPicked + colorSchemas[schemaPicked].icon;
-			color_whole = colorPicked + colorSchemas[schemaPicked].whole;
-			$.post(site_url + 'expenses/addCostCategory' + company_url_suffix, {
-				title: $('#newCategoryTitle').val(),
-				icon: $('#availableIcons .icon-container:not(.unselected)').data('icon_name'),
-				color_scheme: schemaPicked,
-				color: colorPicked,
-				color_icon: color_icon,
-				color_whole: color_whole,
-			}).done((data) => {
+	$('#addCostDialog').data('saveExpense', () => {
+		let expense = validateNewExpense();
+		if (expense) {
+			$('#speseDT').data('metatable').showProgress();
+			$.post(site_url + 'expenses/addCost' + company_url_suffix, expense).done((data) => {
 				let json = JSON.parse(data);
 				if (json._status) {
+					php_expenses = json.costs;
+					reloadExpenses();
 					php_categories = json.cost_categories;
 					reloadCategories();
 				}
+			}).always(() => {
+				$('#speseDT').data('metatable').hideProgress();
 			});
+		} else {
+			// reset dialog, big error?!
 		}
 	});
 
+	$('#newCategoryDialog').data('saveCategory', () => {
+		color_icon = colorPicked + colorSchemas[schemaPicked].icon;
+		color_whole = colorPicked + colorSchemas[schemaPicked].whole;
+		$.post(site_url + 'expenses/addCostCategory' + company_url_suffix, {
+			title: $('#newCategoryTitle').val(),
+			icon: $('#availableIcons .icon-container:not(.unselected)').data('icon_name'),
+			color_scheme: schemaPicked,
+			color: colorPicked,
+			color_icon: color_icon,
+			color_whole: color_whole,
+		}).done((data) => {
+			let json = JSON.parse(data);
+			if (json._status) {
+				php_categories = json.cost_categories;
+				reloadCategories();
+			}
+		});
+	});
+
 });
-
-function promptNewCost() {
-	$('#addCostDialog').data('metadialog').open();
-}
-
-function promptNewCategory() {
-	$('#newCategoryDialog').data('metadialog').open();
-}
 
 function reloadExpensesFromDB() {
 	$('#speseDT').data('metatable').showProgress();

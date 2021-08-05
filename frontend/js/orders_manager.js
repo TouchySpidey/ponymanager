@@ -17,30 +17,20 @@ let from = false, to = false, mode = 'all';
 
 $(function() {
 
-	$('#newCustomerDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
-		if (why.detail.action == 'saveCustomer') {
-			saveCustomer(true);
-		}
-	});
+	$('#newCustomerDialog').data('saveCustomer', () => saveCustomer(true));
 
-	$('#editCustomerDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
-		if (why.detail.action == 'saveCustomer') {
-			saveCustomer(false);
-		}
-	});
+	$('#editCustomerDialog').data('saveCustomer', () => saveCustomer(false));
 
-	$('#editDeliveryInfoDialog').data('metadialog').listen('MDCDialog:closing', (why) => {
+	$('#editDeliveryInfoDialog').data('editDeliveryInfo', () => {
 		// ho modificato le info di delivery
 		// QUINDI POTREBBERO NON COMBACIARE CON I DATI DEL CLIENTE
 		// ad esempio un cliente pre-salvato chiede la consegna ad un indirizzo diverso
-		if (why.detail.action == 'editDeliveryInfo') {
-			// prendo le info date in input nelle textfield
-			// e le metto nei data-value che leggo quando faccio patchOrder
-			$('#deliveryInfoNameLabel').data('value', $('#deliveryInfoNameLabel').data('metatextfield').value);
-			$('#deliveryInfoAddressLabel').data('value', $('#deliveryInfoAddressLabel').data('metatextfield').value);
-			$('#deliveryInfoDoorbellLabel').data('value', $('#deliveryInfoDoorbellLabel').data('metatextfield').value);
-			$('#deliveryInfoTelephoneLabel').data('value', $('#deliveryInfoTelephoneLabel').data('metatextfield').value);
-		}
+		// prendo le info date in input nelle textfield
+		// e le metto nei data-value che leggo quando faccio patchOrder
+		$('#deliveryInfoNameLabel').data('value', $('#deliveryInfoNameLabel').data('metatextfield').value);
+		$('#deliveryInfoAddressLabel').data('value', $('#deliveryInfoAddressLabel').data('metatextfield').value);
+		$('#deliveryInfoDoorbellLabel').data('value', $('#deliveryInfoDoorbellLabel').data('metatextfield').value);
+		$('#deliveryInfoTelephoneLabel').data('value', $('#deliveryInfoTelephoneLabel').data('metatextfield').value);
 	});
 
 });
@@ -1228,10 +1218,6 @@ function openDeliveryInfoDialog() {
 	$('#deliveryInfoTelephoneLabel').data('metatextfield').value = $('#deliveryInfoTelephoneLabel').data('value');
 	// e apro il dialog
 	$('#editDeliveryInfoDialog').data('metadialog').open();
-}
-
-function openNewCustomerDialog() {
-	$('#newCustomerDialog').data('metadialog').open();
 }
 
 function openEditCustomerDialog(customer) {

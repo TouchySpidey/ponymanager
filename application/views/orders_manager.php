@@ -341,7 +341,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 																</tr>
 																<tr class="mdc-data-table__row" id="newCustomerRow">
 																	<td colspan="4" class="mdc-data-table__cell new_customer text-center" col_name="option" scope="row">
-																		<button class="js-rippable mdc-button" onclick="openNewCustomerDialog()">
+																		<button class="js-rippable mdc-button" __open_dialog="#newCustomerDialog">
 																			<div class="mdc-button__ripple"></div>
 																			<i class="material-icons mdc-button__icon" aria-hidden="true">person_add</i>
 																			<span class="mdc-button__label">Nuovo Cliente</span>

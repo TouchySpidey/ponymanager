@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						</div>
 					</div>
 					<div class="mdc-card__actions">
-						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" id="editService">
+						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" __open_dialog="#serviceDialog">
 							<div class="mdc-button__ripple"></div>
 							<i class="material-icons mdc-button__icon">edit</i> <span class="mdc-button__label">Modifica</span>
 						</button>
@@ -53,7 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						</div>
 					</div>
 					<div class="mdc-card__actions">
-						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" id="editShifts">
+						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" __open_dialog="#shiftsDialog">
 							<div class="mdc-button__ripple"></div>
 							<i class="material-icons mdc-button__icon">edit</i> <span class="mdc-button__label">Modifica</span>
 						</button>
@@ -83,7 +83,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						</div>
 					</div>
 					<div class="mdc-card__actions">
-						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" id="editPayments">
+						<button class="ml-auto mdc-button js-rippable mdc-card__action mdc-card__action--button" __open_dialog="#paymentsDialog">
 							<div class="mdc-button__ripple"></div>
 							<i class="material-icons mdc-button__icon">edit</i> <span class="mdc-button__label">Modifica</span>
 						</button>
