@@ -84,6 +84,7 @@ function reloadExpenses() {
 		}
 		$expense.find('[col_name="value"]').text(expense.value);
 
+		$expense.find('.mdc-menu').each((i, el) => $(el).data('metamenu', mdc.menu.MDCMenu.attachTo(el)));
 		$expense.find('.row_options').click(function() {
 			// let callerMetrics = $(this).offset();
 			// callerMetrics.width = $(this).outerWidth();
