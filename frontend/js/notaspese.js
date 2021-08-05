@@ -61,7 +61,7 @@ function reloadExpensesFromDB() {
 }
 
 function reloadExpenses() {
-	// $('#expensesBody').empty();
+	$('#expensesBody').empty();
 	for (let i in php_expenses) {
 		let expense = php_expenses[i];
 		let $expense = $ghostTableRow.clone();
