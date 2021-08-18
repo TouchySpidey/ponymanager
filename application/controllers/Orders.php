@@ -64,28 +64,8 @@ class Orders extends CB_Controller {
 
 	public function preset() {
 		$shifts = $this->company_model->get_shifts();
-		$this->load->view('orders_preset', compact('shifts'));
-	}
-
-	public function shifts() {
-		if ($shifts = $this->input->post('newShifts')) {
-			$_valid = true;
-			$_shifts = [];
-			foreach ($shifts as $shift) {
-				$_shift = [
-					'from' => sanifica_orario($shift['from']),
-					'to' => sanifica_orario($shift['to']),
-				];
-				if (in_array(false, $_shift)) {
-					$_valid = false;
-				} else {
-					$_shifts[] = $_shift;
-				}
-			}
-			if ($_valid) {
-				echo JSON_encode($this->company_model->set_shifts($_shifts));
-			}
-		}
+		$payments = $this->company_model->get_payments();
+		$this->load->view('orders_preset', compact('shifts', 'payments'));
 	}
 
 	public function add_or_edit_order() {

@@ -22,7 +22,31 @@ class Company_model extends CI_Model {
 			$_shifts[$i]['cod_company'] = _GLOBAL_COMPANY['id_company'];
 		}
 		$this->db->insert_batch('open_shifts', $_shifts);
-		return $_shifts;
+	}
+
+	public function get_payments() {
+
+		return $this->db
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->get('payment_methods')->result_array() ?: [[
+			'cod_company' => _GLOBAL_COMPANY['id_company'],
+			'description' => 'Contanti',
+		]];
+
+	}
+
+	public function set_payments($_payments) {
+		$this->db
+		->where('cod_company', _GLOBAL_COMPANY['id_company'])
+		->delete('payment_methods');
+		foreach ($_payments as $key => $_payment) {
+			$_payments[$key] = [
+				'cod_company' => _GLOBAL_COMPANY['id_company'],
+				'description' => $_payment,
+				'active' => 1,
+			];
+		}
+		$this->db->insert_batch('payment_methods', $_payments);
 	}
 
 }

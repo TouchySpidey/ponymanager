@@ -1,7 +1,9 @@
 let $ghostCardShift = $('#ghostCardShift').remove().removeAttr('id');
+let $ghostCardPayment = $('#ghostCardPayment').remove().removeAttr('id');
 let $ghostShiftBox = $('#ghostShiftBox').remove().removeAttr('id');
 let $ghostPaymentBox = $('#ghostPaymentBox').remove().removeAttr('id');
 syncShifts();
+syncPayments();
 
 $(function() {
 	$('#shiftsDialog').data('saveShift', () => {
@@ -10,9 +12,9 @@ $(function() {
 			_shifts.push({
 				from: $(v).find('.js-from').data('metatextfield').value,
 				to: $(v).find('.js-to').data('metatextfield').value,
-			})
+			});
 		});
-		$.post(site_url + 'orders/shifts' + company_url_suffix, {newShifts: _shifts}).always(function(res) {
+		$.post(site_url + 'company/shifts' + company_url_suffix, {newShifts: _shifts}).always(function(res) {
 			try {
 				let json = JSON.parse(res);
 				shifts = json;
@@ -22,11 +24,53 @@ $(function() {
 			}
 		});
 	});
+	$('#paymentsDialog').data('savePayment', () => {
+		let _payments = [];
+		$('#modalPaymentList .shift-box').each(function(i, v) {
+			_payments.push($(v).find('.js-description').data('metatextfield').value);
+		});
+		$.post(site_url + 'company/payments' + company_url_suffix, {newPayments: _payments}).always(function(res) {
+			try {
+				let json = JSON.parse(res);
+				payments = json;
+				syncPayments();
+			} catch(e) {
+				console.error(e);
+			}
+		});
+	});
+	$('#serviceDialog').data('saveService', () => {
+		let _service_price = null;
+		let _service_default = false; // delivery
+		_service_default = $('#one').prop('checked');
+		_service_price = $('#deliveryPrice').data('metatextfield').value;
+		$.post(site_url + 'company/service').always((res) => {
+			console.log(res);
+			syncService();
+		});
+	});
+
+	syncService();
 });
 
+function syncPayments() {
+	$('#paymentList').empty();
+	$('#modalPaymentList').empty();
+	for (let i in payments) {
+		let payment = payments[i];
+		let $payment = $ghostCardPayment.clone();
+		$payment.find('.js-description').text(payment.description);
+		$('#paymentList').append($payment);
+		let $paymentBox = addPayment();
+		$paymentBox.find('.js-description').data('metatextfield').value = payment.description;
+		$('#modalPaymentList').append($paymentBox);
+	}
+}
 function syncService() {
 	$('#deliveryPrice').data('metatextfield').value = deliveryPrice;
 	$('#one').prop('checked', serviceTakeAway).trigger('change');
+	$('#serviceTypeChip .js-info').text(serviceTakeAway ? 'Takeaway' : 'Delivery');
+	$('#servicePriceChip .js-info').text('€' + deliveryPrice);
 }
 
 function addPayment() {

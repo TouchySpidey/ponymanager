@@ -13,19 +13,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div class="mdc-card-wrapper__text-section general-heading">Impostazioni del Servizio</div>
 					<div class="mdc-card-wrapper__text-section subtitle-sm text-center">Il servizio di default quando generi un ordine ed il prezzo del servizio di delivery</div>
 					<div class="flex-wrap chips-container">
-						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+						<div class="ml-auto mr-auto mdc-chip gblue" id="serviceTypeChip" role="row">
 							<div class="mdc-chip__ripple"></div>
 							<span role="gridcell">
 								<span role="button" tabindex="0" class="mdc-chip__primary-action">
-									<span class="mdc-chip__text">Contanti</span>
+									<span class="mdc-chip__text">Servizio di default: <span class="js-info"></span></span>
 								</span>
 							</span>
 						</div>
-						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+						<div class="ml-auto mr-auto mdc-chip gblue" id="servicePriceChip" role="row">
 							<div class="mdc-chip__ripple"></div>
 							<span role="gridcell">
 								<span role="button" tabindex="0" class="mdc-chip__primary-action">
-									<span class="mdc-chip__text">Bancomat</span>
+									<span class="mdc-chip__text">Prezzo: <span class="js-info"></span></span>
 								</span>
 							</span>
 						</div>
@@ -64,20 +64,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				<div class="mdc-card mdc-card--outlined parent-to-be-hovered p-relative">
 					<div class="mdc-card-wrapper__text-section general-heading">Metodi di pagamento</div>
 					<div class="mdc-card-wrapper__text-section subtitle-sm text-center">I metodi di pagamento che vengono accettati nel locale</div>
-					<div class="flex-wrap chips-container">
-						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
+					<div class="flex-wrap chips-container" id="paymentList">
+						<div class="ml-auto mr-auto mdc-chip gblue" role="row" id="ghostCardPayment">
 							<div class="mdc-chip__ripple"></div>
 							<span role="gridcell">
 								<span role="button" tabindex="0" class="mdc-chip__primary-action">
-									<span class="mdc-chip__text">Contanti</span>
-								</span>
-							</span>
-						</div>
-						<div class="ml-auto mr-auto mdc-chip gblue" role="row">
-							<div class="mdc-chip__ripple"></div>
-							<span role="gridcell">
-								<span role="button" tabindex="0" class="mdc-chip__primary-action">
-									<span class="mdc-chip__text">Bancomat</span>
+									<span class="mdc-chip__text js-description"></span>
 								</span>
 							</span>
 						</div>
@@ -270,7 +262,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 												</button>
 											</div>
 											<div style="padding-right: 64px;">
-												<label class="mdc-text-field mdc-text-field--outlined js-from">
+												<label class="mdc-text-field mdc-text-field--outlined js-description">
 													<span class="mdc-notched-outline">
 														<span class="mdc-notched-outline__leading"></span>
 														<span class="mdc-notched-outline__notch">
@@ -302,7 +294,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						<div class="mdc-button__ripple"></div>
 						<span class="mdc-button__label">Annulla</span>
 					</button>
-					<button type="button" class="mdc-button mdc-button--raised mdc-dialog__button" data-mdc-dialog-action="saveService">
+					<button type="button" class="mdc-button mdc-button--raised mdc-dialog__button" data-mdc-dialog-action="savePayment">
 						<div class="mdc-button__ripple"></div>
 						<span class="mdc-button__label">Salva</span>
 					</button>
@@ -313,6 +305,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	</div>
 	<script>
 	let shifts = JSON.parse('<?= JSON_encode($shifts) ?>');
+	let payments = JSON.parse('<?= JSON_encode($payments) ?>');
 	let deliveryPrice = 0;
 	let serviceTakeAway = true;
 	let geoShop = {
