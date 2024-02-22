@@ -1,6 +1,17 @@
 ###########
 PonyManager
 ###########
+==================
+Customers Handling
+==================
+Super quick interface to register the orders, Google Map to see where your deliveries are gonna be.
 
-Questa webapp serve ad agevolare la gestione dei clienti e degli ordini ricevuti.
-E poco altro
+============
+Cooks Prints
+============
+Short big font sized recaps for the cook with time and pizzas details
+
+=============
+Riders Prints
+=============
+with QR (Maps address) and name on the doorbell alongside the 
