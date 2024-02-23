@@ -14,4 +14,4 @@ Short big font sized recaps for the cook with time and pizzas details
 =============
 Riders Prints
 =============
-with QR (Maps address) and name on the doorbell alongside the 
+with QR (Maps address) and name on the doorbell alongside the order recap
